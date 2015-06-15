@@ -63,7 +63,6 @@
             }
             else redirect('home', 'refresh');
         }
-
         public function Perfil()
         {
             if ($this->session->userdata('ID_USUARIO'))

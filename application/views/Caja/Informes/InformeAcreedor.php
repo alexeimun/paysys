@@ -41,7 +41,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label">Desde</label>
                         <div class="col-lg-3">
-                    <input type="date" name="DESDE" value="<?= date('Y-m-d')?>" class="form-control"/>
+                    <input type="date" name="DESDE" value="<?= (date('Y')-1).date('-m-d')?>" class="form-control"/>
                         </div>
                     <label class="col-lg-1 control-label">Hasta</label>
 

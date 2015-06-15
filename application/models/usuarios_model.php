@@ -26,13 +26,8 @@
 
         public function ValidarCredenciales($usuario, $clave)
         {
-            $this->db->select('*');
-            $this->db->from('t_usuarios');
-            $this->db->where('CORREO', $usuario);
-            $this->db->where('CLAVE', $clave);
-            $this->db->where('ESTADO', 1);
-            $this->db->limit(1);
-            $query = $this->db->get();
+            $query=$this->db->query("SELECT * from t_usuarios WHERE CORREO='$usuario' AND CLAVE = '$clave' LIMIT 1");
+
             if ($query->num_rows() == 1)
                 return $query->result();
             else

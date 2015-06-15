@@ -230,23 +230,23 @@
     });
 
 
-//    $('body').on('checked', 'table input', function (e,a)
-//    {
-//        console.log(e,a);
-//       var exist= $(this).closest('tr').prev().exists();
-//        if(exist)
-//        {
-//            var previnput= $(this).closest('tr').prev().find('input').prop('checked');
-//console.log(previnput);
-//            if(previnput)
-//            {
-//                if ($(this).prop('checked'));
-//                {
-//                    $(this).iCheck('Uncheck');
-//                }
-//            }
-//        }
-//    });
+    //    $('body').on('checked', 'table input', function (e,a)
+    //    {
+    //        console.log(e,a);
+    //       var exist= $(this).closest('tr').prev().exists();
+    //        if(exist)
+    //        {
+    //            var previnput= $(this).closest('tr').prev().find('input').prop('checked');
+    //console.log(previnput);
+    //            if(previnput)
+    //            {
+    //                if ($(this).prop('checked'));
+    //                {
+    //                    $(this).iCheck('Uncheck');
+    //                }
+    //            }
+    //        }
+    //    });
 
     $('body').on('change', 'select[name=FORMA_PAGO]', function ()
     {
@@ -327,6 +327,11 @@
         {
             $('#btnagregarpago').html('');
             $('#pagodropdown').html(PagoDropDown(+$('#tipopago :selected').val()));
+            $('input.dinero').priceFormat({
+                prefix: '$ ',
+                thousandsSeparator: ','
+            });
+            ;
         }
     });
 
@@ -341,7 +346,8 @@
             statement += '<option value="0">Abono a capital</option>';
         statement += '<option value="1">Pago intereses</option>' +
         '<option value="2">Ampliación de capital</option>' +
-        '<option value="3">Comisión</option>' +
+        '<option value="3">Ampliación de plazo</option>' +
+        '<option value="4">Comisión</option>' +
         '</select>' +
         '</div>' +
         '</div>';
@@ -369,16 +375,13 @@
                 return '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">Valor:</label>' +
                     '<div class="col-lg-6">' +
-                    '<input type="text" class="form-control numero dinero" name="VALOR"' +
-                    'placeholder="Ingrese el valor apagar">' +
+                    '<input type="text" class="form-control numero dinero" name="VALOR" placeholder="Ingrese el valor apagar">' +
                     '</div>' +
                     '</div>' +
                     '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">Concepto:</label>' +
                     '<div class="col-lg-7">' +
-                    '<input type="text" value="' +
-                    'VALOR ABONO' + '" class="form-control obligatorio" name="CONCEPTO"' +
-                    'placeholder="Ingrese el concepto">' +
+                    '<input type="text" value="VALOR ABONO" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
                     '</div>' +
                     '</div>' +
                     '<div class="form-group">' +
@@ -389,7 +392,7 @@
             case 2:
                 return '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">Valor:</label>' +
-                    '<div class="col-lg-6">' +
+                    '<div class="col-lg-5">' +
                     '<input type="text" class="form-control numero dinero" name="VALOR"' +
                     'placeholder="Ingrese el valor apagar">' +
                     '</div>' +
@@ -405,107 +408,155 @@
                     ' </div>' +
                     ' </div>';
                 break;
-
-        }
-    }
-        function FormaPago(tipo)
-        {
-            if (tipo == 0)
-            {
+            case 3:
                 return '<div class="form-group">' +
-                    ' <label class="col-lg-4 control-label">Banco:</label>' +
-                    '<div class="col-lg-6">' +
-                    '<input type="text" class="form-control obligatorio" name="BANCO"' +
-                    'placeholder="Ingrese el nombre de la entidad bancaria">' +
+                    ' <label class="col-lg-4 control-label">Plazo:</label>' +
+                    '<div class="col-lg-5">' +
+                    '<select class="form-control" name="PLAZO"><option value="0">6 meses</option><option value="1" selected>12 meses</option></select>' +
+                    '</div></div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Valor:</label>' +
+                    '<div class="col-lg-5">' +
+                    '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .005)) + '" name="VALOR" placeholder="Ingrese el valor apagar">' +
                     '</div>' +
                     '</div>' +
                     '<div class="form-group">' +
-                    ' <label class="col-lg-4 control-label">Cheque Nro:</label>' +
-                    '<div class="col-lg-6">' +
-                    '<input type="text" class="form-control obligatorio" name="CHEQUE"' +
-                    'placeholder="Ingrese el número de cheque">' +
+                    ' <label class="col-lg-4 control-label">Concepto:</label>' +
+                    '<div class="col-lg-5">' +
+                    '<input type="text" value="Ampliación de plazo por doce meses" class="form-control mouse-default"  name="CONCEPTO"  readonly>' +
                     '</div>' +
-                    '</div>';
-            }
-            else return '';
-        }
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
+                    ' </div>' +
+                    ' </div>';
+                break;
+            case 4:
+                return '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Valor:</label>' +
+                    '<div class="col-lg-5">' +
+                    '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .03)) + '" name="VALOR" placeholder="Ingrese el valor apagar">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Concepto:</label>' +
+                    '<div class="col-lg-7">' +
+                    '<input type="text" value="Comisión <?=MesNombreAbr(round(date('m'))).' '.date('d/Y') ?>" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
+                    ' </div>' +
+                    ' </div>';
+                break;
 
-        function traeTablaPagos()
+        }
+    }
+    $('body').on('change', 'select[name=PLAZO]', function ()
+    {
+        var box = $(this);
+        if (box.val() == 0)
         {
-            $.post('pagostemp', {IdSol: Solicitud.val(), action: 'traer'}, function (data)
+            $('input[name=CONCEPTO]').val('Ampliación de plazo por seis meses');
+        }
+        else $('input[name=CONCEPTO]').val('Ampliación de plazo por doce meses');
+
+    });
+    function FormaPago(tipo)
+    {
+        if (tipo == 0)
+        {
+            return '<div class="form-group">' +
+                ' <label class="col-lg-4 control-label">Banco:</label>' +
+                '<div class="col-lg-6">' +
+                '<input type="text" class="form-control obligatorio" name="BANCO" placeholder="Ingrese el nombre de la entidad bancaria">' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                ' <label class="col-lg-4 control-label">Cheque Nro:</label>' +
+                '<div class="col-lg-6">' +
+                '<input type="text" class="form-control obligatorio" name="CHEQUE" placeholder="Ingrese el número de cheque">' +
+                '</div>' +
+                '</div>';
+        }
+        else return '';
+    }
+
+    function traeTablaPagos()
+    {
+        $.post('pagostemp', {IdSol: Solicitud.val(), action: 'traer'}, function (data)
+        {
+            $('#tablapagos').html(data);
+        });
+    }
+
+    $('body').on('click', '.agregar', function ()
+    {
+        agregaPagoTemp();
+    });
+
+    $('body').on('change', 'select[name=FORMA_PAGO]', function ()
+    {
+        $('#formapago').html(FormaPago($('select[name=FORMA_PAGO] :selected').val()));
+    });
+
+    $('body').on('click', '.agregar-interes', function ()
+    {
+        var num = [];
+        var concepto = [];
+        var valor = [];
+
+        $('#tabs table tbody tr td:nth-of-type(5) input:checked').not(':disabled').each(function (index, element)
+        {
+            if ($(this).val() != 'ok')
+            {
+                var tr = $(element).closest('tr');
+                num.push(tr.find('td:nth-of-type(1)').text());
+                valor.push(tr.find('td:nth-of-type(2)').unmask());
+                concepto.push(tr.find('td:nth-of-type(3)').text());
+                $(this).val('ok');
+            }
+        });
+        if (num.length > 0)
+        {
+            var Field = [];
+            Field.push(num, concepto, valor);
+            $.post('pagostemp', {
+                REG: Field,
+                TIPO_RECIBO: 1,
+                IdSol: Solicitud.val(),
+                action: 'agregar'
+            }, function (data)
             {
                 $('#tablapagos').html(data);
             });
         }
+    });
 
-        $('body').on('click', '.agregar', function ()
+    function agregaPagoTemp()
+    {
+        if (validateForm())
         {
-            agregaPagoTemp();
-        });
-
-        $('body').on('change', 'select[name=FORMA_PAGO]', function ()
-        {
-            $('#formapago').html(FormaPago($('select[name=FORMA_PAGO] :selected').val()));
-        });
-
-        $('body').on('click', '.agregar-interes', function ()
-        {
-            var num = [];
-            var concepto = [];
-            var valor = [];
-
-            $('#tabs table tbody tr td:nth-of-type(5) input:checked').not(':disabled').each(function (index, element)
-            {
-                if ($(this).val() != 'ok')
-                {
-                    var tr = $(element).closest('tr');
-                    num.push(tr.find('td:nth-of-type(1)').text());
-                    valor.push(tr.find('td:nth-of-type(2)').unmask());
-                    concepto.push(tr.find('td:nth-of-type(3)').text());
-                    $(this).val('ok');
-                }
-            });
-            if (num.length > 0)
-            {
-                var Field = [];
-                Field.push(num, concepto, valor);
-                $.post('pagostemp', {
-                    REG: Field,
-                    TIPO_RECIBO:1,
-                    IdSol: Solicitud.val(),
-                    action: 'agregar'
-                }, function (data)
-                {
-                    $('#tablapagos').html(data);
-                });
-            }
-        });
-
-        function agregaPagoTemp()
-        {
-            if (validateForm())
-            {
-                $.post('pagostemp', {
-                    IdSol: Solicitud.val(),
-                    CONCEPTO: $('input[name=CONCEPTO]').val().trim(),
-                    VALOR: $('input[name=VALOR]').unmask(),
-                    TIPO_RECIBO: $('select[name=TIPO_RECIBO] :selected').val(),
-                    action: 'agregar'
-                }, function (data)
-                {
-                    $('#tablapagos').html(data);
-                });
-            }
-        }
-
-        function eliminarpago(Id)
-        {
-            $.post('pagostemp', {IdPago: Id, IdSol: Solicitud.val(), action: 'eliminar'}, function (data)
+            $.post('pagostemp', {
+                IdSol: Solicitud.val(),
+                CONCEPTO: $('input[name=CONCEPTO]').val().trim(),
+                VALOR: $('input[name=VALOR]').unmask(),
+                TIPO_RECIBO: $('select[name=TIPO_RECIBO] :selected').val(),
+                action: 'agregar'
+            }, function (data)
             {
                 $('#tablapagos').html(data);
             });
         }
+    }
 
+    function eliminarpago(Id)
+    {
+        $.post('pagostemp', {IdPago: Id, IdSol: Solicitud.val(), action: 'eliminar'}, function (data)
+        {
+            $('#tablapagos').html(data);
+        });
+    }
 </script>
 <?= $Footer ?>
 

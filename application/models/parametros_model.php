@@ -173,5 +173,10 @@
                 $this->db->set('FECHA_MODIFICA', 'NOW()', false);
                 $this->db->update('t_consecutivos', ['CONSECUTIVO' => $_POST['Consecutivos'][1]], ['NOMBRE' => 'SOLICITUD']);
             }
+            if ($cons[2]->CONSECUTIVO != $_POST['Consecutivos'][2])
+            {
+                $this->db->set('FECHA_MODIFICA', 'NOW()', false);
+                $this->db->update('t_consecutivos', ['CONSECUTIVO' => $_POST['Consecutivos'][2]], ['NOMBRE' => 'CUADRE']);
+            }
         }
     }

@@ -262,7 +262,6 @@
                 'DIRECCION' => trim($this->input->post('DIRECCION', true)),
                 'NOMBRE_CUENTA' => trim($this->input->post('NOMBRE_CUENTA', true)),
                 'NUMERO_CUENTA' => trim($this->input->post('NUMERO_CUENTA', true)),
-                'INTERES_CARTERA' => trim($this->input->post('INTERES_CARTERA', true)),
                 'MANEJO_CARTERA' => isset($_POST['MANEJO_CARTERA']) ? 1 : 0,
                 'RECLAMA_PERSONALMENTE' => isset($_POST['RECLAMA_PERSONALMENTE']) ? 1 : 0,
                 'ID_CIUDAD' => trim($this->input->post('ID_CIUDAD', true))];

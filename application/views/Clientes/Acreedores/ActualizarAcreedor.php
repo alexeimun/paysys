@@ -120,14 +120,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-lg-4 control-label">Interés Cartera%:</label>
-
-                    <div class="col-lg-2">
-                        <input type="text" class="form-control numero porcentaje" value="<?=$Info->INTERES_CARTERA ?>" min="0" max="100"
-                               name="INTERES_CARTERA">
-                    </div>
-                </div>
 
                 <div class="form-group">
                     <label class="col-lg-4 control-label"></label>

@@ -74,6 +74,8 @@
                             <li><a href="<?= site_url('informeacreedor') ?>"><i class="fa ion-ios-list-outline"></i> Informe
                                     Acreedor</a>
                             </li>
+                            <li><a href="<?= site_url('cuadrediario') ?>" target="_blank"><i class="fa ion-ios-list-outline"></i> Cuadre Diario</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

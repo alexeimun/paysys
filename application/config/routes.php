@@ -74,7 +74,10 @@
     $route['recibos'] = 'caja/Recibos';
     $route['verrecibo/(:num)'] = 'caja/VerRecibo/$1';
     $route['anularrecibo/(:num)'] = 'caja/AnularRecibo/$1';
-    ##Informes
+    ##Informes##
+    #Cuadre diario
+    $route['cuadrediario'] = 'caja/CuadreDiario';
+
     #Deudores
     $route['informedeudor'] = 'caja/InformeDeudor';
     $route['ImprimeInformeDeudor/(:num)'] = 'caja/ImprimeInformeDeudor/$1';

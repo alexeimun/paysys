@@ -1,6 +1,6 @@
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-        <b>Versión</b> 0.5.6.0
+        <b>Versión</b> 0.5.9.0
     </div>
     <strong>Copyright &copy; 2015 InverBienes</a>.</strong> Todos los derechos reservados.
 </footer>

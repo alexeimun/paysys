@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<body class="skin-blue">
+<body class="">
 <?= $Head ?>
 <link href="<?= base_url() ?>public/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/>
 
@@ -41,7 +41,11 @@
 <script type="text/javascript">
     $(function ()
     {
-        $("#tabla").dataTable();
+        $("#tabla").dataTable(
+            {
+               bSort:false
+            }
+        );
     });
     function eliminar(Id)
     {

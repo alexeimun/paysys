@@ -4,8 +4,8 @@
         #########Ajuste de horas según la zona horaria
         $ajustehora = 0;
         #########
-        $fecha = strtotime($date);
-        $ahora = strtotime(date('Y-m-d H:i:s')) - $ajustehora * 3600;
+        $fecha = strtotime($date) + $ajustehora * 3600;
+        $ahora = strtotime(date('Y-m-d H:i:s')) + $ajustehora * 3600;
         $diff = $ahora - $fecha;
         $DIA = 86400 + 15000;
         if ($diff < 6)
@@ -82,11 +82,11 @@
         }
         else if (date('d') == date_format(new DateTime($date), 'd') && date('m') == date_format(new DateTime($date), 'm') && date('Y') == date_format(new DateTime($date), 'Y'))
         {
-            $momento = 'Hoy, ' . round(date('h',$fecha)) . date(':i a', $fecha);
+            $momento = 'Hoy, ' . round(date('h', $fecha)) . date(':i a', $fecha);
         }
         else if ($diff < $DIA)
         {
-            $momento = 'Ayer, ' . round(date('h',$fecha)) . date(':i a', $fecha);
+            $momento = 'Ayer, ' . round(date('h', $fecha)) . date(':i a', $fecha);
         }
         else if ($diff < $DIA * 2)
         {

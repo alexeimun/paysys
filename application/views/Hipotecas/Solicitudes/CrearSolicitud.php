@@ -226,7 +226,7 @@
 
                 <div class="form-group">
                     <div class="row">
-                        <label class="col-lg-4 control-label">Cuota Administración %:</label>
+                        <label class="col-lg-4 control-label">Administración %:</label>
 
                         <div class="col-lg-2">
                             <input type="text" value="3" class="form-control obligatorio numero porcentaje"

@@ -114,15 +114,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-lg-3 control-label">Interés Cartera%:</label>
-
-                    <div class="col-lg-2">
-                        <input type="text" class="form-control obligatorio numero porcentaje" value="3"
-                               name="INTERES_CARTERA">
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label class="col-lg-3 control-label"></label>
                     <div class="col-lg-9">
                         <input type="checkbox" name="MANEJO_CARTERA" checked> <strong> Manejo Cartera</strong>

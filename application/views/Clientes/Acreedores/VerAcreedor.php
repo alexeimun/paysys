@@ -114,15 +114,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-lg-4 control-label">Interés Cartera%:</label>
-
-                    <div class="col-lg-2">
-                        <input type="text" class="form-control obligatorio numero"
-                               value="<?= $Info->INTERES_CARTERA ?>">
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label class="col-lg-4 control-label"></label>
 
                     <div class="col-lg-8">

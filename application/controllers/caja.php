@@ -34,7 +34,7 @@
                                     <th>Deudor</th>
                                     <th>Documento</th>
                                     <th>Acreedor</th>
-                                    <th>Valor</th>
+                                    <th>Total</th>
                                     <th>Fecha</th>
                                     <th>Acción</th>
                                 </tr>
@@ -68,8 +68,12 @@
 
         public function AnularRecibo($id)
         {
-            $this->caja_model->AnularRecibo($id);
-            redirect('caja/Recibos', 'refresh');
+            if ($this->session->userdata('ID_USUARIO'))
+            {
+                $this->caja_model->AnularRecibo($id);
+                redirect('caja/Recibos', 'refresh');
+            }
+            else redirect('inicio', 'refresh');
         }
 
         public function VerRecibo($Consecutivo)
@@ -308,15 +312,13 @@
                 $pdf->Cell(85, 6, number_format($Vals['TOTAL'], 0, '', ','), 1, 0, 'R');
             }
             #-----------------------DEBE INT--------------------------
-            $Mes =$Mesfin= $Vals['MESES'] + $Mesinicio;
+            $Mes = $Mesfin = $Vals['MESES'] + $Mesinicio;
             if ($Diainicio - 1 == 0) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
             else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
             else $Diafin = $Diainicio - 1;
-
             $diain = $Diainicio > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) ? date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) : $Diainicio;
             $debeInt = 'DEBE INT DE ' . MesNombreAbr($Mes > 12 ? 12 - $Mes : $Mes) . ' ' . $diain . '/' . $Anofin . ' A ';
-
-            for ($p=0; strtotime('now') > strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) && strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) < strtotime($solicitud->FECHA_FIN);$p++)
+            for ($p = 0; strtotime('now') > strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) && strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) < strtotime($solicitud->FECHA_FIN); $p ++)
             {
                 $Mesfin ++;
                 if ($Mesfin > 12)
@@ -328,7 +330,7 @@
                 else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
                 else $Diafin = $Diainicio - 1;
             }
-            if($p>0)
+            if ($p > 0)
             {
                 $debeInt .= MesNombreAbr($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
                 #DEBE INTERESES
@@ -337,7 +339,6 @@
                 $pdf->Cell(85, 6, number_format($p * ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * ($solicitud->INTERES_MENSUAL / 100), 0, '', ','), 1, 0, 'R');
             }
             #-----------------------------------------------------------
-
             #MENOS COMISIÓN
             $pdf->SetXY(20, 32 + ++ $r * 6);
             $pdf->Cell(85, 6, utf8_decode('COMISIÓN SEP 27/14'), 1, 0, 'L');
@@ -363,7 +364,6 @@
 
         public function ImprimeInformeAcreedor()
         {
-            foreach ($this->caja_model->TraeSolicitud($this->input->post('ID_ACREEDOR'))->result() as $acreedor) ;
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
             $pdf->AddPage();
@@ -371,7 +371,7 @@
             $pdf->SetFont('Arial', 'B', 12);
             $pdf->Ln();
             #ENCABEZADO
-            $pdf->Cell(190, 6, 'CUADRE SANDRA CORREA VARGAS', 0, 0, 'C');
+            $pdf->Cell(190, 6, utf8_decode('INFORME ' . strtoupper($this->caja_model->TraeNombreAcreedor())), 0, 0, 'C');
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetXY(5, $hheader);
             $pdf->Cell(50, 6, 'DEUDOR', 1, 0, 'C');
@@ -389,36 +389,84 @@
             $pdf->Cell(30, 6, 'TOTAL', 1, 0, 'C');
             #VALORES
             $pdf->SetFont('Arial', '', 9);
-            for ($i = 0; $i < 10; $i ++)
+            $i = 0;
+            $Total = 0;
+            foreach ($this->caja_model->TraeMovimientosDeudores() as $informe)
             {
+                #--------------------Calculo-----------------------#
+                $Pago = '';
+                switch ($informe->TIPO_MOV)
+                {
+                    case 0:
+                        $Pago = 'ABONO A CAPITAL';
+                        break;
+                    case 1:
+                        $Mesinicio = round(date_format(new DateTime($informe->FECHA_INICIO), 'm'));
+                        $Diainicio = date_format(new DateTime($informe->FECHA_INICIO), 'd');
+                        $Anoinicio = date_format(new DateTime($informe->FECHA_INICIO), 'Y');
+                        $Mes = $informe->DESCRIPCION + $Mesinicio - 1;
+                        $Anofin = $Anoinicio;
+                        $Mesfin = $Mes + 1;
+                        if ($Mesfin > 12)
+                        {
+                            $Mesfin = 1;
+                            $Anofin ++;
+                        }
+                        if ($Diainicio - 1 == 0) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                        else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                        else $Diafin = $Diainicio - 1;
+                        $Pago = $Diainicio . '/' . $Mesinicio . '/' . $Anoinicio . ' A ' . $Diafin . '/' . $Mesfin . '/' . $Anofin;
+                        break;
+                }
+                #---------------------------------------------------#
                 #Deudor
                 $pdf->SetXY(5, 26 + 6 * $i);
-                $pdf->Cell(50, 6, 'pos ' . $i, 1, 0, 'C');
+                $pdf->Cell(50, 6, ucwords(utf8_decode($informe->NOMBRE_DEUDOR)), 1, 0, 'C');
                 #Periodo pago
                 $pdf->SetXY(55, 26 + 6 * $i);
-                $pdf->Cell(50, 6, 'pos ' . $i, 1, 0, 'C');
+                $pdf->Cell(50, 6, $Pago, 1, 0, 'C');
                 #RCBO
                 $pdf->SetXY(105, 26 + 6 * $i);
-                $pdf->Cell(20, 6, 'pos ' . $i, 1, 0, 'C');
+                $pdf->Cell(20, 6, $informe->CONSECUTIVO, 1, 0, 'C');
                 #Valor
                 $pdf->SetXY(125, 26 + 6 * $i);
-                $pdf->Cell(25, 6, 'pos ' . $i, 1, 0, 'C');
+                $pdf->Cell(25, 6, number_format($informe->VALOR, 0, '', ','), 1, 0, 'C');
                 #%
                 $pdf->SetXY(150, 26 + 6 * $i);
-                $pdf->Cell(6, 6, $i . '%', 1, 0, 'C');
+                $pdf->Cell(6, 6, $informe->ADMINISTRACION . '%', 1, 0, 'C');
                 #ADMON
+                $Admin = $informe->ADMINISTRACION * ($informe->VALOR / 100);
                 $pdf->SetXY(156, 26 + 6 * $i);
-                $pdf->Cell(20, 6, 'pos ' . $i, 1, 0, 'C');
+                $pdf->Cell(20, 6, number_format($Admin, 0, '', ','), 1, 0, 'C');
                 #TOTAL
+                $Total += $informe->VALOR - $Admin;
                 $pdf->SetXY(176, 26 + 6 * $i);
-                $pdf->Cell(30, 6, 'pos ' . $i, 1, 0, 'C');
+                $pdf->Cell(30, 6, number_format($informe->VALOR - $Admin, 0, '', ','), 1, 0, 'C');
+                $i ++;
             }
+            #---------------------------------------Blank-----------------------------#
+            $pdf->SetXY(5, 26 + 6 * $i);
+            $pdf->Cell(50, 6, '', 1, 0, 'C');
+            $pdf->SetXY(55, 26 + 6 * $i);
+            $pdf->Cell(50, 6, '', 1, 0, 'C');
+            $pdf->SetXY(105, 26 + 6 * $i);
+            $pdf->Cell(20, 6, '', 1, 0, 'C');
+            $pdf->SetXY(125, 26 + 6 * $i);
+            $pdf->Cell(25, 6, '', 1, 0, 'C');
+            $pdf->SetXY(150, 26 + 6 * $i);
+            $pdf->Cell(6, 6, '', 1, 0, 'C');
+            $pdf->SetXY(156, 26 + 6 * $i);
+            $pdf->Cell(20, 6, '', 1, 0, 'C');
+            $pdf->SetXY(176, 26 + 6 * $i);
+            $pdf->Cell(30, 6, '', 1, 0, 'C');
+            $i ++;
+            #---------------------------------------------------------------------------#
             $pdf->SetFont('Arial', 'B', 9);
             $pdf->SetXY(55, 26 + 6 * $i);
             $pdf->Cell(101, 6, 'TOTAL CUADRE', 1, 0, 'C');
             #VALOR
             $pdf->SetXY(156, 26 + 6 * $i);
-            $pdf->Cell(50, 6, '$ 300.000', 1, 0, 'C');
+            $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');
             $i ++;
             #------------------ENTREGADO--------------------#
             $pdf->SetFont('Arial', 'B', 9);
@@ -426,7 +474,84 @@
             $pdf->Cell(101, 6, 'TOTAL ENTREGADO', 1, 0, 'C');
             #VALOR
             $pdf->SetXY(156, 26 + 6 * $i);
-            $pdf->Cell(50, 6, '$ 300.000', 1, 0, 'C');
+            $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');
+            #------------------------------------------------------#
+            $pdf->Output();
+            $pdf->Cell($pdf->PageNo());
+        }
+
+        public function CuadreDiario()
+        {
+            $this->load->library('fpdf/pdf');
+            $pdf = new PDF();
+            $pdf->AddPage();
+            $hheader = 20;
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->Ln();
+            #ENCABEZADO
+            $pdf->Cell(190, 6, 'CUADRE DIARIO', 0, 0, 'C');
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetXY(40, $hheader);
+            $pdf->Cell(30, 6, 'RCBO', 1, 0, 'C');
+            $pdf->SetXY(70, $hheader);
+            $pdf->Cell(30, 6, 'VALOR', 1, 0, 'C');
+            $pdf->SetXY(100, $hheader);
+            $pdf->Cell(10, 6, '%', 1, 0, 'C');
+            $pdf->SetXY(110, $hheader);
+            $pdf->Cell(30, 6, 'ADMON', 1, 0, 'C');
+            $pdf->SetXY(140, $hheader);
+            $pdf->Cell(30, 6, 'COMISION', 1, 0, 'C');
+            #VALORES
+            $pdf->SetFont('Arial', '', 9);
+            $i = 0;
+            $Total = 0;
+            #foreach ($this->caja_model->TraeMovimientosDeudores() as $informe)
+            for ($i = 0; $i < 10; $i ++)
+            {
+                #RCBO
+                $pdf->SetXY(40, 26 + 6 * $i);
+                $pdf->Cell(30, 6, '', 1, 0, 'C');
+                #Valor
+                $pdf->SetXY(70, 26 + 6 * $i);
+                $pdf->Cell(30, 6, number_format('12222', 0, '', ','), 1, 0, 'C');
+                #%
+                $pdf->SetXY(100, 26 + 6 * $i);
+                $pdf->Cell(10, 6, '' . '%', 1, 0, 'C');
+                #ADMON
+                $pdf->SetXY(110, 26 + 6 * $i);
+                $pdf->Cell(30, 6, number_format('2323', 0, '', ','), 1, 0, 'C');
+                #COMISION
+                $pdf->SetXY(140, 26 + 6 * $i);
+                $pdf->Cell(30, 6, number_format('7676', 0, '', ','), 1, 0, 'C');
+            }
+            #---------------------------------------Blank-----------------------------#
+
+            $pdf->SetXY(40, 26 + 6 * $i);
+            $pdf->Cell(30, 6, 'TOTAL', 1, 0, 'C');
+            $pdf->SetXY(70, 26 + 6 * $i);
+            $pdf->Cell(30, 6, '', 1, 0, 'C');
+            $pdf->SetXY(100, 26 + 6 * $i);
+            $pdf->Cell(10, 6, '', 1, 0, 'C');
+            $pdf->SetXY(110, 26 + 6 * $i);
+            $pdf->Cell(30, 6, '', 1, 0, 'C');
+            $pdf->SetXY(140, 26 + 6 * $i);
+            $pdf->Cell(30, 6, '', 1, 0, 'C');
+            $i ++;
+            #---------------------------------------------------------------------------#
+            $pdf->SetFont('Arial', 'B', 9);
+            $pdf->SetXY(55, 26 + 6 * $i);
+            $pdf->Cell(101, 6, 'TOTAL CUADRE', 1, 0, 'C');
+            #VALOR
+            $pdf->SetXY(156, 26 + 6 * $i);
+            $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');
+            $i ++;
+            #------------------ENTREGADO--------------------#
+            $pdf->SetFont('Arial', 'B', 9);
+            $pdf->SetXY(55, 26 + 6 * $i);
+            $pdf->Cell(101, 6, 'TOTAL ENTREGADO', 1, 0, 'C');
+            #VALOR
+            $pdf->SetXY(156, 26 + 6 * $i);
+            $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');
             #------------------------------------------------------#
             $pdf->Output();
             $pdf->Cell($pdf->PageNo());
@@ -471,7 +596,7 @@
                             <div id="inmuebles" class="box-body no-padding">';
             $tabla .= '<table class="table table-striped" border="0" id="tpagos">
                                 <thead><tr>
-                                    <th style="text-align: center;">Tipo</th>
+                                    <th style="text-align: center;">Tipo recibo</th>
                                     <th style="text-align: center;">Concepto</th>
                                     <th style="text-align: center;">Valor</th>
                                     <th style="text-align: center;">Acción</th>
@@ -501,7 +626,7 @@
                                  </div>
                             <!-- /.box-body -->
                         </div>
-                    </div>
+                    </div
                 </div>';
             return $tabla;
         }
@@ -679,9 +804,8 @@
 
         public function AcreedoresDropDown()
         {
-            $acreedores = $this->clientes_model->TraeAcreedores();
             $this->Data['Acreedores'] = '<option value="0">--Seleccione un acreedor---</option>';
-            foreach ($acreedores->result() as $acreedor)
+            foreach ($this->clientes_model->TraeAcreedores()->result() as $acreedor)
             {
                 $this->Data['Acreedores'] .= '<option value="' . $acreedor->ID_ACREEDOR . '">' . $acreedor->DOCUMENTO . ' - ' . $acreedor->NOMBRE_ACREEDOR . '</option>';
             }
@@ -691,8 +815,7 @@
         {
             $sel = $id == - 1 ? 'selected' : '';
             $this->Data['Deudores'] = '<option value="0" ' . $sel . '>--Seleccione un deudor---</option>';
-            $deudores = $this->clientes_model->TraeDeudores();
-            foreach ($deudores->result() as $deudor)
+            foreach ($this->clientes_model->TraeDeudores()->result() as $deudor)
             {
                 if ($deudor->ID_DEUDOR == $id)
                     $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '" selected>' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';

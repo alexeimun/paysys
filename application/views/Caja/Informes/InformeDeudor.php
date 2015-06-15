@@ -34,7 +34,7 @@
         </section>
         <!-- Main content -->
         <div class="container">
-            <form class="form-horizontal col-md-7" role="form" style="margin-left: 20%;"
+            <form class="form-horizontal col-md-8" role="form" style="margin-left: 20%;"
                   method="post" action="cliente/InsertaAcreedor">
                 <hr style="border: 1px solid #3c8dbc;"/>
                 <br>
@@ -49,6 +49,29 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-lg-3 control-label">Desde</label>
+
+                    <div class="col-lg-3">
+                        <input type="date" name="DESDE" value="<?= (date('Y') - 1) . date('-m-d') ?>"
+                               class="form-control"/>
+                    </div>
+                    <label class="col-lg-1 control-label">Hasta</label>
+
+                    <div class="col-lg-3">
+                        <input type="date" name="HASTA" value="<?= date('Y-m-d') ?>" class="form-control"/>
+                    </div>
+                </div>
+                <br>
+                <!--Envíar-->
+                <div class="form-group">
+                    <div class="col-lg-offset-5 col-lg-10">
+                        <button type="button" class="btn btn-success btn-lg"><span
+                                class="glyphicon glyphicon-print"></span>&nbsp; Imprimir
+                        </button>
+                    </div>
+                </div>
+                <br>
 
                 <h3 style="text-align: center;color:#3fabd6;"><span class="ion-pie-graph"></span>
                     Información
@@ -59,10 +82,14 @@
                     <!-- Custom Tabs -->
                     <div class="nav-tabs-custom" id="tabs">
                         <ul class="nav nav-tabs" style="background: #ECF0F5;">
-                            <li class="active"><a href="#tab_1" data-toggle="tab"><span class="ion-person-stalker"></span> Datos</a></li>
-                            <li><a href="#tab_2" data-toggle="tab"><span class="glyphicon glyphicon-briefcase"></span> Abonos</a></li>
-                            <li id="interes-tab"><a href="#tab_3" data-toggle="tab"><span class="glyphicon glyphicon-list-alt"></span> Intereses</a></li>
-                            <li><a href="#tab_4" data-toggle="tab"><span class="ion-stats-bars"></span> Estadísticas</a></li>
+                            <li class="active"><a href="#tab_1" data-toggle="tab"><span
+                                        class="ion-person-stalker"></span> Datos</a></li>
+                            <li><a href="#tab_2" data-toggle="tab"><span class="glyphicon glyphicon-briefcase"></span>
+                                    Abonos</a></li>
+                            <li id="interes-tab"><a href="#tab_3" data-toggle="tab"><span
+                                        class="glyphicon glyphicon-list-alt"></span> Intereses</a></li>
+                            <li><a href="#tab_4" data-toggle="tab"><span class="ion-stats-bars"></span> Estadísticas</a>
+                            </li>
                         </ul>
 
                         <div class="tab-content"
@@ -88,15 +115,6 @@
                     <!-- nav-tabs-custom -->
                 </div>
 
-                <br>
-                <!--Envíar-->
-                <div class="form-group">
-                    <div class="col-lg-offset-5 col-lg-10">
-                        <button type="button" class="btn btn-success btn-lg"><span
-                                class="glyphicon glyphicon-print"></span>&nbsp; Imprimir
-                        </button>
-                    </div>
-                </div>
                 <div id="spin" style="text-align: center;position: static;"></div>
             </form>
         </div>
@@ -133,8 +151,8 @@
         });
     });
 
-   $('.btn-success').click(function ()
-   {
+    $('.btn-success').click(function ()
+    {
         if (Solicitud.val() != 0)
         {
             window.open('<?=site_url('ImprimeInformeDeudor')?>' + '/' + Solicitud.val());
@@ -148,7 +166,8 @@
 <?= $Footer ?>
 
 <style>
-    .visor, input[name=CAPITAL_INICIAL] {
+    .visor, input[name=CAPITAL_INICIAL]
+    {
         color: #149311;
         font-weight: bold;
         text-align: center;

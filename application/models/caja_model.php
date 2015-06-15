@@ -57,6 +57,8 @@
             $TotalAbonado = 0;
             $TotalInteres = 0;
             $TotalAC = 0;
+            $TotalAP = 0;
+            $TotalComision = 0;
             foreach ($this->TraePagosTemp($IdSol) as $pagotemp)
             {
                 switch ($pagotemp->TIPO)
@@ -69,6 +71,13 @@
                         break;
                     case 2:
                         $TotalAC += $pagotemp->VALOR;
+                        break;
+                    case 3:
+                        $TotalAP += $pagotemp->VALOR;
+                        $Tmeses = strpos($pagotemp->CONCEPTO, 'doce') ? 12 : 6;
+                        break;
+                    case 4:
+                        $TotalComision += $pagotemp->VALOR;
                         break;
                 }
                 $this->db->set('FECHA', 'NOW()', false);
@@ -121,14 +130,39 @@
                         'CONSECUTIVO' => $Consecutivo,
                         'SECUENCIA' => ++ $Secuencia,
                         'ID_SOLICITUD' => $IdSol,
-                        'DESCRIPCION' => 'TOTAL_AMPLIACION_C',
+                        'DESCRIPCION' => 'TOTAL_AMPLIACION_CAPITAL',
                         'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
                     ]);
             }
-            ##TOTA_RECIBO
+            if ($TotalAP > 0)
+            {
+                $this->db->query("UPDATE t_solicitudes SET FECHA_FIN=DATE_ADD(FECHA_FIN, INTERVAL $Tmeses MONTH) WHERE ID_SOLICITUD=" . $IdSol);
+                $this->db->set('FECHA', 'NOW()', false);
+                $this->db->insert('t_movimientos',
+                    ['VALOR' => $TotalAP,
+                        'CONSECUTIVO' => $Consecutivo,
+                        'SECUENCIA' => ++ $Secuencia,
+                        'ID_SOLICITUD' => $IdSol,
+                        'DESCRIPCION' => 'TOTAL_AMPLIACION_PLAZO',
+                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                    ]);
+            }
+            if ($TotalComision > 0)
+            {
+                $this->db->set('FECHA', 'NOW()', false);
+                $this->db->insert('t_movimientos',
+                    ['VALOR' => $TotalComision,
+                        'CONSECUTIVO' => $Consecutivo,
+                        'SECUENCIA' => ++ $Secuencia,
+                        'ID_SOLICITUD' => $IdSol,
+                        'DESCRIPCION' => 'TOTAL_COMISION',
+                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                    ]);
+            }
+            ##TOTAL_RECIBO
             $this->db->set('FECHA', 'NOW()', false);
             $this->db->insert('t_movimientos',
-                ['VALOR' => $TotalInteres + $TotalAbonado,
+                ['VALOR' => $TotalInteres + $TotalAbonado + $TotalAC + $TotalAP + $TotalComision,
                     'CONSECUTIVO' => $Consecutivo,
                     'SECUENCIA' => ++ $Secuencia,
                     'ID_SOLICITUD' => $IdSol,
@@ -167,7 +201,7 @@
             return $this->db->query("SELECT
                 ID_PAGO_TEMP,
                 TIPO,
-                CASE TIPO WHEN 0 THEN 'Abono' WHEN 1 THEN 'Intereses' WHEN 2 THEN 'Ampliación C' END TIPO_ESCRITO,
+                CASE TIPO WHEN 0 THEN 'Abono' WHEN 1 THEN 'Intereses' WHEN 2 THEN 'Ampliación C' WHEN 3 THEN 'Ampliación P' WHEN 4 THEN 'COMISIÓN' END TIPO_ESCRITO,
                 CONCEPTO,
                 VALOR,
                 CHEQUE,
@@ -253,7 +287,7 @@
                INNER  JOIN t_deudores ON t_deudores.ID_DEUDOR=t_solicitudes.ID_DEUDOR
                INNER  JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_solicitudes.ID_ACREEDOR
                WHERE t_solicitudes.ESTADO=1 AND  t_deudores.ESTADO=1 AND t_acreedores.ESTADO=1
-               AND t_movimientos.DESCRIPCION='TOTAL_RECIBO'");
+               AND t_movimientos.DESCRIPCION='TOTAL_RECIBO' ORDER BY t_movimientos.FECHA DESC");
         }
 
         public function TraeAbonos($idSol)
@@ -321,6 +355,12 @@
                AND t_movimientos.DESCRIPCION ='TOTAL_RECIBO' AND  t_solicitudes.ESTADO=1")->result();
         }
 
+        public function TraeNombreAcreedor()
+        {
+            foreach ($this->db->query("SELECT NOMBRE FROM t_acreedores WHERE t_acreedores.ID_ACREEDOR=" . $this->input->post('ID_ACREEDOR'))->result() as $a)
+                return $a->NOMBRE;
+        }
+
         public function TraeMovimientosDeudores()
         {
             return $this->db->query("SELECT
@@ -328,7 +368,11 @@
                 t_deudores.NOMBRE AS NOMBRE_DEUDOR,
                 mo.DESCRIPCION,
                 mo.TIPO_MOV,
-                mo.CONSECUTIVO
+                mo.CONSECUTIVO,
+                t_solicitudes.CUOTA_ADMINISTRACION ADMINISTRACION,
+                t_solicitudes.FECHA_INICIO,
+                t_solicitudes.FECHA_FIN
+
 
                FROM t_movimientos mo
 
@@ -336,7 +380,8 @@
                INNER  JOIN t_deudores ON t_deudores.ID_DEUDOR=t_solicitudes.ID_DEUDOR
                INNER  JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_solicitudes.ID_ACREEDOR
 
-               WHERE t_acreedores.ID_ACREEDOR=1 AND  mo.TIPO_MOV IS NOT NULL")->result();
+               WHERE  mo.FECHA>='" . $this->input->post('DESDE') . "' AND mo.FECHA<='" . $this->input->post('HASTA') . "' AND
+                t_acreedores.ID_ACREEDOR=" . $this->input->post('ID_ACREEDOR') . " AND  mo.TIPO_MOV IS NOT NULL")->result();
         }
 
         public function AnularRecibo($id)
