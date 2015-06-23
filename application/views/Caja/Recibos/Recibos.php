@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<body class="">
+<body class="skin-blue">
 <?= $Head ?>
 <link href="<?= base_url() ?>public/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/>
 

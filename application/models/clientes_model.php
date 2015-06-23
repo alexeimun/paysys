@@ -49,7 +49,7 @@
 
         public function TraeSolicitudesDeudor($id)
         {
-            return $this->db->query('SELECT
+            return $this->db->query('SELECT DISTINCT
                 so.SOLICITUD,
                 t_acreedores.NOMBRE AS NOMBRE_ACREEDOR,
                 t_inmuebles.MATRICULA,
@@ -59,7 +59,7 @@
 
                FROM t_solicitudes so
                 INNER JOIN t_acreedores USING (ID_ACREEDOR)
-                INNER JOIN t_inmuebles ON t_inmuebles.ID_PROPIETARIO=so.ID_DEUDOR
+                INNER JOIN t_inmuebles ON t_inmuebles.ID_INMUEBLE=so.ID_INMUEBLE
 
                 WHERE t_acreedores.ESTADO=1 AND t_inmuebles.ESTADO=1 AND so.ID_DEUDOR=' .$id)->result();
         }

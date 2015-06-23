@@ -77,10 +77,10 @@
     ##Informes##
     #Cuadre diario
     $route['cuadrediario'] = 'caja/CuadreDiario';
-
+    $route['ImprimeCuadreDiario'] = 'caja/ImprimeCuadreDiario';
     #Deudores
     $route['informedeudor'] = 'caja/InformeDeudor';
-    $route['ImprimeInformeDeudor/(:num)'] = 'caja/ImprimeInformeDeudor/$1';
+    $route['ImprimeInformeDeudor'] = 'caja/ImprimeInformeDeudor';
     #Acreedores
     $route['informeacreedor'] = 'caja/InformeAcreedor';
     $route['ImprimeInformeAcreedor'] = 'caja/ImprimeInformeAcreedor';

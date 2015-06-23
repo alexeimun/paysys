@@ -95,6 +95,17 @@
             else  redirect('home', 'refresh');
         }
 
+        public function CuadreDiario()
+        {
+            if ($this->session->userdata('ID_USUARIO'))
+            {
+                $this->Params();
+                $this->Data['Consecutivo'] = $this->caja_model->TraeCuadreConsecutivo();
+                $this->load->view('Caja/Informes/CuadreDiario', $this->Data);
+            }
+            else  redirect('home', 'refresh');
+        }
+
         public function InformeDeudor()
         {
             if ($this->session->userdata('ID_USUARIO'))
@@ -219,15 +230,16 @@
             $pdf->SetFont('Arial', '', 9);
             $pdf->SetXY(150, 60 + $i * $h);
             $pdf->Cell(50, 6, strtoupper(utf8_decode($info->NOMBRE_USUARIO)), 0, 0, 'C');# Made by
-            ##unsetting
+            ##unsetting Firts for the duplicate check
             $this->session->set_userdata(['First' => '']);
             $pdf->Output();
             $pdf->Cell($pdf->PageNo());
         }
 
-        public function ImprimeInformeDeudor($id)
+        public function ImprimeInformeDeudor()
         {
-            foreach ($this->caja_model->TraeSolicitud($id)->result() as $solicitud) ;
+            if (empty($_POST) || !$this->session->userdata('ID_USUARIO')) redirect('inicio', 'refresh');
+            foreach ($this->caja_model->TraeSolicitud($this->input->post('ID_SOLICITUD'))->result() as $solicitud) ;
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
             $pdf->AddPage();
@@ -289,7 +301,7 @@
             $pdf->Cell(85, 6, number_format($solicitud->CAPITAL_INICIAL, 0, '', ','), 1, 0, 'R');
             $pdf->SetFont('Arial', '', 9);
             #----------------------------------------#
-            $Vals = $this->caja_model->InteresesPagadosDeudor($id);
+            $Vals = $this->caja_model->InteresesPagadosDeudor();
             $Mesinicio = round(date_format(new DateTime($solicitud->FECHA_INICIO), 'm'));
             $Diainicio = date_format(new DateTime($solicitud->FECHA_INICIO), 'd');
             $Anoinicio = date_format(new DateTime($solicitud->FECHA_INICIO), 'y');
@@ -313,6 +325,12 @@
             }
             #-----------------------DEBE INT--------------------------
             $Mes = $Mesfin = $Vals['MESES'] + $Mesinicio;
+            if ($Mes > 12)
+            {
+                $Mes -= 12;
+                $Mesfin = $Mes;
+                $Anofin++;
+            }
             if ($Diainicio - 1 == 0) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
             else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
             else $Diafin = $Diainicio - 1;
@@ -339,7 +357,7 @@
                 $pdf->Cell(85, 6, number_format($p * ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * ($solicitud->INTERES_MENSUAL / 100), 0, '', ','), 1, 0, 'R');
             }
             #-----------------------------------------------------------
-            #MENOS COMISIÓN
+            #COMISIÓN
             $pdf->SetXY(20, 32 + ++ $r * 6);
             $pdf->Cell(85, 6, utf8_decode('COMISIÓN SEP 27/14'), 1, 0, 'L');
             $pdf->Cell(85, 6, number_format('600000', 0, '', ','), 1, 0, 'R');
@@ -364,6 +382,7 @@
 
         public function ImprimeInformeAcreedor()
         {
+            if (empty($_POST) || !$this->session->userdata('ID_USUARIO')) redirect('inicio', 'refresh');
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
             $pdf->AddPage();
@@ -480,11 +499,14 @@
             $pdf->Cell($pdf->PageNo());
         }
 
-        public function CuadreDiario()
+        public function ImprimeCuadreDiario()
         {
+            if (empty($_POST) || !$this->session->userdata('ID_USUARIO')) redirect('inicio', 'refresh');
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
             $pdf->AddPage();
+            #Guarda EL Nro
+            $this->caja_model->ActualizarCuadreConsecutivo();
             $hheader = 20;
             $pdf->SetFont('Arial', 'B', 12);
             $pdf->Ln();
@@ -492,7 +514,7 @@
             $pdf->Cell(190, 6, 'CUADRE DIARIO', 0, 0, 'C');
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetXY(40, $hheader);
-            $pdf->Cell(30, 6, 'RCBO', 1, 0, 'C');
+            $pdf->Cell(30, 6, 'RECIBO', 1, 0, 'C');
             $pdf->SetXY(70, $hheader);
             $pdf->Cell(30, 6, 'VALOR', 1, 0, 'C');
             $pdf->SetXY(100, $hheader);
@@ -500,32 +522,60 @@
             $pdf->SetXY(110, $hheader);
             $pdf->Cell(30, 6, 'ADMON', 1, 0, 'C');
             $pdf->SetXY(140, $hheader);
-            $pdf->Cell(30, 6, 'COMISION', 1, 0, 'C');
+            $pdf->Cell(30, 6, utf8_decode('COMISIÓN'), 1, 0, 'C');
             #VALORES
-            $pdf->SetFont('Arial', '', 9);
+            $pdf->SetFont('Arial', '', 11);
             $i = 0;
-            $Total = 0;
-            #foreach ($this->caja_model->TraeMovimientosDeudores() as $informe)
-            for ($i = 0; $i < 10; $i ++)
+            $TotalAdmin = 0;
+            $TotalComision = 0;
+            foreach ($this->caja_model->TraeCuadreDiario() as $informe)
             {
-                #RCBO
+                #RECIBO
                 $pdf->SetXY(40, 26 + 6 * $i);
-                $pdf->Cell(30, 6, '', 1, 0, 'C');
+                $pdf->Cell(30, 6, $informe->CONSECUTIVO, 1, 0, 'C');
                 #Valor
                 $pdf->SetXY(70, 26 + 6 * $i);
-                $pdf->Cell(30, 6, number_format('12222', 0, '', ','), 1, 0, 'C');
+                $pdf->Cell(30, 6, '$', 0, 0, 'L');
+                $pdf->SetXY(70, 26 + 6 * $i);
+                $pdf->Cell(30, 6, number_format($informe->VALOR, 0, '', ','), 1, 0, 'R');
                 #%
+                $comision = '';
+                if ($informe->TIPO_MOV == 0)
+                {
+                    $ptge = "0";
+                    $admin = '-';
+                }
+                else if ($informe->TIPO_MOV == 4)
+                {
+                    $ptge = '30';
+                    $admin = '-';
+                    $comision = $informe->VALOR * .3;
+                    $TotalComision += $comision;
+                }
+                else
+                {
+                    $ptge = $informe->CUOTA_ADMINISTRACION;
+                    $admin = $informe->VALOR * ($informe->CUOTA_ADMINISTRACION / 100);
+                    $TotalAdmin += $admin;
+                }
                 $pdf->SetXY(100, 26 + 6 * $i);
-                $pdf->Cell(10, 6, '' . '%', 1, 0, 'C');
+                $pdf->Cell(10, 6, '' . $ptge . '%', 1, 0, 'C');
                 #ADMON
                 $pdf->SetXY(110, 26 + 6 * $i);
-                $pdf->Cell(30, 6, number_format('2323', 0, '', ','), 1, 0, 'C');
+                $pdf->Cell(30, 6, ($admin == '-' ? '- ' : number_format($admin, 0, '', ',')), 1, 0, 'R');
+                $pdf->SetXY(110, 26 + 6 * $i);
+                $pdf->Cell(30, 6, '$', 1, 0, 'L');
                 #COMISION
                 $pdf->SetXY(140, 26 + 6 * $i);
-                $pdf->Cell(30, 6, number_format('7676', 0, '', ','), 1, 0, 'C');
+                $pdf->Cell(30, 6, ($comision == '' ? '' : number_format($comision, 0, '', ',')), 1, 0, 'R');
+                if ($comision != '')
+                {
+                    $pdf->SetXY(140, 26 + 6 * $i);
+                    $pdf->Cell(30, 6, '$', 1, 0, 'L');
+                }
+                $i ++;
             }
             #---------------------------------------Blank-----------------------------#
-
             $pdf->SetXY(40, 26 + 6 * $i);
             $pdf->Cell(30, 6, 'TOTAL', 1, 0, 'C');
             $pdf->SetXY(70, 26 + 6 * $i);
@@ -533,25 +583,20 @@
             $pdf->SetXY(100, 26 + 6 * $i);
             $pdf->Cell(10, 6, '', 1, 0, 'C');
             $pdf->SetXY(110, 26 + 6 * $i);
-            $pdf->Cell(30, 6, '', 1, 0, 'C');
+            $pdf->Cell(30, 6, number_format($TotalAdmin, 0, '', ','), 1, 0, 'R');
+            $pdf->SetXY(110, 26 + 6 * $i);
+            $pdf->Cell(30, 6, '$', 0, 0, 'L');
             $pdf->SetXY(140, 26 + 6 * $i);
-            $pdf->Cell(30, 6, '', 1, 0, 'C');
+            $pdf->Cell(30, 6, number_format($TotalComision, 0, '', ','), 1, 0, 'R');
+            $pdf->SetXY(140, 26 + 6 * $i);
+            $pdf->Cell(30, 6, '$', 0, 0, 'L');
             $i ++;
             #---------------------------------------------------------------------------#
-            $pdf->SetFont('Arial', 'B', 9);
-            $pdf->SetXY(55, 26 + 6 * $i);
-            $pdf->Cell(101, 6, 'TOTAL CUADRE', 1, 0, 'C');
-            #VALOR
-            $pdf->SetXY(156, 26 + 6 * $i);
-            $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');
-            $i ++;
-            #------------------ENTREGADO--------------------#
-            $pdf->SetFont('Arial', 'B', 9);
-            $pdf->SetXY(55, 26 + 6 * $i);
-            $pdf->Cell(101, 6, 'TOTAL ENTREGADO', 1, 0, 'C');
-            #VALOR
-            $pdf->SetXY(156, 26 + 6 * $i);
-            $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');
+            $pdf->SetFont('Arial', 'b', 10);
+            $pdf->Text(50, 32 + 6 * $i, utf8_decode('CUADRE N° ' . $this->input->post('NRO')));
+            $pdf->Text(95, 32 + 6 * $i, 'TOTAL ENTREGADO');
+            $pdf->Text(150, 32 + 6 * $i, number_format($TotalComision + $TotalAdmin, 0, '', ','), 1, 0, 'R');
+            $pdf->Text(70, 40 + 6 * $i, 'REALIZADO POR ' . strtoupper($this->session->userdata('NOMBRE_USUARIO')) . ' ' . date('d/m/Y'));
             #------------------------------------------------------#
             $pdf->Output();
             $pdf->Cell($pdf->PageNo());

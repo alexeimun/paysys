@@ -331,7 +331,7 @@
                 prefix: '$ ',
                 thousandsSeparator: ','
             });
-            ;
+
         }
     });
 
@@ -381,7 +381,7 @@
                     '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">Concepto:</label>' +
                     '<div class="col-lg-7">' +
-                    '<input type="text" value="VALOR ABONO" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
+                    '<input type="text" value="ABONO A CAPITAL" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
                     '</div>' +
                     '</div>' +
                     '<div class="form-group">' +
@@ -415,6 +415,11 @@
                     '<select class="form-control" name="PLAZO"><option value="0">6 meses</option><option value="1" selected>12 meses</option></select>' +
                     '</div></div>' +
                     '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">%:</label>' +
+                    '<div class="col-lg-2">' +
+                    '<input class="form-control porcentaje numero"  id="ap" value="0.5">' +
+                    '</div></div>' +
+                    '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">Valor:</label>' +
                     '<div class="col-lg-5">' +
                     '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .005)) + '" name="VALOR" placeholder="Ingrese el valor apagar">' +
@@ -422,7 +427,7 @@
                     '</div>' +
                     '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">Concepto:</label>' +
-                    '<div class="col-lg-5">' +
+                    '<div class="col-lg-6">' +
                     '<input type="text" value="Ampliación de plazo por doce meses" class="form-control mouse-default"  name="CONCEPTO"  readonly>' +
                     '</div>' +
                     '</div>' +
@@ -452,6 +457,15 @@
 
         }
     }
+    $('body').on('keyup', '#ap', function ()
+    {
+        $('input[name=VALOR]').val(Math.round((Capital - Abonado) * (+$(this).val()/100)));
+        $('input[name=VALOR]').priceFormat({
+            prefix: '$ ',
+            thousandsSeparator: ','
+        });
+    });
+
     $('body').on('change', 'select[name=PLAZO]', function ()
     {
         var box = $(this);

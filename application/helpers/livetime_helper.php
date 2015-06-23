@@ -2,7 +2,7 @@
     function Fecha($date)
     {
         #########Ajuste de horas según la zona horaria
-        $ajustehora = 0;
+        $ajustehora = -3;
         #########
         $fecha = strtotime($date) + $ajustehora * 3600;
         $ahora = strtotime(date('Y-m-d H:i:s')) + $ajustehora * 3600;

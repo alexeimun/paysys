@@ -558,7 +558,7 @@
                INNER JOIN t_usuarios ON t_usuarios.ID_USUARIO=t_notificaciones.USUARIO_ACCION
                INNER JOIN t_movimientos ON t_movimientos.CONSECUTIVO=t_notificaciones.ACCION
 
-                WHERE t_notificaciones.TIPO='ri' AND t_movimientos.DESCRIPCION= 'TOTAL_RECIBO' AND t_notificaciones.ID_USUARIO=
+                WHERE t_notificaciones.TIPO='ri' AND t_movimientos.DESCRIPCION= 'TR' AND t_notificaciones.ID_USUARIO=
                 " . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
             if ($RI != '')
             {
@@ -622,7 +622,7 @@
                 $c = 0;
                 foreach ($VS as $campo)
                 {
-                    $dias = (strtotime($campo->FECHA_FIN) - strtotime($campo->FECHA_INICIO)) / (3600 * 24) . ' días';
+                    $dias = (strtotime($campo->FECHA_FIN) - strtotime(date('Y-m-d'))) / (3600 * 24) . ' días';
                     $c ++;
                     $vs .= ' <tr>
                                     <td>' . $campo->SOLICITUD . '</td>

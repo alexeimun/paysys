@@ -1,6 +1,6 @@
 <head>
     <meta charset="UTF-8">
-    <title>InverBienes:::Admin</title>
+    <title>InverBienes | <?=ucfirst(explode(' ',$this->session->userdata('NOMBRE_USUARIO'))[0] )?></title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
     <link href="<?= base_url() ?>public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>

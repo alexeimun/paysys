@@ -104,7 +104,7 @@
                         'CONSECUTIVO' => $Consecutivo,
                         'SECUENCIA' => ++ $Secuencia,
                         'ID_SOLICITUD' => $IdSol,
-                        'DESCRIPCION' => 'TOTAL_ABONO',
+                        'DESCRIPCION' => 'TA',
                         'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
                     ]);
             }
@@ -117,7 +117,7 @@
                         'CONSECUTIVO' => $Consecutivo,
                         'SECUENCIA' => ++ $Secuencia,
                         'ID_SOLICITUD' => $IdSol,
-                        'DESCRIPCION' => 'TOTAL_INTERES',
+                        'DESCRIPCION' => 'TI',
                         'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
                     ]);
             }
@@ -130,7 +130,7 @@
                         'CONSECUTIVO' => $Consecutivo,
                         'SECUENCIA' => ++ $Secuencia,
                         'ID_SOLICITUD' => $IdSol,
-                        'DESCRIPCION' => 'TOTAL_AMPLIACION_CAPITAL',
+                        'DESCRIPCION' => 'TAC',
                         'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
                     ]);
             }
@@ -143,7 +143,7 @@
                         'CONSECUTIVO' => $Consecutivo,
                         'SECUENCIA' => ++ $Secuencia,
                         'ID_SOLICITUD' => $IdSol,
-                        'DESCRIPCION' => 'TOTAL_AMPLIACION_PLAZO',
+                        'DESCRIPCION' => 'TAP',
                         'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
                     ]);
             }
@@ -155,7 +155,7 @@
                         'CONSECUTIVO' => $Consecutivo,
                         'SECUENCIA' => ++ $Secuencia,
                         'ID_SOLICITUD' => $IdSol,
-                        'DESCRIPCION' => 'TOTAL_COMISION',
+                        'DESCRIPCION' => 'TC',
                         'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
                     ]);
             }
@@ -166,12 +166,12 @@
                     'CONSECUTIVO' => $Consecutivo,
                     'SECUENCIA' => ++ $Secuencia,
                     'ID_SOLICITUD' => $IdSol,
-                    'DESCRIPCION' => 'TOTAL_RECIBO',
+                    'DESCRIPCION' => 'TR',
                     'BANCO' => $this->input->post('BANCO'),
                     'CHEQUE' => $this->input->post('CHEQUE'),
                     'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
                 ]);
-            $this->db->delete('T_pago_temp', ['ID_USUARIO' => $this->session->userdata('ID_USUARIO'), 'ID_SOLICITUD' => $IdSol]);
+            $this->db->delete('t_pago_temp', ['ID_USUARIO' => $this->session->userdata('ID_USUARIO'), 'ID_SOLICITUD' => $IdSol]);
             $this->session->set_userdata(['ConsecutivoRecibo' => $Consecutivo]);
         }
 
@@ -276,22 +276,22 @@
              t_deudores.NOMBRE AS NOMBRE_DEUDOR,
              t_deudores.DOCUMENTO,
              t_acreedores.NOMBRE AS NOMBRE_ACREEDOR,
-             ID_MOVIMIENTO,
              VALOR,
              ANULADO,
              t_movimientos.FECHA
 
                FROM t_movimientos
 
-               INNER  JOIN t_solicitudes ON t_solicitudes.ID_SOLICITUD=t_movimientos.ID_SOLICITUD
+               INNER  JOIN t_solicitudes USING (ID_SOLICITUD)
                INNER  JOIN t_deudores ON t_deudores.ID_DEUDOR=t_solicitudes.ID_DEUDOR
                INNER  JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_solicitudes.ID_ACREEDOR
                WHERE t_solicitudes.ESTADO=1 AND  t_deudores.ESTADO=1 AND t_acreedores.ESTADO=1
-               AND t_movimientos.DESCRIPCION='TOTAL_RECIBO' ORDER BY t_movimientos.FECHA DESC");
+               AND t_movimientos.DESCRIPCION='TR' ORDER BY t_movimientos.CONSECUTIVO DESC");
         }
 
         public function TraeAbonos($idSol)
         {
+            #NOTA: TA total abonos
             return $this->db->query("SELECT
                 t_movimientos.VALOR AS ABONADO,
                 t_solicitudes.CAPITAL_INICIAL,
@@ -302,7 +302,7 @@
                FROM t_movimientos
 
                INNER  JOIN t_solicitudes ON t_solicitudes.ID_SOLICITUD=t_movimientos.ID_SOLICITUD
-               WHERE t_movimientos.ID_SOLICITUD=$idSol AND  t_solicitudes.ESTADO=1 AND t_movimientos.DESCRIPCION='TOTAL_ABONO'")->result();
+               WHERE t_movimientos.ID_SOLICITUD=$idSol AND  t_solicitudes.ESTADO=1 AND t_movimientos.DESCRIPCION='TA'")->result();
         }
 
         public function TraeRecibo()
@@ -320,9 +320,11 @@
                AND t_movimientos.TIPO_MOV IS NOT NULL AND  t_solicitudes.ESTADO=1")->result();
         }
 
-        public function InteresesPagadosDeudor($IdSol)
+        public function InteresesPagadosDeudor()
         {
-            foreach ($this->db->query("SELECT COUNT(DESCRIPCION) MESES, SUM(VALOR) TOTAL  FROM t_movimientos WHERE TIPO_MOV=1 AND ID_SOLICITUD=" . $IdSol)->result() as $res)
+            foreach ($this->db->query("SELECT COUNT(mo.DESCRIPCION) MESES, SUM(mo.VALOR) TOTAL  FROM t_movimientos mo
+               WHERE  mo.FECHA>='" . $this->input->post('DESDE') . "' AND mo.FECHA <='" . $this->input->post('HASTA') . "'
+                AND mo.TIPO_MOV=1 AND mo.ID_SOLICITUD=" . $this->input->post('ID_SOLICITUD'))->result() as $res)
                 return ['MESES' => $res->MESES, 'TOTAL' => $res->TOTAL];
         }
 
@@ -352,7 +354,7 @@
                INNER  JOIN t_usuarios USING (ID_USUARIO)
 
                WHERE t_movimientos.CONSECUTIVO=" . $this->session->userdata('ConsecutivoRecibo') . "
-               AND t_movimientos.DESCRIPCION ='TOTAL_RECIBO' AND  t_solicitudes.ESTADO=1")->result();
+               AND t_movimientos.DESCRIPCION ='TR' AND  t_solicitudes.ESTADO=1")->result();
         }
 
         public function TraeNombreAcreedor()
@@ -373,7 +375,6 @@
                 t_solicitudes.FECHA_INICIO,
                 t_solicitudes.FECHA_FIN
 
-
                FROM t_movimientos mo
 
                INNER  JOIN t_solicitudes USING (ID_SOLICITUD)
@@ -384,9 +385,35 @@
                 t_acreedores.ID_ACREEDOR=" . $this->input->post('ID_ACREEDOR') . " AND  mo.TIPO_MOV IS NOT NULL")->result();
         }
 
+        public function TraeCuadreDiario()
+        {
+            return $this->db->query("SELECT CONSECUTIVO,
+            TIPO_MOV,
+            VALOR,
+            so.CUOTA_ADMINISTRACION
+             FROM t_movimientos
+            INNER JOIN t_solicitudes so USING (ID_SOLICITUD)
+            WHERE TIPO_MOV IS NOT NULL AND FECHA='" . $this->input->post('FECHA') . "' ORDER BY CONSECUTIVO")->result();
+        }
+
+        public function TraeComisión($IdSol)
+        {
+            return $this->db->query("SELECT m.VALOR,s.FECHA_FIN from t_movimientos m,t_solicitudes s WHERE TIPO_MOV =4 AND t_movimientos.ID_SOLICITUD=$IdSol");
+        }
+
         public function AnularRecibo($id)
         {
             $this->db->set('FECHA_ANULA', 'NOW()', false);
-            $this->db->update('t_movimientos', ['ANULADO' => 1, 'USUARIO_ANULA' => $this->session->userdata('ID_USUARIO')], ['DESCRIPCION' => 'TOTAL_RECIBO', 'CONSECUTIVO' => $id]);
+            $this->db->update('t_movimientos', ['ANULADO' => 1, 'USUARIO_ANULA' => $this->session->userdata('ID_USUARIO')], ['DESCRIPCION' => 'TR', 'CONSECUTIVO' => $id]);
+        }
+
+        public function ActualizarCuadreConsecutivo()
+        {
+            $this->db->update('t_consecutivos', ['CONSECUTIVO' => $this->input->post('NRO'), 'USUARIO_MODIFICA' => $this->session->userdata('ID_USUARIO')], ['NOMBRE' => 'CUADRE']);
+        }
+
+        public function TraeCuadreConsecutivo()
+        {
+            foreach ($this->db->query("SELECT CONSECUTIVO FROM t_consecutivos WHERE NOMBRE='CUADRE'")->result() as $c) return $c->CONSECUTIVO;
         }
     }
