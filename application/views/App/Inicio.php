@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <?= $Head ?>
 <div class="wrapper">
     <?= $Header ?>

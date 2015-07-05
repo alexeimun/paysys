@@ -1,6 +1,11 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="<?= site_url('app') ?>" class="logo"><b>Admin</b> InverBienes</a>
+    <a href="<?= site_url('app') ?>" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><i class="ion ion-android-home"></i></span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>Inver</b>bienes</span>
+    </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- Sidebar toggle button-->
@@ -11,7 +16,7 @@
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
 
-                <li class="">
+                <li  class="">
                     <a href="<?= site_url('crearobservacion') ?>" data-toggle="tooltip" title="Crear una observación">
                         <span class="badge info" style="background: #ff7701"> <span class="ion ion-plus"></span> OBSERVACION !!</span>
                     </a>
@@ -68,6 +73,7 @@
                         </li>
                     </ul>
                 </li>
+
             </ul>
         </div>
     </nav>

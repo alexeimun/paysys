@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?= $Head ?>
 
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/docsupport/prism.css">
 <link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/chosen.css">
 <script src="<?= base_url() ?>public/js/DropDown/chosen.jquery.js" type="text/javascript"></script>

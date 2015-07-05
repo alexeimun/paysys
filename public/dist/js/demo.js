@@ -33,7 +33,7 @@ $(function () {
           + "<div class='form-group'>"
           + "<div class='checkbox'>"
           + "<label>"
-          + "<input type='checkbox' onchange='change_layout(\"fixed\");'/> "
+          + "<input id='lfixed' type='checkbox' onchange='change_layout(\"fixed\");'/> "
           + "Fijado"
           + "</label>"
           + "</div>"
@@ -42,7 +42,7 @@ $(function () {
           + "<div class='form-group'>"
           + "<div class='checkbox'>"
           + "<label>"
-          + "<input type='checkbox' onchange='change_layout(\"layout-boxed\");'/> "
+          + "<input type='checkbox' id='lboxed' onchange='change_layout(\"layout-boxed\");'/> "
           + "Encajado"
           + "</label>"
           + "</div>"
@@ -51,7 +51,7 @@ $(function () {
           + "<div class='form-group'>"
           + "<div class='checkbox'>"
           + "<label>"
-          + "<input type='checkbox' onchange='change_layout(\"sidebar-collapse\");'/> "
+          + "<input type='checkbox' id='colmenu' onchange='change_layout(\"sidebar-collapse\");'/> "
           + "Colapsar menú"
           + "</label>"
           + "</div>"
@@ -161,3 +161,44 @@ function setup() {
   if (tmp && $.inArray(tmp, my_skins))
     change_skin(tmp);
 }
+
+$(document).ready(function ()
+{
+    //Collapse
+    if (localStorage.colapse == 1)
+    {
+        $('body').addClass('sidebar-collapse');
+        $('#colmenu').prop('checked', 'checked');
+    }
+
+    $('body').on('click', '#colmenu,.sidebar-toggle', function ()
+    {
+        if (localStorage.colapse) localStorage.colapse *= -1;
+        else localStorage.colapse = 1;
+    });
+    //Fixed
+    if (localStorage.fixed == 1)
+    {
+        $('body').addClass('fixed');
+        $('#lfixed').prop('checked', 'checked');
+    }
+
+    $('body').on('click', '#lfixed', function ()
+    {
+        if (localStorage.fixed) localStorage.fixed *= -1;
+        else localStorage.fixed = 1;
+    });
+
+    //Boxed
+    if (localStorage.boxed == 1)
+    {
+        $('body').addClass('layout-boxed');
+        $('#lboxed').prop('checked', 'checked');
+    }
+
+    $('body').on('click', '#lboxed', function ()
+    {
+        if (localStorage.boxed) localStorage.boxed *= -1;
+        else localStorage.boxed = 1;
+    });
+});

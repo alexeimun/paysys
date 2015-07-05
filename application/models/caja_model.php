@@ -22,7 +22,7 @@
         {
             if ($type == 1)
             {
-                $query = "INSERT INTO t_pago_temp (CONCEPTO,VALOR,TIPO,METADATO,ID_SOLICITUD,ID_USUARIO) VALUES ";
+                $query = "INSERT INTO t_pago_temp (CONCEPTO,VALOR,TIPO,METADATO,ID_SOLICITUD,ID_USUARIO) VALUES";
                 $size = count($_POST['REG'][0]);
                 for ($i = 0; $i < $size; $i ++)
                     $query .= "('" . $_POST['REG'][1][$i] . "'," . $_POST['REG'][2][$i] . ",1," . $_POST['REG'][0][$i] . "," . $this->input->post('IdSol') . "," . $this->session->userdata('ID_USUARIO') . ")" . ($i + 1 < $size ? "," : '');

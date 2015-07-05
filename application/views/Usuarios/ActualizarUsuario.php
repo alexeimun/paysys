@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?= $Head ?>
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <!--Spin.js-->
 <script src="<?= base_url() ?>public/plugins/spin/spin.min.js"></script>
 <!--Jvalidator-->

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <?= $Head ?>
 <!--Spin.js-->
-<script src="<?= base_url() ?>public/plugins/spin/spin.min.js"></script>
+<script src="<?= base_url() ?>/public/plugins/spin/spin.min.js"></script>
 <!--Jvalidator-->
-<script src="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.js"></script>
-<link rel="stylesheet" href="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.css">
+<script src="<?= base_url() ?>/public/plugins/Jvalidator/Jvalidator.js"></script>
+<link rel="stylesheet" href="<?= base_url() ?>/public/plugins/Jvalidator/Jvalidator.css">
 
 <div class="wrapper">
     <?= $Header ?>
@@ -26,7 +26,7 @@
 
         <div style="text-align: center;" id="imagen">
             <img style="width: 130px;height: 130px;cursor: pointer"
-                 src="<?= base_url() ?>public/images/Avatars/avatar<?= $this->session->userdata('AVATAR') ?>.png"
+                 src="<?= base_url() ?>/public/images/Avatars/avatar<?= $this->session->userdata('AVATAR') ?>.png"
                  class="img-circle" alt="User Image"/>
         </div>
         <br>
@@ -37,7 +37,7 @@
                     <label class="col-lg-3 control-label">Nombre:</label>
 
                     <div class="col-lg-9">
-                        <input type="text" class="form-control"
+                        <input type="text" class="obligatorio form-control"
                                value="<?= $this->session->userdata('NOMBRE_USUARIO') ?>"
                                placeholder="Ingrese el nombre" name="NOMBRE">
                     </div>
@@ -45,19 +45,21 @@
 
                 <div class="form-group">
                     <label class="col-lg-3 control-label">Correo:</label>
+
                     <div class="col-lg-9">
                         <input type="email" class="form-control obligatorio correo correo_unico"
                                value="<?= $this->session->userdata('CORREO') ?>" name="CORREO"
-                               placeholder="Ingrese el correo electrónico" required>
+                               placeholder="Ingrese el correo  electrónico">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-lg-3 control-label">Clave:</label>
+
                     <div class="col-lg-9">
                         <input type="password" class="form-control obligatorio clave claveinicial"
                                value="<?= $this->session->userdata('CLAVE') ?>" name="CLAVE"
-                               placeholder="Ingrese la contraseña" required>
+                               placeholder="Ingrese la contraseña">
                     </div>
                 </div>
 
@@ -67,7 +69,7 @@
                     <div class="col-lg-9">
                         <input type="password" class="form-control obligatorio clave confirmar"
                                value="<?= $this->session->userdata('CLAVE') ?>"
-                               placeholder="Confirmar contraseña" required>
+                               placeholder="Confirmar contraseña">
                     </div>
                 </div>
 

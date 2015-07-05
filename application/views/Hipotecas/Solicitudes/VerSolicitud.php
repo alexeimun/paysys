@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?= $Head ?>
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <!--Jvalidator-->
 <script src="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.js"></script>
 <link rel="stylesheet" href="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.css">

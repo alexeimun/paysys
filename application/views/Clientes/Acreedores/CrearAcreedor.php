@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?= $Head ?>
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/docsupport/prism.css">
 <link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/chosen.css">
 <script src="<?= base_url() ?>public/js/DropDown/chosen.jquery.js" type="text/javascript"></script>
@@ -9,12 +9,12 @@
 <!--Spin.js-->
 <script src="<?= base_url() ?>public/plugins/spin/spin.min.js"></script>
 <!--Jvalidator-->
-<script src="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.js"></script>
-<link rel="stylesheet" href="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.css">
+<script src="<?= base_url() ?>/public/plugins/Jvalidator/Jvalidator.js"></script>
+<link rel="stylesheet" href="<?= base_url() ?>/public/plugins/Jvalidator/Jvalidator.css">
 <!-- iCheck for checkboxes and radio inputs -->
-<link href="<?= base_url() ?>public/plugins/iCheck/square/blue.css" rel="stylesheet" type="text/css"/>
-<script src="<?= base_url() ?>public/plugins/iCheck/icheck.js"></script>
-<script src="<?= base_url() ?>public/plugins/priceFormat/priceFormat.js"></script>
+<link href="<?= base_url() ?>/public/plugins/iCheck/square/blue.css" rel="stylesheet" type="text/css"/>
+<script src="<?= base_url() ?>/public/plugins/iCheck/icheck.js"></script>
+<script src="<?= base_url() ?>/public/plugins/priceFormat/priceFormat.js"></script>
 
 <div class="wrapper">
     <?= $Header ?>

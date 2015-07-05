@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?= $Head ?>
 
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <!-- iCheck for checkboxes and radio inputs -->
 <link href="<?= base_url() ?>public/plugins/iCheck/square/blue.css" rel="stylesheet" type="text/css"/>
 <script src="<?= base_url() ?>public/plugins/iCheck/icheck.js"></script>

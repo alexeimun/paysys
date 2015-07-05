@@ -1,10 +1,10 @@
-<aside class="left-side" xmlns="http://www.w3.org/1999/html">
+<aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img style="width: 45px;height: 45px;"
+                <img
                      src="<?= base_url() ?>public/images/Avatars/avatar<?= $this->session->userdata('AVATAR') ?>.png"
                      class="img-circle" alt="User Image"/>
             </div>

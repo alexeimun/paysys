@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <?= $Head ?>
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <link href="<?= base_url() ?>public/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/>
 
 <div class="wrapper">

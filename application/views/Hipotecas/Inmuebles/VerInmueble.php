@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?= $Head ?>
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <!--Jvalidator-->
 
 <div class="wrapper">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?= $Head ?>
 
-<body class="skin-blue">
+<body class="skin-blue sidebar-mini">
 <script type="text/javascript"
         src="<?= base_url('public/plugins/excelExport/jquery.battatech.excelexport.js') ?>"></script>
 
