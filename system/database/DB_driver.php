@@ -50,9 +50,9 @@ class CI_DB_driver {
 	var $query_count	= 0;
 	var $bind_marker	= '?';
 	var $save_queries	= TRUE;
-	var $queries		= array();
-	var $query_times	= array();
-	var $data_cache		= array();
+	var $queries		= [];
+	var $query_times	= [];
+	var $data_cache		= [];
 	var $trans_enabled	= TRUE;
 	var $trans_strict	= TRUE;
 	var $_trans_depth	= 0;
@@ -64,7 +64,7 @@ class CI_DB_driver {
 
 	// Private variables
 	var $_protect_identifiers	= TRUE;
-	var $_reserved_identifiers	= array('*'); // Identifiers that should NOT be escaped
+	var $_reserved_identifiers	= ['*']; // Identifiers that should NOT be escaped
 
 	// These are use with Oracle
 	var $stmt_id;
@@ -219,7 +219,7 @@ class CI_DB_driver {
 
 		// Some DBs have functions that return the version, and don't run special
 		// SQL queries per se. In these instances, just return the result.
-		$driver_version_exceptions = array('oci8', 'sqlite', 'cubrid');
+		$driver_version_exceptions = ['oci8', 'sqlite', 'cubrid'];
 
 		if (in_array($this->dbdriver, $driver_version_exceptions))
 		{
@@ -236,19 +236,20 @@ class CI_DB_driver {
 
 	/**
 	 * Execute the query
-	 *
-	 * Accepts an SQL string as input and returns a result object upon
-	 * successful execution of a "read" type query.  Returns boolean TRUE
-	 * upon successful execution of a "write" type query. Returns boolean
-	 * FALSE upon failure, and if the $db_debug variable is set to TRUE
-	 * will raise an error.
-	 *
-	 * @access	public
-	 * @param	string	An SQL query string
-	 * @param	array	An array of binding data
-	 * @return	mixed
-	 */
-	function query($sql, $binds = FALSE, $return_object = TRUE)
+     *
+     * Accepts an SQL string as input and returns a result object upon
+     * successful execution of a "read" type query.  Returns boolean TRUE
+     * upon successful execution of a "write" type query. Returns boolean
+     * FALSE upon failure, and if the $db_debug variable is set to TRUE
+     * will raise an error.
+     *
+     * @access    public
+     * @param    string    An SQL query string
+     * @param bool $binds
+     * @param bool $return_object
+     * @return mixed
+     */
+    function query($sql, $binds = FALSE, $return_object = TRUE)
 	{
 		if ($sql == '')
 		{
@@ -323,11 +324,11 @@ class CI_DB_driver {
 				// Log and display errors
 				log_message('error', 'Query error: '.$error_msg);
 				return $this->display_error(
-										array(
+										[
 												'Error Number: '.$error_no,
 												$error_msg,
 												$sql
-											)
+											]
 										);
 			}
 
@@ -585,7 +586,7 @@ class CI_DB_driver {
 
 		if ( ! is_array($binds))
 		{
-			$binds = array($binds);
+			$binds = [$binds];
 		}
 
 		// Get the sql segments around the bind markers
@@ -763,7 +764,7 @@ class CI_DB_driver {
 			return FALSE;
 		}
 
-		$retval = array();
+		$retval = [];
 		$query = $this->query($sql);
 
 		if ($query->num_rows() > 0)
@@ -834,7 +835,7 @@ class CI_DB_driver {
 
 		$query = $this->query($sql);
 
-		$retval = array();
+		$retval = [];
 		foreach ($query->result_array() as $row)
 		{
 			if (isset($row['COLUMN_NAME']))
@@ -902,8 +903,8 @@ class CI_DB_driver {
 	 */
 	function insert_string($table, $data)
 	{
-		$fields = array();
-		$values = array();
+		$fields = [];
+		$values = [];
 
 		foreach ($data as $key => $val)
 		{
@@ -932,7 +933,7 @@ class CI_DB_driver {
 			return false;
 		}
 
-		$fields = array();
+		$fields = [];
 		foreach ($data as $key => $val)
 		{
 			$fields[$this->_protect_identifiers($key)] = $this->escape($val);
@@ -940,11 +941,11 @@ class CI_DB_driver {
 
 		if ( ! is_array($where))
 		{
-			$dest = array($where);
+			$dest = [$where];
 		}
 		else
 		{
-			$dest = array();
+			$dest = [];
 			foreach ($where as $key => $val)
 			{
 				$prefix = (count($dest) == 0) ? '' : ' AND ';
@@ -1173,7 +1174,7 @@ class CI_DB_driver {
 		}
 		else
 		{
-			$message = ( ! is_array($error)) ? array(str_replace('%s', $swap, $LANG->line($error))) : $error;
+			$message = ( ! is_array($error)) ? [str_replace('%s', $swap, $LANG->line($error))] : $error;
 		}
 
 		// Find the most likely culprit of the error by going through
@@ -1187,7 +1188,7 @@ class CI_DB_driver {
 			if (isset($call['file']) && strpos($call['file'], BASEPATH.'database') === FALSE)
 			{
 				// Found it - use a relative path for safety
-				$message[] = 'Filename: '.str_replace(array(BASEPATH, APPPATH), '', $call['file']);
+				$message[] = 'Filename: '.str_replace([BASEPATH, APPPATH], '', $call['file']);
 				$message[] = 'Line Number: '.$call['line'];
 
 				break;
@@ -1253,7 +1254,7 @@ class CI_DB_driver {
 
 		if (is_array($item))
 		{
-			$escaped_array = array();
+			$escaped_array = [];
 
 			foreach ($item as $k => $v)
 			{

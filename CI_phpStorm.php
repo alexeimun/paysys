@@ -71,6 +71,16 @@
      * @property CI_Jquery $jquery                    Jquery Class
      * @property CI_Utf8 $utf8                        Provides support for UTF-8 environments
      * @property CI_Security $security                Security Class, xss, csrf, etc...
+     *
+     * =========================Here my custom name models===============================
+     *
+     *@property usuarios_model $usuarios_model
+     *@property caja_model $caja_model
+     *@property clientes_model $clientes_model
+     *@property hipotecas_model $hipotecas_model
+     *@property notificaciones_model $notificaciones_model
+     *@property parametros_model $parametros_model
+     *@property validaciones_model $validaciones_model
      */
     class CI_Controller
     {
@@ -122,6 +132,8 @@
      * @property CI_Utf8 $utf8                        Provides support for UTF-8 environments
      * @property CI_Security $security                Security Class, xss, csrf, etc...
      */
+
+
     class CI_Model
     {
         public function __construct()

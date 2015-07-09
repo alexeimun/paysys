@@ -2,26 +2,26 @@
 <?= $Head ?>
 
 <body class="skin-blue sidebar-mini">
-<link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/docsupport/prism.css">
-<link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/chosen.css">
-<script src="<?= base_url() ?>public/js/DropDown/chosen.jquery.js" type="text/javascript"></script>
-<script src="<?= base_url() ?>public/js/DropDown/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
-<script src="<?= base_url() ?>public/js/DropDown/docsupport/combo.js"></script>
+<link rel="stylesheet" href="<?= base_url() ?>/public/js/DropDown/docsupport/prism.css">
+<link rel="stylesheet" href="<?= base_url() ?>/public/js/DropDown/chosen.css">
+<script src="<?= base_url() ?>/public/js/DropDown/chosen.jquery.js" type="text/javascript"></script>
+<script src="<?= base_url() ?>/public/js/DropDown/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
+<script src="<?= base_url() ?>/public/js/DropDown/docsupport/combo.js"></script>
 <!--Spin.js-->
-<script src="<?= base_url() ?>public/plugins/spin/spin.min.js"></script>
+<script src="<?= base_url() ?>/public/plugins/spin/spin.min.js"></script>
 <!--Jvalidator-->
-<script src="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.js"></script>
+<script src="<?= base_url() ?>/public/plugins/Jvalidator/Jvalidator.js"></script>
 <link rel="stylesheet" href="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.css">
 <!-- iCheck for checkboxes and radio inputs -->
-<link href="<?= base_url() ?>public/plugins/iCheck/square/green.css" rel="stylesheet" type="text/css"/>
-<script src="<?= base_url() ?>public/plugins/iCheck/icheck.js"></script>
-<script src="<?= base_url() ?>public/plugins/priceFormat/priceFormat.js"></script>
+<link href="<?= base_url() ?>/public/plugins/iCheck/square/green.css" rel="stylesheet" type="text/css"/>
+<script src="<?= base_url() ?>/public/plugins/iCheck/icheck.js"></script>
+<script src="<?= base_url() ?>/public/plugins/priceFormat/priceFormat.js"></script>
 <!--knob-->
-<script src="<?= base_url() ?>public/plugins/knob/jquery.knob.js"></script>
+<script src="<?= base_url() ?>//public/plugins/knob/jquery.knob.js"></script>
 <!--morris charts-->
-<script src="<?= base_url() ?>public/plugins/morris/raphael-min.js"></script>
-<link href="<?= base_url() ?>public/plugins/morris/morris.css" rel="stylesheet" type="text/css"/>
-<script src="<?= base_url() ?>public/plugins/morris/morris.min.js" type="text/javascript"></script>
+<script src="<?= base_url() ?>/public/plugins/morris/raphael-min.js"></script>
+<link href="<?= base_url() ?>/public/plugins/morris/morris.css" rel="stylesheet" type="text/css"/>
+<script src="<?= base_url() ?>/public/plugins/morris/morris.min.js" type="text/javascript"></script>
 
 <div class="wrapper">
     <?= $Header ?>
