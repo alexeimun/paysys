@@ -19,7 +19,7 @@
                 $archivo = $_FILES['excel']['name'];
                 $destino = "bak_" . $archivo;
                 copy($_FILES['excel']['tmp_name'], $destino);
-                if (file_exists("bak_" . $archivo))
+                if(file_exists("bak_" . $archivo))
                 {
                     /** Clases necesarias */
                     $this->load->library('ExcelImport/PHPExcel');
@@ -32,11 +32,11 @@
                     $highestRow = $objPHPExcel->setActiveSheetIndex(0)->getHighestRow();
                     #Recuento de registros importados
                     $count = 0;
-                    for ($i = 1; $i <= $highestRow; $i ++)
+                    for ($i = 1; $i <= $highestRow; $i++)
                     {
-                        if ($objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue() != '')
+                        if($objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue() != '')
                         {
-                            $count ++;
+                            $count++;
                         }
                         $Excel[$i]['nombre'] = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue();
                         $Excel[$i]['telefono'] = $objPHPExcel->getActiveSheet()->getCell('B' . $i)->getCalculatedValue();
@@ -50,16 +50,18 @@
                 $sql = "";
                 foreach ($Excel as $campo => $valor)
                 {
-                    if ($valor['nombre'] != '' && $valor['nombre'] != null)
+                    if($valor['nombre'] != '' && $valor['nombre'] != null)
                     {
-                        if ($first)
+                        if($first)
                         {
                             $sql = "INSERT INTO t_deudores(NOMBRE,TELEFONO,DOCUMENTO,DIRECCION,CORREO,ENCARGADO,ID_CIUDAD,ESTADO,FECHA_REGISTRA)
               VALUES ('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "','" . $valor['encargado'] . "',1,1,NOW())";
                             $first = false;
                         }
                         else
+                        {
                             $sql .= ",('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "','" . $valor['encargado'] . "',1,1,NOW())";
+                        }
                     }
                 }
                 $this->db->query($sql);
@@ -78,7 +80,7 @@
                 $archivo = $_FILES['excel']['name'];
                 $destino = "bak_" . $archivo;
                 copy($_FILES['excel']['tmp_name'], $destino);
-                if (file_exists("bak_" . $archivo))
+                if(file_exists("bak_" . $archivo))
                 {
                     /** Clases necesarias */
                     $this->load->library('ExcelImport/PHPExcel');
@@ -91,11 +93,11 @@
                     $highestRow = $objPHPExcel->setActiveSheetIndex(0)->getHighestRow();
                     #Recuento de registros importados
                     $count = 0;
-                    for ($i = 1; $i <= $highestRow; $i ++)
+                    for ($i = 1; $i <= $highestRow; $i++)
                     {
-                        if ($objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue() != '')
+                        if($objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue() != '')
                         {
-                            $count ++;
+                            $count++;
                         }
                         $Excel[$i]['nombre'] = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue();
                         $Excel[$i]['telefono'] = $objPHPExcel->getActiveSheet()->getCell('B' . $i)->getCalculatedValue();
@@ -109,16 +111,18 @@
                 $sql = "";
                 foreach ($Excel as $campo => $valor)
                 {
-                    if ($valor['nombre'] != '' && $valor['nombre'] != null)
+                    if($valor['nombre'] != '' && $valor['nombre'] != null)
                     {
-                        if ($first)
+                        if($first)
                         {
                             $sql = "INSERT INTO t_acreedores(NOMBRE,TELEFONO,DOCUMENTO,DIRECCION,CORREO,ID_CIUDAD,ESTADO,FECHA_REGISTRA)
               VALUES ('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "',1,1,NOW())";
                             $first = false;
                         }
                         else
+                        {
                             $sql .= ",('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "',1,1,NOW())";
+                        }
                     }
                 }
                 $this->db->query($sql);
@@ -148,8 +152,6 @@
             return $this->db->query("SELECT *  FROM t_consecutivos")->result();
         }
 
-
-
         public function ActualizaEmpresa()
         {
             $this->db->set('FECHA_ACTUALIZA', 'NOW()', false);
@@ -163,17 +165,17 @@
         public function ActualizaConsecutivos()
         {
             $cons = $this->db->query("SELECT * FROM t_consecutivos")->result();
-            if ($cons[0]->CONSECUTIVO != $_POST['Consecutivos'][0])
+            if($cons[0]->CONSECUTIVO != $_POST['Consecutivos'][0])
             {
                 $this->db->set('FECHA_MODIFICA', 'NOW()', false);
                 $this->db->update('t_consecutivos', ['CONSECUTIVO' => $_POST['Consecutivos'][0]], ['NOMBRE' => 'RECIBO']);
             }
-            if ($cons[1]->CONSECUTIVO != $_POST['Consecutivos'][1])
+            if($cons[1]->CONSECUTIVO != $_POST['Consecutivos'][1])
             {
                 $this->db->set('FECHA_MODIFICA', 'NOW()', false);
                 $this->db->update('t_consecutivos', ['CONSECUTIVO' => $_POST['Consecutivos'][1]], ['NOMBRE' => 'SOLICITUD']);
             }
-            if ($cons[2]->CONSECUTIVO != $_POST['Consecutivos'][2])
+            if($cons[2]->CONSECUTIVO != $_POST['Consecutivos'][2])
             {
                 $this->db->set('FECHA_MODIFICA', 'NOW()', false);
                 $this->db->update('t_consecutivos', ['CONSECUTIVO' => $_POST['Consecutivos'][2]], ['NOMBRE' => 'CUADRE']);

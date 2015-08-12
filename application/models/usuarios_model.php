@@ -9,9 +9,14 @@
 
         public function TraeUsuariosNotificaion($Mode = true)
         {
-            if ($Mode)
+            if($Mode)
+            {
                 return $this->db->query("SELECT  ID_USUARIO  FROM t_usuarios WHERE NIVEL<> 0 AND ESTADO=0 AND ID_USUARIO <> " . $this->session->userdata('ID_USUARIO'));
-            else return $this->db->query("SELECT  ID_USUARIO  FROM t_usuarios WHERE NIVEL <> 0 AND ESTADO=1");
+            }
+            else
+            {
+                return $this->db->query("SELECT  ID_USUARIO  FROM t_usuarios WHERE NIVEL <> 0 AND ESTADO=1");
+            }
         }
 
         public function TraeUsuario($IdUsuario)
@@ -26,12 +31,16 @@
 
         public function ValidarCredenciales($usuario, $clave)
         {
-            $query=$this->db->query("SELECT * from t_usuarios WHERE CORREO='$usuario' AND CLAVE = '$clave' LIMIT 1");
+            $query = $this->db->query("SELECT * from t_usuarios WHERE CORREO='$usuario' AND CLAVE = '$clave' LIMIT 1");
 
-            if ($query->num_rows() == 1)
+            if($query->num_rows() == 1)
+            {
                 return $query->result();
+            }
             else
+            {
                 return false;
+            }
         }
 
         public function ActualizaAvatarUsuario()
@@ -82,7 +91,7 @@
             {
                 foreach ($this->usuarios_model->TraeSubModulos($Modulo->ID_MODULO) as $SubModulo)
                 {
-                    $Query .= "(" . $SubModulo->ID_MODULO . ", " . $idUser . ", " . $Chks[$c ++] . ", " . $this->session->userdata('ID_USUARIO') . "),";
+                    $Query .= "(" . $SubModulo->ID_MODULO . ", " . $idUser . ", " . $Chks[$c++] . ", " . $this->session->userdata('ID_USUARIO') . "),";
                 }
             }
             $this->db->query(rtrim($Query, ','));
@@ -99,7 +108,6 @@
             }
             $this->db->update('t_usuarios', ['ESTADO' => 0], ['ID_USUARIO' => $this->input->post('Id')]);
         }
-
 
         public function RestauraUsuario($Id)
         {
@@ -130,7 +138,7 @@
             {
                 foreach ($this->TraeSubModulos($Modulo->ID_MODULO) as $SubModulo)
                 {
-                    $this->db->update('t_permisos', ['AUTORIZADO' => $Chks[$c ++]], ['ID_USUARIO' => $this->input->post('ID_USUARIO'), 'ID_MODULO' => $SubModulo->ID_MODULO]);
+                    $this->db->update('t_permisos', ['AUTORIZADO' => $Chks[$c++]], ['ID_USUARIO' => $this->input->post('ID_USUARIO'), 'ID_MODULO' => $SubModulo->ID_MODULO]);
                 }
             }
         }

@@ -182,7 +182,7 @@
         {
             if (!empty($_POST))
                 $this->usuarios_model->EliminaUsuario();
-            echo '<b>Acceso denegado por el servidor...</b>';
+            echo '<b>Acceso denegado.</b>';
         }
 
         public function RestauraUsuario($Id)

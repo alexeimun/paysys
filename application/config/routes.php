@@ -31,6 +31,9 @@
     $route['crearacreedor'] = 'cliente/CrearAcreedor';
     $route['insertaAcreedor'] = 'cliente/InsertaAcreedor';
     $route['RestaurarAcreedor/(:num)'] = 'cliente/RestauraAcreedor/$1';
+    #Sesión de Crédito
+    $route['sesion_credito_acreedor'] = 'cliente/SCAcreedor';
+    $route['sesion_credito_deudor'] = 'cliente/SCDeudor';
     ##Hipotecas##
     #Solicitudes
     $route['solicitudes'] = 'hipoteca/Solicitudes';
@@ -75,15 +78,14 @@
     $route['verrecibo/(:num)'] = 'caja/VerRecibo/$1';
     $route['anularrecibo/(:num)'] = 'caja/AnularRecibo/$1';
     ##Informes##
+    #Informe de ingresos diarios
+    $route['informeingresosdiarios'] = 'caja/InformeIngresosDiarios';
     #Cuadre diario
     $route['cuadrediario'] = 'caja/CuadreDiario';
-    $route['ImprimeCuadreDiario'] = 'caja/ImprimeCuadreDiario';
     #Deudores
     $route['informedeudor'] = 'caja/InformeDeudor';
-    $route['ImprimeInformeDeudor'] = 'caja/ImprimeInformeDeudor';
     #Acreedores
     $route['informeacreedor'] = 'caja/InformeAcreedor';
-    $route['ImprimeInformeAcreedor'] = 'caja/ImprimeInformeAcreedor';
     #Notificaciones
     $route['notificaciones'] = 'app/Notificaciones';
     $route['vernotificacion/(:any)'] = 'app/VerNotificacion/$1';

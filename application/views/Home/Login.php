@@ -5,7 +5,7 @@
     <title>Login</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
-    <link href="<?= base_url() ?>public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="<?= base_url() ?>/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <!-- Theme style -->
     <link href="<?= base_url() ?>public/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css"/>
     <script src="<?= base_url() ?>public/js/jquery.js"></script>
@@ -14,7 +14,7 @@
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="<?=base_url()?>public/js/respond.min.js"></script>
+    <script src="<?=base_url()?>/public/js/respond.min.js"></script>
     <![endif]-->
 </head>
 <body class="login-page">

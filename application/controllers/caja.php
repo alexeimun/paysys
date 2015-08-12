@@ -1,4 +1,7 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if(!defined('BASEPATH'))
+{
+    exit('No direct script access allowed');
+}
 
     class Caja extends CI_Controller
     {
@@ -14,13 +17,16 @@
 
         public function Recibos()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('ID_USUARIO'))
             {
                 $this->TraeRecibos();
                 $this->Params();
                 $this->load->view('Caja/Recibos/Recibos', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect('home', 'refresh');
+            }
         }
 
         public function TraeRecibos()
@@ -52,7 +58,7 @@
                  <td>' . date_format(new DateTime($recibo->FECHA), 'd/m/Y') . '</td>
                  <td style="text-align:center;">
                  <a href="verrecibo/' . $recibo->CONSECUTIVO_RECIBO . '" target="_blank" style="font-size:20pt;color:black" class="ion ion-android-print" data-toggle="tooltip" title="Inmprimir"></a>&nbsp;&nbsp;';
-                if ($recibo->ANULADO == 0)
+                if($recibo->ANULADO == 0)
                 {
                     $this->Data['Recibos'] .= '<a href="anularrecibo/' . $recibo->CONSECUTIVO_RECIBO . '" style="font-size:20pt;color:black" class="ion ion-close-circled" data-toggle="tooltip" title="Anular"></a>&nbsp;&nbsp;';
                 }
@@ -68,12 +74,15 @@
 
         public function AnularRecibo($id)
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('ID_USUARIO'))
             {
                 $this->caja_model->AnularRecibo($id);
                 redirect('caja/Recibos', 'refresh');
             }
-            else redirect('inicio', 'refresh');
+            else
+            {
+                redirect('inicio', 'refresh');
+            }
         }
 
         public function VerRecibo($Consecutivo)
@@ -84,7 +93,7 @@
 
         public function CrearRecibo()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('ID_USUARIO'))
             {
                 $this->load->model('parametros_model');
                 $this->Data['RECIBO'] = $this->parametros_model->TraeConsecutivo('RECIBO');
@@ -92,40 +101,94 @@
                 $this->Params();
                 $this->load->view('Caja/Recibos/CrearRecibo', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect('home', 'refresh');
+            }
         }
 
         public function CuadreDiario()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('ID_USUARIO'))
             {
-                $this->Params();
-                $this->Data['Consecutivo'] = $this->caja_model->TraeCuadreConsecutivo();
-                $this->load->view('Caja/Informes/CuadreDiario', $this->Data);
+                if(!empty($_POST))
+                {
+                    $this->ImprimeCuadreDiario();
+                }
+                else
+                {
+                    $this->Params();
+                    $this->Data['Consecutivo'] = $this->caja_model->TraeCuadreConsecutivo();
+                    $this->load->view('Caja/Informes/CuadreDiario', $this->Data);
+                }
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect('home', 'refresh');
+            }
         }
 
         public function InformeDeudor()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('ID_USUARIO'))
             {
-                $this->Solicitudes();
-                $this->Params();
-                $this->load->view('Caja/Informes/InformeDeudor', $this->Data);
+                if(!empty($_POST))
+                {
+                    $this->ImprimeInformeDeudor();
+                }
+                else
+                {
+                    $this->Solicitudes();
+                    $this->Params();
+                    $this->load->view('Caja/Informes/InformeDeudor', $this->Data);
+                }
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect('home', 'refresh');
+            }
         }
 
         public function InformeAcreedor()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('ID_USUARIO'))
             {
-                $this->Params();
-                $this->AcreedoresDropDown();
-                $this->load->view('Caja/Informes/InformeAcreedor', $this->Data);
+                if(!empty($_POST))
+                {
+                    $this->ImprimeInformeAcreedor();
+                }
+                else
+                {
+                    $this->Params();
+                    $this->AcreedoresDropDown();
+                    $this->load->view('Caja/Informes/InformeAcreedor', $this->Data);
+                }
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect('home', 'refresh');
+            }
+        }
+
+        public function InformeIngresosDiarios()
+        {
+            if($this->session->userdata('ID_USUARIO'))
+            {
+                if(!empty($_POST))
+                {
+                    $this->ImprimeInformeIngresosDiarios();
+                }
+                else
+                {
+                    $this->Params();
+                    $this->AcreedoresDropDown();
+                    $this->load->view('Caja/Informes/InformeIngresosDiarios', $this->Data);
+                }
+            }
+            else
+            {
+                redirect('home', 'refresh');
+            }
         }
 
         public function ImprimeRecibo()
@@ -136,9 +199,15 @@
             $pdf = new PDF();
             $pdf->AddPage();
             $estado = '';
-            if ($info->ANULADO == 1) $estado = 'Anulado';
-            else if ($this->session->userdata('First') == '') $estado = 'Duplicado';
-            if ($estado != '')
+            if($info->ANULADO == 1)
+            {
+                $estado = 'Anulado';
+            }
+            else if($this->session->userdata('First') == '')
+            {
+                $estado = 'Duplicado';
+            }
+            if($estado != '')
             {
                 $pdf->SetFont('Arial', 'B', 12);
                 $pdf->SetXY(160, 3);
@@ -198,7 +267,7 @@
                 $pdf->Cell(120, 6, utf8_decode($campo->CONCEPTO), 1, 0, 'L');# Concept
                 $pdf->SetXY(150, 49 + $i * $h);
                 $pdf->Cell(50, 6, number_format($campo->VALOR, 0, '', ','), 1, 0, 'C');# Value
-                $i ++;
+                $i++;
             }
             #TOTAL RECIBO
             $pdf->SetFont('Arial', 'B', 9);
@@ -206,7 +275,7 @@
             $pdf->Cell(140, 6, 'Total Recibo', 1, 0, 'L');# Total ticket
             $pdf->SetXY(150, 52 + $i * $h);
             $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');# Value Total
-            $i ++;
+            $i++;
             #LEYEND
             $pdf->SetFont('Arial', 'B', 9);
             $pdf->SetXY(10, 55 + $i * $h);
@@ -238,143 +307,192 @@
 
         public function ImprimeInformeDeudor()
         {
-            if (empty($_POST) || !$this->session->userdata('ID_USUARIO')) redirect('inicio', 'refresh');
             foreach ($this->caja_model->TraeSolicitud($this->input->post('ID_SOLICITUD'))->result() as $solicitud) ;
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
             $pdf->AddPage();
             $r = 0;
             $pdf->SetFont('Arial', 'B', 14);
-            $pdf->SetXY(24, 18);
-            $pdf->Cell(50, 6, 'INFORME DEL DEUDOR', 0, 0, 'C');
+            $pdf->SetXY(20, 18);
+            $pdf->Cell(120, 6, 'INFORME DEL DEUDOR', 0, 0, 'L');
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->Cell(40, 6, 'Solicitud #' . $solicitud->SOLICITUD, 0, 0, 'C');
             $pdf->Ln(8);
             $pdf->SetFont('Arial', 'B', 10);
-            #Deudor
+            #Nombre Deudor
             $pdf->SetX(20);
-            $pdf->Cell(85, 6, 'DEUDOR', 1, 0, 'L');
-            $pdf->Cell(85, 6, strtoupper(utf8_decode($solicitud->NOMBRE_DEUDOR)), 1, 0, 'R');
-            $pdf->SetFont('Arial', '', 9);
+            $pdf->Cell(85, 6, ucwords(utf8_decode($solicitud->NOMBRE_DEUDOR)), 0, 0, 'L');
+            $pdf->SetFont('Arial', '', 10);
             #Cedula No
             $pdf->SetXY(20, 32);
-            $pdf->Cell(85, 6, 'CEDULA No', 1, 0, 'L');
-            $pdf->Cell(85, 6, number_format($solicitud->DOCUMENTO_DEUDOR, 0, '', ','), 1, 0, 'R');
-            #Direccion Inmueble
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, utf8_decode('DIRECCIÓN'), 1, 0, 'L');
-            $pdf->Cell(85, 6, $solicitud->DIRECCION_DEUDOR, 1, 0, 'R');
-            #Acreedor
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, 'ACREEDOR', 1, 0, 'L');
-            $pdf->Cell(85, 6, strtoupper(utf8_decode($solicitud->NOMBRE_ACREEDOR)), 1, 0, 'R');
-            #Escritura Nro
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, 'ESCRITURA No', 1, 0, 'L');
-            $pdf->Cell(85, 6, $solicitud->NUMERO_ESCRITURA, 1, 0, 'R');
+            $pdf->Cell(85, 6, 'cc. ' . number_format($solicitud->DOCUMENTO_DEUDOR, 0, '', ','), 0, 0, 'L');
+            #Teléfono
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'tel. ' . $solicitud->TELEFONO, 0, 0, 'L');
+            #Dirección Deudor
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, utf8_decode($solicitud->DIRECCION_DEUDOR), 0, 0, 'L');
+            $pdf->Line(190, 61, 20, 61);
+            $r += 2;
+            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->Text(21, 58, 'Hipoteca');
+            $pdf->SetFont('Arial', '', 10);
             #Tipo Hipoteca
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, 'TIPO HIPOTECA', 1, 0, 'L');
-            $pdf->Cell(85, 6, $solicitud->TIPO_HIPOTECA, 1, 0, 'R');
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Hipoteca ' . $solicitud->TIPO_HIPOTECA, 0, 0, 'L');
+            #Escritura Nro
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Ecritura Nro ' . $solicitud->NUMERO_ESCRITURA, 0, 0, 'L');
             #Notaria
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, utf8_decode('NOTARÍA'), 1, 0, 'L');
-            $pdf->Cell(85, 6, $solicitud->NUMERO_NOTARIA, 1, 0, 'R');
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, utf8_decode('Notaría Nro ' . $solicitud->NUMERO_NOTARIA), 0, 0, 'L');
             #FECHA CONSTITUCIÓN
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, utf8_decode('FECHA CONSTITUCIÓN'), 1, 0, 'L');
-            $pdf->Cell(85, 6, MesNombreAbr(round(date_format(new DateTime($solicitud->FECHA_CONSTITUCION), 'm'))) . date_format(new DateTime($solicitud->FECHA_CONSTITUCION), ' d/y'), 1, 0, 'R');
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, utf8_decode('Fecha constitución: ') . MesNombreAbr(round(date_format(new DateTime($solicitud->FECHA_CONSTITUCION), 'm'))) . date_format(new DateTime($solicitud->FECHA_CONSTITUCION), ' d/y'), 0, 0, 'L');
             #M.I No
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, 'M.I No', 1, 0, 'L');
-            $pdf->Cell(85, 6, $solicitud->MATRICULA, 1, 0, 'R');
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'M.I No ' . $solicitud->MATRICULA, 0, 0, 'L');
             #Direccion Inmueble
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, utf8_decode('DIRECCIÓN INMUEBLE'), 1, 0, 'L');
-            $pdf->Cell(85, 6, $solicitud->DIRECCION_INMUEBLE, 1, 0, 'R');
-            #Blank
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, '', 1, 0, 'L');
-            $pdf->Cell(85, 6, '', 1, 0, 'R');
-            $pdf->SetFont('Arial', 'B', 9);
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, utf8_decode($solicitud->DIRECCION_INMUEBLE), 0, 0, 'L');
+            $r++;
+            $pdf->Line(190, 100, 20, 100);
+            #Acreedor
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Acreedor: ' . ucwords(utf8_decode(strtolower($solicitud->NOMBRE_ACREEDOR))), 0, 0, 'L');
             #Capital
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, 'CAPITAL', 1, 0, 'L');
-            $pdf->Cell(85, 6, number_format($solicitud->CAPITAL_INICIAL, 0, '', ','), 1, 0, 'R');
-            $pdf->SetFont('Arial', '', 9);
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Capital: ' . number_format($solicitud->CAPITAL_INICIAL, 0, '', ','), 0, 0, 'L');
+            $pdf->SetFont('Arial', 'B', 11);
+            #PAGA
+            $r++;
+            $pdf->Line(190, 117, 20, 117);
+            $pdf->Text(20, 32 + ++$r * 6, 'Pagado');
+            $pdf->SetFont('Arial', '', 10);
             #----------------------------------------#
             $Vals = $this->caja_model->InteresesPagadosDeudor();
-            $Mesinicio = round(date_format(new DateTime($solicitud->FECHA_INICIO), 'm'));
-            $Diainicio = date_format(new DateTime($solicitud->FECHA_INICIO), 'd');
-            $Anoinicio = date_format(new DateTime($solicitud->FECHA_INICIO), 'y');
+            $fecha_inicio=new DateTime($solicitud->FECHA_INICIO);
+            $Mesinicio = round(date_format($fecha_inicio, 'm'));
+            $Diainicio = date_format($fecha_inicio, 'd');
+            $Anoinicio = date_format($fecha_inicio, 'y');
             $Anofin = $Anoinicio;
-            if ($Vals['MESES'] > 0)
+
+            #-----------------------PAGA ABONOS--------------------
+            if($solicitud->ABONADO > 0)
+            {
+                $pdf->SetXY(20, 32 + ++$r * 6);
+                $pdf->Cell(85, 6, 'Abono capital', 1, 0, 'L');
+                $pdf->Cell(85, 6, number_format($solicitud->ABONADO, 0, '', ','), 1, 0, 'R');
+            }
+
+            #-----------------------PAGA INT--------------------------
+            if($Vals['MESES'] > 0)
             {
                 $Mesfin = $Vals['MESES'] + $Mesinicio;
-                if ($Mesfin > 12)
+                if($Mesfin > 12)
                 {
                     $Mesfin -= 12;
-                    $Anofin ++;
+                    $Anofin++;
                 }
-                if ($Diainicio - 1 == 0) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                else $Diafin = $Diainicio - 1;
-                $int = 'PAGA INT DE ' . MesNombreAbr($Mesinicio) . ' ' . $Diainicio . '/' . $Anoinicio . ' A ' . MesNombreAbr($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
+                if($Diainicio - 1 == 0)
+                {
+                    $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                }
+                else if($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)))
+                {
+                    $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                }
+                else
+                {
+                    $Diafin = $Diainicio - 1;
+                }
+                $int = 'Int de ' . MesNombreAbr($Mesinicio) . ' ' . $Diainicio . '/' . $Anoinicio . ' a ' . MesNombreAbr($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
                 #INTERESES PAGADOS
-                $pdf->SetXY(20, 32 + ++ $r * 6);
+                $pdf->SetXY(20, 32 + ++$r * 6);
                 $pdf->Cell(85, 6, $int, 1, 0, 'L');
                 $pdf->Cell(85, 6, number_format($Vals['TOTAL'], 0, '', ','), 1, 0, 'R');
             }
+
+            #DEBE
+            $r++;
+            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->Text(20, 32 + ++$r * 6, 'Debe');
+            $pdf->SetFont('Arial', '', 10);
+
+            $pdf->SetFont('Arial', '', 10);
+            #-----------------------DEBE ABONOS--------------------
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Abono capital', 1, 0, 'L');
+            $pdf->Cell(85, 6, number_format($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO, 0, '', ','), 1, 0, 'R');
+
             #-----------------------DEBE INT--------------------------
             $Mes = $Mesfin = $Vals['MESES'] + $Mesinicio;
-            if ($Mes > 12)
+            if($Mes > 12)
             {
                 $Mes -= 12;
                 $Mesfin = $Mes;
                 $Anofin++;
             }
-            if ($Diainicio - 1 == 0) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-            else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-            else $Diafin = $Diainicio - 1;
-            $diain = $Diainicio > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) ? date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) : $Diainicio;
-            $debeInt = 'DEBE INT DE ' . MesNombreAbr($Mes > 12 ? 12 - $Mes : $Mes) . ' ' . $diain . '/' . $Anofin . ' A ';
-            for ($p = 0; strtotime('now') > strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) && strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) < strtotime($solicitud->FECHA_FIN); $p ++)
+            if($Diainicio - 1 == 0)
             {
-                $Mesfin ++;
-                if ($Mesfin > 12)
+                $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+            }
+            else if($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)))
+            {
+                $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+            }
+            else
+            {
+                $Diafin = $Diainicio - 1;
+            }
+            $diain = $Diainicio > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) ? date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) : $Diainicio;
+            $debeInt = 'Int de ' . MesNombreAbr($Mes > 12 ? 12 - $Mes : $Mes) . ' ' . $diain . '/' . $Anofin . ' a ';
+            for ($p = 0; strtotime('now') > strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) && strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) < strtotime($solicitud->FECHA_FIN); $p++)
+            {
+                $Mesfin++;
+                if($Mesfin > 12)
                 {
                     $Mesfin = 1;
-                    $Anofin ++;
+                    $Anofin++;
                 }
-                if ($Diainicio - 1 == 0) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                else $Diafin = $Diainicio - 1;
+                if($Diainicio - 1 == 0)
+                {
+                    $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                }
+                else if($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)))
+                {
+                    $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                }
+                else
+                {
+                    $Diafin = $Diainicio - 1;
+                }
             }
-            if ($p > 0)
+            if($p > 0)
             {
                 $debeInt .= MesNombreAbr($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
                 #DEBE INTERESES
-                $pdf->SetXY(20, 32 + ++ $r * 6);
+                $pdf->SetXY(20, 32 + ++$r * 6);
                 $pdf->Cell(85, 6, $debeInt, 1, 0, 'L');
                 $pdf->Cell(85, 6, number_format($p * ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * ($solicitud->INTERES_MENSUAL / 100), 0, '', ','), 1, 0, 'R');
             }
             #-----------------------------------------------------------
             #COMISIÓN
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, utf8_decode('COMISIÓN SEP 27/14'), 1, 0, 'L');
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, utf8_decode('Comisión sep 27/14'), 1, 0, 'L');
             $pdf->Cell(85, 6, number_format('600000', 0, '', ','), 1, 0, 'R');
             #AMPLIACIÓN
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, utf8_decode('AMPLIACIÓN A SEP 27/14'), 1, 0, 'L');
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, utf8_decode('Ampliación a sep 27/14'), 1, 0, 'L');
             $pdf->Cell(85, 6, number_format('1200000', 0, '', ','), 1, 0, 'R');
-            #TOTAL ADEUDADO
-            $pdf->SetXY(20, 32 + ++ $r * 6);
-            $pdf->Cell(85, 6, utf8_decode('TOTAL ADEUDADO A FEB 15/15'), 1, 0, 'L');
-            $pdf->Cell(85, 6, number_format('4097000', 0, '', ','), 1, 0, 'R');
+
             #Blank
-            $pdf->SetXY(20, 32 + ++ $r * 6);
+            $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, '', 1, 0, 'L');
             $pdf->Cell(85, 6, '', 1, 0, 'R');
             $pdf->SetFont('Arial', 'B', 10);
-            $pdf->Text(90, 40 + ++ $r * 6, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO')))
+            $pdf->Text(90, 40 + ++$r * 6, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO')))
                 . ' en ' . MesNombreAbr(round(date('m'))) . date(' d/y')));
             $pdf->Output();
             $pdf->Cell($pdf->PageNo());
@@ -382,7 +500,6 @@
 
         public function ImprimeInformeAcreedor()
         {
-            if (empty($_POST) || !$this->session->userdata('ID_USUARIO')) redirect('inicio', 'refresh');
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
             $pdf->AddPage();
@@ -426,14 +543,23 @@
                         $Mes = $informe->DESCRIPCION + $Mesinicio - 1;
                         $Anofin = $Anoinicio;
                         $Mesfin = $Mes + 1;
-                        if ($Mesfin > 12)
+                        if($Mesfin > 12)
                         {
                             $Mesfin = 1;
-                            $Anofin ++;
+                            $Anofin++;
                         }
-                        if ($Diainicio - 1 == 0) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                        else if ($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/))) $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                        else $Diafin = $Diainicio - 1;
+                        if($Diainicio - 1 == 0)
+                        {
+                            $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                        }
+                        else if($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)))
+                        {
+                            $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
+                        }
+                        else
+                        {
+                            $Diafin = $Diainicio - 1;
+                        }
                         $Pago = $Diainicio . '/' . $Mesinicio . '/' . $Anoinicio . ' A ' . $Diafin . '/' . $Mesfin . '/' . $Anofin;
                         break;
                 }
@@ -461,7 +587,7 @@
                 $Total += $informe->VALOR - $Admin;
                 $pdf->SetXY(176, 26 + 6 * $i);
                 $pdf->Cell(30, 6, number_format($informe->VALOR - $Admin, 0, '', ','), 1, 0, 'C');
-                $i ++;
+                $i++;
             }
             #---------------------------------------Blank-----------------------------#
             $pdf->SetXY(5, 26 + 6 * $i);
@@ -478,7 +604,7 @@
             $pdf->Cell(20, 6, '', 1, 0, 'C');
             $pdf->SetXY(176, 26 + 6 * $i);
             $pdf->Cell(30, 6, '', 1, 0, 'C');
-            $i ++;
+            $i++;
             #---------------------------------------------------------------------------#
             $pdf->SetFont('Arial', 'B', 9);
             $pdf->SetXY(55, 26 + 6 * $i);
@@ -486,7 +612,7 @@
             #VALOR
             $pdf->SetXY(156, 26 + 6 * $i);
             $pdf->Cell(50, 6, number_format($Total, 0, '', ','), 1, 0, 'C');
-            $i ++;
+            $i++;
             #------------------ENTREGADO--------------------#
             $pdf->SetFont('Arial', 'B', 9);
             $pdf->SetXY(55, 26 + 6 * $i);
@@ -499,9 +625,66 @@
             $pdf->Cell($pdf->PageNo());
         }
 
+        public function ImprimeInformeIngresosDiarios()
+        {
+            $this->load->library('fpdf/pdf');
+            $pdf = new PDF();
+            $pdf->AddPage();
+            $hheader = 20;
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->Ln();
+            #ENCABEZADO
+            $pdf->Cell(190, 6, utf8_decode('Informe de ingresos diarios - ' . date_format(new DateTime($_POST['FECHA']), 'd/m/Y')), 0, 0, 'C');
+
+            $pdf->SetFont('Arial', 'B', 10);
+            #Headers
+            $pdf->SetXY(15, $hheader);
+            $pdf->Cell(20, 6, 'Recibo', 1, 0, 'C');
+            $pdf->SetXY(35, $hheader);
+            $pdf->Cell(60, 6, 'Deudor', 1, 0, 'C');
+            $pdf->SetXY(95, $hheader);
+            $pdf->Cell(50, 6, 'Acreedor', 1, 0, 'C');
+            $pdf->SetXY(145, $hheader);
+            $pdf->Cell(25, 6, 'Valor', 1, 0, 'C');
+            $pdf->SetXY(170, $hheader);
+            $pdf->Cell(22, 6, 'Fecha', 1, 0, 'C');
+            $pdf->SetFont('Arial', '', 9);
+
+            $i = 1;
+            $h = 6;
+            $Total = 0;
+            foreach ($this->caja_model->TraeIngresosDiarios() as $ingreso)
+            {
+                $pdf->SetXY(15, $hheader + $h * $i);
+                $pdf->Cell(20, 6, $ingreso->CONSECUTIVO, 1, 0, 'C');
+                $pdf->SetXY(35, $hheader + $h * $i);
+                $pdf->Cell(60, 6, $ingreso->NOMBRE_DEUDOR, 1, 0, 'C');
+                $pdf->SetXY(95, $hheader + $h * $i);
+                $pdf->Cell(50, 6, $ingreso->NOMBRE_ACREEDOR, 1, 0, 'C');
+                $pdf->SetXY(145, $hheader + $h * $i);
+                $pdf->Cell(25, 6, number_format($ingreso->VALOR, 0, '', ','), 1, 0, 'C');
+                $pdf->SetXY(170, $hheader + $h * $i);
+                $pdf->Cell(22, 6, date_format(new DateTime($ingreso->FECHA), 'd/m/Y'), 1, 0, 'C');
+                $i++;
+                $Total += $ingreso->VALOR;
+            }
+            $pdf->SetXY(15, $hheader + $h * $i + 8);
+            $pdf->Cell(177, 1, '', 1, 1, 'C');
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->Text(15, $hheader + $h * $i + 14, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO')))
+                . ' en ' . MesNombreAbr(round(date('m'))) . date(' d/y')));
+            $pdf->Text(155, $hheader + $h * $i + 14, 'Total: ' . number_format($Total, 0, '', ','));
+
+            #VALORES
+            $pdf->SetFont('Arial', '', 9);
+
+            #------------------------------------------------------#
+            $pdf->Output();
+            $pdf->Cell($pdf->PageNo());
+        }
+
         public function ImprimeCuadreDiario()
         {
-            if (empty($_POST) || !$this->session->userdata('ID_USUARIO')) redirect('inicio', 'refresh');
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
             $pdf->AddPage();
@@ -540,12 +723,12 @@
                 $pdf->Cell(30, 6, number_format($informe->VALOR, 0, '', ','), 1, 0, 'R');
                 #%
                 $comision = '';
-                if ($informe->TIPO_MOV == 0)
+                if($informe->TIPO_MOV == 0)
                 {
                     $ptge = "0";
                     $admin = '-';
                 }
-                else if ($informe->TIPO_MOV == 4)
+                else if($informe->TIPO_MOV == 4)
                 {
                     $ptge = '30';
                     $admin = '-';
@@ -568,12 +751,12 @@
                 #COMISION
                 $pdf->SetXY(140, 26 + 6 * $i);
                 $pdf->Cell(30, 6, ($comision == '' ? '' : number_format($comision, 0, '', ',')), 1, 0, 'R');
-                if ($comision != '')
+                if($comision != '')
                 {
                     $pdf->SetXY(140, 26 + 6 * $i);
                     $pdf->Cell(30, 6, '$', 1, 0, 'L');
                 }
-                $i ++;
+                $i++;
             }
             #---------------------------------------Blank-----------------------------#
             $pdf->SetXY(40, 26 + 6 * $i);
@@ -590,7 +773,7 @@
             $pdf->Cell(30, 6, number_format($TotalComision, 0, '', ','), 1, 0, 'R');
             $pdf->SetXY(140, 26 + 6 * $i);
             $pdf->Cell(30, 6, '$', 0, 0, 'L');
-            $i ++;
+            $i++;
             #---------------------------------------------------------------------------#
             $pdf->SetFont('Arial', 'b', 10);
             $pdf->Text(50, 32 + 6 * $i, utf8_decode('CUADRE N° ' . $this->input->post('NRO')));
@@ -656,10 +839,10 @@
                                     <td>' . $pago->CONCEPTO . '</td>
                                     <td>' . number_format($pago->VALOR, 0, '', ',') . '</td>
                                   <td><a onclick="eliminarpago(' . $pago->ID_PAGO_TEMP . ');" style="cursor:pointer; color:  #e54040;font-size:20pt;" class="ion ion-trash-b" data-toggle="tooltip" title="Eliminar pago"></a> </td> </tr>';
-                $c ++;
+                $c++;
                 $Total += $pago->VALOR;
             }
-            if ($c == 1)
+            if($c == 1)
             {
                 $tabla .= '<tr><td style="text-align: center;" colspan="6">No se encontraron pagos temporales de esta solicitud...</td></tr>';
             }
@@ -733,16 +916,21 @@
                 $n = 0;
                 foreach ($this->caja_model->TraeAbonos($this->input->post('IdSol')) as $abono)
                 {
-                    $n ++;
+                    $n++;
                     $Data['Abonos'] .= '<div style="text-align: center;float: left;width: 60px;margin-left: 40px;">
                           <span style="font-weight:bold;">#' . ($abono->CONSECUTIVO) . '</span>
                          <img draggable="false" src="' . base_url('public/images/extras/bag-money.png') . '">
                          <span style="color:green;font-weight:bold;">' . number_format($abono->ABONADO, 0, '', ',') . '</span><br>
                         <span style="font-weight:bold;">' . date_format(new DateTime($abono->FECHA), 'd/m/Y') . '</span></div>';
                 }
-                if ($n != 0)
+                if($n != 0)
+                {
                     $Data['Abonos'] .= '</div>';
-                else  $Data['Abonos'] = '<span style="font-weight:bold;font-size: 12pt;color:#1B7E5A">No se han encontrado abonos de este deudor...</span>';
+                }
+                else
+                {
+                    $Data['Abonos'] = '<span style="font-weight:bold;font-size: 12pt;color:#1B7E5A">No se han encontrado abonos de este deudor...</span>';
+                }
                 ##Intereses
                 $Data['Intereses'] = '';
                 $Meses = floor((strtotime($cliente->FECHA_FIN) - strtotime($cliente->FECHA_INICIO)) / 2592000);
@@ -757,8 +945,10 @@
                                     <th style="text-align:center;color:#1B7E5A">Valor</th>
                                     <th style="text-align:center;color:#1B7E5A">Concepto</th>
                                     <th style="text-align:center;color:#1B7E5A">Estado</th>';
-                if ($this->input->post('Tipo') == 0)
+                if($this->input->post('Tipo') == 0)
+                {
                     $Data['Intereses'] .= '<th style="text-align:center;color:#1B7E5A">Acción</th>';
+                }
                 $Data['Intereses'] .= '</tr>
                                 </thead>
                                 <tbody></tbody>';
@@ -773,36 +963,53 @@
                 }
                 $fecha_mes2 = $fecha_mes;
                 $fecha_ano2 = $fecha_ano;
-                for ($i = 1; $i <= $Meses; $i ++)
+                for ($i = 1; $i <= $Meses; $i++)
                 {
-                    $fecha_mes2 ++;
-                    if ($fecha_mes2 > 12)
+                    $fecha_mes2++;
+                    if($fecha_mes2 > 12)
                     {
                         $fecha_mes2 = 1;
-                        $fecha_ano2 ++;
+                        $fecha_ano2++;
                     }
                     //Mes desde
-                    if ($fecha_dia > date("t", mktime(0, 0, 0, $fecha_mes/*mes*/, 1, $fecha_ano /*año*/)))
+                    if($fecha_dia > date("t", mktime(0, 0, 0, $fecha_mes/*mes*/, 1, $fecha_ano /*año*/)))
+                    {
                         $dia = date("t", mktime(0, 0, 0, $fecha_mes/*mes*/, 1, $fecha_ano /*año*/));
-                    else $dia = $fecha_dia;
+                    }
+                    else
+                    {
+                        $dia = $fecha_dia;
+                    }
                     //Mes hasta
-                    if ($fecha_dia - 1 == 0) $dia_2 = date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/));
-                    else if ($fecha_dia - 1 > date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/))) $dia_2 = date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/));
-                    else $dia_2 = $fecha_dia - 1;
+                    if($fecha_dia - 1 == 0)
+                    {
+                        $dia_2 = date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/));
+                    }
+                    else if($fecha_dia - 1 > date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/)))
+                    {
+                        $dia_2 = date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/));
+                    }
+                    else
+                    {
+                        $dia_2 = $fecha_dia - 1;
+                    }
                     #Buscando anteriores pagos de intereses
                     $num = 0;
                     $valor = 0;
                     $concepto = 0;
                     $pagado = '';
-                    if ($this->input->post('Tipo') == 0)
+                    if($this->input->post('Tipo') == 0)
                     {
                         $accion = '<td style="text-align:center;"><input type="checkbox"></td></tr>';
                         $pagado = '<td style="text-align:center;"><input type="checkbox" checked disabled></td></tr>';
                     }
-                    else $accion = '';
-                    for ($h = 0; $h < count($intereses); $h ++)
+                    else
                     {
-                        if (in_array($i, $intereses[$h]))
+                        $accion = '';
+                    }
+                    for ($h = 0; $h < count($intereses); $h++)
+                    {
+                        if(in_array($i, $intereses[$h]))
                         {
                             $num = $intereses[$h][0];
                             $valor = $valores[$h][0];
@@ -813,18 +1020,20 @@
                     $Data['Intereses'] .= '<tr>
                          <td style="text-align:center;">' . $i . '</td>
                          <td style="text-align:center;">' . number_format($valor == 0 ? $Valor : $valor, 0, '', ',') . '</td>';
-                    if ($num == 0)
+                    if($num == 0)
                     {
                         $Data['Intereses'] .= '<td spellcheck="false" contenteditable="true" style="text-align:center;">INTERESES DE ' . $dia . '-' . MesNombreAbr($fecha_mes) . '-' . $fecha_ano . ' A ' . $dia_2 . '-' . MesNombreAbr($fecha_mes2) . '-' . $fecha_ano2 . '</td>';
                     }
                     else
+                    {
                         $Data['Intereses'] .= '<td style="text-align:center;">' . $concepto . '</td>';
-                    if ($num != 0)
+                    }
+                    if($num != 0)
                     {
                         $Data['Intereses'] .= '<td style="text-align:center;background: #1B7E5A;"><span style="font-weight: bold;color:white;">Pagado</span></td>';
                         $Data['Intereses'] .= $pagado;
                     }
-                    else if (strtotime('now') > strtotime($fecha_ano2 . '-' . $fecha_mes2 . '-' . $dia_2))
+                    else if(strtotime('now') > strtotime($fecha_ano2 . '-' . $fecha_mes2 . '-' . $dia_2))
                     {
                         $Data['Intereses'] .= '<td style="text-align:center;background: #c10000;"><span style="font-weight: bold;color:white;">En mora</span></td>';
                         $Data['Intereses'] .= $accion;
@@ -834,11 +1043,11 @@
                         $Data['Intereses'] .= '<td style="text-align:center;background: #0062cc;"><span style="font-weight: bold;color:white;">Sin pagar</span></td>';
                         $Data['Intereses'] .= $accion;
                     }
-                    $fecha_mes ++;
-                    if ($fecha_mes > 12)
+                    $fecha_mes++;
+                    if($fecha_mes > 12)
                     {
                         $fecha_mes = 1;
-                        $fecha_ano ++;
+                        $fecha_ano++;
                     }
                 }
                 $Data['Intereses'] .= '</body></table>';
@@ -856,15 +1065,20 @@
             }
         }
 
-        public function Deudores($id = - 1)
+        public function Deudores($id = -1)
         {
-            $sel = $id == - 1 ? 'selected' : '';
+            $sel = $id == -1 ? 'selected' : '';
             $this->Data['Deudores'] = '<option value="0" ' . $sel . '>--Seleccione un deudor---</option>';
             foreach ($this->clientes_model->TraeDeudores()->result() as $deudor)
             {
-                if ($deudor->ID_DEUDOR == $id)
+                if($deudor->ID_DEUDOR == $id)
+                {
                     $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '" selected>' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
-                else $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '">' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
+                }
+                else
+                {
+                    $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '">' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
+                }
             }
         }
 

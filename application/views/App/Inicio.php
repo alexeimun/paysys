@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-<body class="skin-blue sidebar-mini">
 <?= $Head ?>
+<body class="skin-blue sidebar-mini">
 <div class="wrapper">
     <?= $Header ?>
     <!-- Left side column. contains the logo and sidebar -->

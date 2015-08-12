@@ -2,7 +2,9 @@
 <?= $Head ?>
 
 <body class="skin-blue sidebar-mini">
-
+<!-- bootstrap wysihtml5 - text editor -->
+<link href="<?= base_url() ?>/public/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet"
+      type="text/css"/>
 <!--Spin.js-->
 <script src="<?= base_url() ?>public/plugins/spin/spin.min.js"></script>
 <!--Jvalidator-->

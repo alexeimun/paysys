@@ -97,7 +97,7 @@
             $this->db->update('t_consecutivos', ['CONSECUTIVO' => $Consecutivo + 1], ['NOMBRE' => 'RECIBO']);
             if ($TotalAbonado > 0)
             {
-                $this->db->query('UPDATE t_solicitudes SET ABONADO=ABONADO+' . $TotalAbonado . ' WHERE ID_SOLICITUD=' . $IdSol);
+                $this->db->query("UPDATE t_solicitudes SET ABONADO=ABONADO+ $TotalAbonado  WHERE ID_SOLICITUD= $IdSol");
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->insert('t_movimientos',
                     ['VALOR' => $TotalAbonado,
@@ -110,7 +110,7 @@
             }
             if ($TotalInteres > 0)
             {
-                $this->db->query('UPDATE t_solicitudes SET ABONO_INTERES=ABONO_INTERES+' . $TotalInteres . ' WHERE ID_SOLICITUD=' . $IdSol);
+                $this->db->query("UPDATE t_solicitudes SET ABONO_INTERES=ABONO_INTERES+ $TotalInteres  WHERE ID_SOLICITUD= $IdSol");
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->insert('t_movimientos',
                     ['VALOR' => $TotalInteres,
@@ -244,11 +244,13 @@
              SOLICITUD,
              ID_SOLICITUD,
              CAPITAL_INICIAL,
+             ABONADO,
              t_deudores.NOMBRE AS NOMBRE_DEUDOR,
+             t_deudores.TELEFONO,
              t_deudores.DIRECCION AS DIRECCION_DEUDOR,
              t_acreedores.NOMBRE AS NOMBRE_ACREEDOR,
              t_solicitudes.FECHA_INICIO,
-             IF(t_solicitudes.TIPO_HIPOTECA=0,'CERRADA','ABIERTA') TIPO_HIPOTECA,
+             IF(t_solicitudes.TIPO_HIPOTECA=0,'cerrada','abierta') TIPO_HIPOTECA,
              t_solicitudes.FECHA_FIN,
              t_solicitudes.INTERES_MENSUAL,
              t_solicitudes.ABONADO,
@@ -327,6 +329,7 @@
                 AND mo.TIPO_MOV=1 AND mo.ID_SOLICITUD=" . $this->input->post('ID_SOLICITUD'))->result() as $res)
                 return ['MESES' => $res->MESES, 'TOTAL' => $res->TOTAL];
         }
+
 
         public function TraeInfoRecibo()
         {
@@ -415,5 +418,19 @@
         public function TraeCuadreConsecutivo()
         {
             foreach ($this->db->query("SELECT CONSECUTIVO FROM t_consecutivos WHERE NOMBRE='CUADRE'")->result() as $c) return $c->CONSECUTIVO;
+        }
+        public function TraeIngresosDiarios()
+        {
+           return $this->db->query("SELECT CONSECUTIVO,
+           t_acreedores.NOMBRE NOMBRE_ACREEDOR,
+           t_deudores.NOMBRE NOMBRE_DEUDOR,
+           VALOR,
+           FECHA
+          from t_movimientos
+          INNER  JOIN t_solicitudes USING (ID_SOLICITUD)
+          INNER  JOIN t_deudores ON t_deudores.ID_DEUDOR=t_solicitudes.ID_DEUDOR
+          INNER  JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_solicitudes.ID_ACREEDOR
+
+          WHERE FECHA ='$_POST[FECHA]' AND DESCRIPCION='TR'")->result();
         }
     }

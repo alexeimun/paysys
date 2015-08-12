@@ -30,7 +30,7 @@
         <!-- Main content -->
         <div class="container">
             <form method="post" target="_blank" class="form-horizontal col-md-8" role="form"
-                  action="ImprimeInformeAcreedor"
+                  action="informeacreedor"
                   style="margin-left: 20%;">
                 <hr style="border: 1px solid #3c8dbc;"/>
                 <br>

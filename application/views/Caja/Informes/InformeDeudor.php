@@ -29,7 +29,7 @@
         </section>
         <!-- Main content -->
         <div class="container">
-            <form class="form-horizontal col-md-8" target="_blank" action="ImprimeInformeDeudor"
+            <form class="form-horizontal col-md-8" target="_blank" action="informedeudor"
                   style="margin-left: 20%;"
                   method="post">
                 <hr style="border: 1px solid #3c8dbc;"/>

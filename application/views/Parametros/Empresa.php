@@ -4,14 +4,14 @@
 <body class="skin-blue sidebar-mini">
 <link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/docsupport/prism.css">
 <link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/chosen.css">
-<script src="<?= base_url() ?>public/js/DropDown/chosen.jquery.js" type="text/javascript"></script>
-<script src="<?= base_url() ?>public/js/DropDown/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
-<script src="<?= base_url() ?>public/js/DropDown/docsupport/combo.js"></script>
+<script src="<?= base_url() ?>/public/js/DropDown/chosen.jquery.js" type="text/javascript"></script>
+<script src="<?= base_url() ?>/public/js/DropDown/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
+<script src="<?= base_url() ?>/public/js/DropDown/docsupport/combo.js"></script>
 <!--Spin.js-->
-<script src="<?= base_url() ?>public/plugins/spin/spin.min.js"></script>
+<script src="<?= base_url() ?>/public/plugins/spin/spin.min.js"></script>
 <!--Jvalidator-->
 <script src="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.js"></script>
-<link rel="stylesheet" href="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.css">
+<link rel="stylesheet" href="<?= base_url() ?>/public/plugins/Jvalidator/Jvalidator.css">
 
 
 <div class="wrapper">
@@ -84,7 +84,7 @@
                     </div>
                 </div>
                 <br>
-                <span><b>Nota:</b></span><span> Algunos de estos datos serán mostrados en el recibo, así que porfavor ingrese información genuina</span>
+                <span><b>Nota:</b></span><span> Algunos de estos datos serán mostrados en el recibo, así que por favor ingrese información genuina</span>
 
                 <!--Envíar-->
                 <div class="form-group">

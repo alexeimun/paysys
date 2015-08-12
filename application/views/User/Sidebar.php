@@ -5,7 +5,7 @@
         <div class="user-panel">
             <div class="pull-left image">
                 <img
-                     src="<?= base_url() ?>public/images/Avatars/avatar<?= $this->session->userdata('AVATAR') ?>.png"
+                     src="<?= base_url() ?>/public/images/Avatars/avatar<?= $this->session->userdata('AVATAR') ?>.png"
                      class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
@@ -76,6 +76,8 @@
                             </li>
                             <li><a href="<?= site_url('cuadrediario') ?>"><i class="fa ion-ios-list-outline"></i> Cuadre Diario</a>
                             </li>
+                            <li><a href="<?= site_url('informeingresosdiarios') ?>"><i class="fa ion-ios-list-outline"></i> Informe de ingresos diarios</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -114,7 +116,18 @@
             </li>
         </ul>
         </li>
-
+        <li class="treeview">
+            <a href="#">
+                <i class="ion-person"></i> <span>&nbsp;&nbsp;Sesión de crédito</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li>
+                <li><a href="<?= site_url('sesion_credito_acreedor') ?>"><i class="fa ion-person"></i> Acreedores</a></li>
+                <li><a href="<?= site_url('sesion_credito_deudor') ?>"><i class="fa ion-person"></i> Deudores</a></li>
+        </li>
+        </ul>
+        </li>
         <li class="treeview">
             <a href="#">
                 <i class="ion-person"></i> <span>&nbsp;&nbsp;Usuarios</span>

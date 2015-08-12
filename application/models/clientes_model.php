@@ -61,7 +61,7 @@
                 INNER JOIN t_acreedores USING (ID_ACREEDOR)
                 INNER JOIN t_inmuebles ON t_inmuebles.ID_INMUEBLE=so.ID_INMUEBLE
 
-                WHERE t_acreedores.ESTADO=1 AND t_inmuebles.ESTADO=1 AND so.ID_DEUDOR=' .$id)->result();
+                WHERE t_acreedores.ESTADO=1 AND t_inmuebles.ESTADO=1 AND so.ID_DEUDOR=' . $id)->result();
         }
 
         public function TraeAcreedores()
@@ -101,6 +101,7 @@
 
                 WHERE ESTADO=1 AND ID_DEUDOR=' . $IdDeudor . ' LIMIT 1');
             foreach ($query->result() as $campo) return $campo;
+            return null;
         }
 
         public function TraeAcreedor($IdAcreedor)
@@ -111,6 +112,7 @@
 
                 WHERE ESTADO=1 AND ID_ACREEDOR=' . $IdAcreedor . ' LIMIT 1');
             foreach ($query->result() as $campo) return $campo;
+            return null;
         }
 
         public function TraeReferencias($IdDeudor)
@@ -139,8 +141,10 @@
             $this->db->set('FECHA_REGISTRA', 'NOW()', false);
             $this->db->set('USUARIO_REGISTRA', $this->session->userdata('ID_USUARIO'));
             $this->db->insert('t_deudores', $Deudor);
-            if (count($this->input->post()) > 8)
+            if(count($this->input->post()) > 8)
+            {
                 $this->InsertaRefrencias($Deudor['DOCUMENTO']);
+            }
         }
 
         public function InsertaAcreedor()
@@ -161,9 +165,14 @@
 
         public function TraeUsuarios($Mode = true)
         {
-            if ($Mode)
+            if($Mode)
+            {
                 return $this->db->query("SELECT  ID_USUARIO  FROM t_usuarios WHERE NIVEL<> 0 AND ESTADO=1 AND ID_USUARIO <> " . $this->session->userdata('ID_USUARIO'));
-            else return $this->db->query("SELECT  ID_USUARIO  FROM t_usuarios WHERE NIVEL <> 0 AND ESTADO=1");
+            }
+            else
+            {
+                return $this->db->query("SELECT  ID_USUARIO  FROM t_usuarios WHERE NIVEL <> 0 AND ESTADO=1");
+            }
         }
 
         private function InsertaRefrencias($Documento)
@@ -173,7 +182,7 @@
             $id_deudor = 0;
             foreach ($query->result() as $campo)
                 $id_deudor = $campo->ID_DEUDOR;
-            for ($i = 0; $i < count($Referencias['TIPO_REFERENCIA']); $i ++)
+            for ($i = 0; $i < count($Referencias['TIPO_REFERENCIA']); $i++)
             {
                 $this->db->set('FECHA_REGISTRO', 'NOW()', false);
                 $this->db->insert('t_referencias',
@@ -240,8 +249,10 @@
             $this->db->set('USUARIO_MODIFICA', $this->session->userdata('ID_USUARIO'), false);
             $this->db->update('t_deudores', $data, ['ID_DEUDOR' => $this->input->post('Ideudor')]);
             $this->db->delete('t_referencias', ['ID_DEUDOR' => $this->input->post('Ideudor')]);
-            if (count($this->input->post()) > 8)
+            if(count($this->input->post()) > 8)
+            {
                 $this->InsertaRefrencias($this->input->post('DOCUMENTO', true));
+            }
         }
 
         public function ActualizaAcreedor()
@@ -268,23 +279,53 @@
             $this->db->set('FECHA_MODIFICA', 'NOW()', false);
             $this->db->set('USUARIO_MODIFICA', $this->session->userdata('ID_USUARIO'), false);
             $this->db->update('t_acreedores', $data, ['ID_ACREEDOR' => $this->input->post('Idacreedor')]);
+
         }
 
         public function ContarDeudores()
         {
             $query = $this->db->query('SELECT COUNT(ID_DEUDOR) AS DEUDORES FROM t_deudores WHERE ESTADO=1 LIMIT  1');
             foreach ($query->result() as $campo) return $campo->DEUDORES;
+            return null;
         }
 
         public function ContarSolicitudes()
         {
             $query = $this->db->query('SELECT COUNT(ID_SOLICITUD) AS SOLICITUDES FROM t_solicitudes WHERE ESTADO=1 LIMIT  1');
             foreach ($query->result() as $campo) return $campo->SOLICITUDES;
+            return null;
         }
 
         public function ContarAcreedores()
         {
             $query = $this->db->query('SELECT COUNT(ID_ACREEDOR) AS ACREEDORES FROM t_acreedores WHERE ESTADO=1 LIMIT  1');
             foreach ($query->result() as $campo) return $campo->ACREEDORES;
+            return null;
+        }
+
+        public function TraeSolicitudesDD()
+        {
+            return $this->db->query("SELECT SOLICITUD, ID_SOLICITUD, t_deudores.NOMBRE,t_deudores.DOCUMENTO
+            FROM t_solicitudes INNER JOIN t_deudores USING (ID_DEUDOR)")->result();
+        }
+
+        public function SCAcredor()
+        {
+            $this->db->query("UPDATE t_solicitudes set ID_ACREEDOR='$_POST[TO]' where ID_ACREEDOR='$_POST[FROM]'");
+            foreach ($this->db->query("Select  LIGADO from t_acreedores  where ID_ACREEDOR='$_POST[FROM]'")->result() as $ligado) ;
+
+            $this->db->query("UPDATE t_acreedores set LIGADO=$ligado->LIGADO where ID_ACREEDOR='$_POST[TO]'");
+            $this->db->query("UPDATE t_acreedores set LIGADO=0 where ID_ACREEDOR='$_POST[FROM]'");
+        }
+
+        public function SCDeudor()
+        {
+            foreach ($this->db->query("SELECT ID_ACREEDOR FROM t_solicitudes WHERE ID_SOLICITUD='$_POST[FROM]'")->result() as $IdAcreedor) ;
+            $IdAcreedor = $IdAcreedor->ID_ACREEDOR;
+
+            $this->db->query("UPDATE t_acreedores set LIGADO=LIGADO-1 where ID_ACREEDOR=$IdAcreedor");
+            $this->db->query("UPDATE t_acreedores set LIGADO=LIGADO+1 where ID_ACREEDOR='$_POST[TO]'");
+
+            $this->db->query("UPDATE t_solicitudes  set ID_ACREEDOR='$_POST[TO]' where ID_SOLICITUD='$_POST[FROM]'");
         }
     }

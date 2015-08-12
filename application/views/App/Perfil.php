@@ -89,20 +89,17 @@
         var Avatares = 1;
         var Prev = null;
 
-        $('form').on(events, elements, function () {jValidate($(this), event)});
+        $('form').on(events, elements, function () {
+            jValidate($(this), event)
+        });
         url = '<?=site_url('ValidaCampos') ?>';
         emailUser = '<?= $this->session->userdata('CORREO') ?>';
 
-        $('button:button').click(function ()
-        {
-            if (validateForm())
-            {
-                if ($('.correo').val() != emailUser)
-                {
-                    $.post('ValidaCampos', {'CORREO': $('input.correo').val()}, function (data)
-                    {
-                        if (data == 'no')
-                        {
+        $('button:button').click(function () {
+            if (validateForm()) {
+                if ($('.correo').val() != emailUser) {
+                    $.post('ValidaCampos', {'CORREO': $('input.correo').val()}, function (data) {
+                        if (data == 'no') {
                             $('.correo').closest('div').addClass('has-error error_correo_existe');
                             $('body,html').animate({scrollTop: 0}, 200);
                         }
@@ -114,18 +111,15 @@
 
         });
 
-        function Update()
-        {
+        function Update() {
             $.ajax({
                 type: 'post', url: '<?=site_url('actualizaUsuarioPerfil') ?>', data: $('form').serialize(),
-                beforeSend: function ()
-                {
+                beforeSend: function () {
                     $('body').addClass('Wait');
                     $('body,html').animate({scrollTop: 0}, 200);
                     $('#spin').show();
                 },
-                success: function ()
-                {
+                success: function () {
                     console.log('popo');
                     $('body').removeClass('Wait');
                     Alerta();
@@ -134,16 +128,14 @@
             });
         }
 
-        function Alerta()
-        {
+        function Alerta() {
             BootstrapDialog.show({
                 title: '<span style="color: #ffffff;font-size: 20pt;"class="ion ion-checkmark-round"></span>&nbsp;&nbsp; <span style="font-size: 18pt;">Bien hecho...</span>',
                 message: 'Tu perfil se ha actualizado correctamente...',
                 draggable: true,
                 buttons: [{
                     label: 'Cerrar',
-                    action: function (dialogItself)
-                    {
+                    action: function (dialogItself) {
                         dialogItself.close();
                         location.replace('<?=site_url('perfil')?>');
                     }
@@ -152,8 +144,7 @@
         }
 
 
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             var avatars = '<div class="container imgs">' +
                 '<img id="a1" draggable="false"  src="<?= base_url() ?>public/images/Avatars/avatar1.png"  class="image-responsive img-thumbnail"/>' +
                 '<img id="a2" draggable="false"  src="<?= base_url() ?>public/images/Avatars/avatar2.png" class="image-responsive img-thumbnail"/>' +
@@ -162,8 +153,7 @@
                 '<img id="a5" draggable="false" src="<?= base_url() ?>public/images/Avatars/avatar5.png"  class="image-responsive img-thumbnail"/>' +
                 '</div>';
 
-            $('body').on('click', '.container img', function ()
-            {
+            $('body').on('click', '.container img', function () {
 
                 if (Prev != null)
                     Prev.removeClass('Selection');
@@ -173,8 +163,7 @@
                 console.log(Avatares);
             });
 
-            $('img.img-circle').click(function ()
-            {
+            $('img.img-circle').click(function () {
                 BootstrapDialog.show({
                     title: '<span class="ion ion-person" style="font-size: 20pt;font-weight: bold; color: white;"></span>&nbsp;&nbsp;&nbsp; <span  style="font-size: 18pt;">Selecciona tu avatar</span>',
                     type: BootstrapDialog.TYPE_SUCCESS,
@@ -184,8 +173,7 @@
                         {
                             label: 'Cerrar',
                             cssClass: 'btn-default',
-                            action: function (dialogItself)
-                            {
+                            action: function (dialogItself) {
                                 dialogItself.close();
                             }
                         },
@@ -194,10 +182,8 @@
                             cssClass: 'btn-success',
                             autospin: true,
                             icon: 'glyphicon glyphicon-send',
-                            action: function ()
-                            {
-                                $.post('ActualizaAvatarUsuario', {'Avatar': Avatares}, function ()
-                                {
+                            action: function () {
+                                $.post('ActualizaAvatarUsuario', {'Avatar': Avatares}, function () {
                                     location.href = 'perfil';
                                 });
                             }
