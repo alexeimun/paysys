@@ -22,11 +22,11 @@
             }
             else
             {
-                redirect(site_url(), 'refresh');
+                redirect('home', 'refresh');
             }
         }
 
-        public function Params()
+        private function Params()
         {
             $this->Data['Head'] = $this->load->view('User/Head', [], true);
             $this->Data['Header'] = $this->load->view('User/Header', ['Notify' => $this->notificaciones_model->TraeNotificaciones()], true);
