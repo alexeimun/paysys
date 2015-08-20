@@ -42,6 +42,10 @@
                 <button type="button" class="btn btn-info btn-lg btn-block"><span
                         class="glyphicon glyphicon-import"></span>&nbsp; Importar
                 </button>
+                <br>
+                <br>
+                <p style="font-size: 15pt;"><strong>Nota: </strong>Las columnas en excel deben seguir el este orden:
+                    <span style="background: #f4f4f4;color: #1d9e97">Nombre, Teléfono, Documento, Dirección, Correo</span></p>
             </div>
 
         </div>

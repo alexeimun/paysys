@@ -12,7 +12,7 @@
         {
             if ($this->session->userdata('ID_USUARIO'))
             {
-                redirect('app', 'refresh');
+                redirect(site_url(), 'refresh');
             }
             else $this->load->view('Home/Login');
         }

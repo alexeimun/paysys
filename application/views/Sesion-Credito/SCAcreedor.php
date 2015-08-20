@@ -32,17 +32,17 @@
                 <hr style="border: 1px solid #0000c0;"/>
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Transferir:</label>
+                    <label  data-toggle="tooltip" title="Seleccione el deudor de la solicitud a transferir" class="col-lg-2 control-label">Transferir:</label>
 
                     <div class="col-lg-10">
                         <select name="FROM" class="form-control chosen-select" style="width:320px;">
-                            <?= $FromAcreedores ?>
+                            <?= $Solicitudes ?>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">A:</label>
+                    <label  data-toggle="tooltip" title="Seleccione el acreedor que recibirá el deudor"  class="col-lg-2 control-label">A:</label>
 
                     <div class="col-lg-10">
                         <select name="TO" class="form-control chosen-select"
@@ -61,14 +61,18 @@
                     </div>
                 </div>
                 <div id="spin" style="text-align: center;position: static;"></div>
+                <br>
+                <span><b>Nota:</b></span><span> El campo <b>Tranferir</b> muestra las solicitudes con el #solicitud, Documento  y Nombre del deudor.</span>
             </form>
-
         </div>
-        <br/><br/>
     </div>
 </div>
 
 <script>
+
+    $('form').on(events, elements, function () {
+        jValidate($(this), event)
+    });
 
     (new Spinner({
         lines: 10, width: 4,
@@ -79,10 +83,8 @@
     $('button:button').click(function () {
         var to = $('select[name=TO] :selected').val();
         var from = $('select[name=FROM] :selected').val();
-        if (from == 0) Message('Debe selecionar un <b>Acreedor</b> para transferir');
+        if (from == 0) Message('Debe selecionar un <b>Deudor</b> para transferir');
         else if (to == 0) Message('Debe selecionar un <b>Acreedor</b> para que reciba la transferencia');
-        else if (to == from)
-            Message("Debe especificar dos acreedores distintos...");
         else Save();
     });
     function Alerta() {
@@ -94,6 +96,7 @@
                 label: 'Cerrar',
                 action: function (dialogItself) {
                     dialogItself.close();
+                    location.href='sesion_credito_acreedor';
                 }
             }]
         });

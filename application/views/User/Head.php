@@ -1,5 +1,5 @@
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>InverBienes | <?=ucfirst(explode(' ',$this->session->userdata('NOMBRE_USUARIO'))[0] )?></title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
@@ -16,13 +16,22 @@
     <link href="<?= base_url() ?>/public/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css"/>
 
     <link href="<?= base_url() ?>/public/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css"/>
-
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link href="<?= base_url() ?>/public/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet"
+          type="text/css"/>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    <!-- jQuery 2.1.3 -->
+    <script src="<?= base_url() ?>/public/js/jquery.js"></script>
+    <!--    Big Screen-->
+    <script src="<?= base_url() ?>/public/plugins/bigscreen/bigscreen.min.js"></script>
+    <!--Dialogos-->
+    <script src="<?= base_url() ?>/public/bootstrap/dialogs/bootstrap-dialog.min.js"></script>
+
     <!--Dialogos-->
     <link href="<?= base_url() ?>/public/bootstrap/dialogs/bootstrap-dialog.min.css" rel="stylesheet" type="text/css"/>
 

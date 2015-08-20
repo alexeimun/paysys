@@ -130,6 +130,19 @@
                             Reclama Personalmente</strong>
                     </div>
                 </div>
+
+                <?php if ($Solicitudes != ''): ?>
+                    <br/><br/>
+                    <div class="box">
+                        <div class="box-header bg-gray">
+                            <h3 style="color:#7d7d80;text-align: center"><span class="ion ion-shuffle"></span> Solicitudes</h3>
+                        </div>
+                        <div class="box-body">
+                            <?= $Solicitudes ?>
+                        </div>
+
+                    </div>
+                <?php endif ?>
             </form>
         </div>
         <br/><br/>

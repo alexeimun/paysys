@@ -64,6 +64,23 @@
                 WHERE t_acreedores.ESTADO=1 AND t_inmuebles.ESTADO=1 AND so.ID_DEUDOR=' . $id)->result();
         }
 
+        public function TraeSolicitudesAcreedor($id)
+        {
+            return $this->db->query("SELECT DISTINCT
+                so.SOLICITUD,
+                t_deudores.NOMBRE AS NOMBRE_DEUDOR,
+                t_inmuebles.MATRICULA,
+                so.FECHA_INICIO,
+                so.FECHA_FIN,
+                so.ID_SOLICITUD
+
+               FROM t_solicitudes so
+                INNER JOIN t_deudores USING (ID_DEUDOR)
+                INNER JOIN t_inmuebles ON t_inmuebles.ID_INMUEBLE=so.ID_INMUEBLE
+
+                WHERE t_deudores.ESTADO=1 AND t_inmuebles.ESTADO=1 AND so.ID_ACREEDOR= $id")->result();
+        }
+
         public function TraeAcreedores()
         {
             return $this->db->query('SELECT DISTINCT
@@ -135,7 +152,7 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('ACCION', $this->input->post('DOCUMENTO'), false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'di']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'di','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $Deudor = array_slice($this->input->post(null, true), 0, 8);
             $this->db->set('FECHA_REGISTRA', 'NOW()', false);
@@ -154,7 +171,7 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('ACCION', $this->input->post('DOCUMENTO'), false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ai']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ai','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $this->db->set('FECHA_REGISTRA', 'NOW()', false);
             $_POST['MANEJO_CARTERA'] = isset($_POST['MANEJO_CARTERA']) ? 1 : 0;
@@ -197,7 +214,7 @@
             {
                 $this->db->set('ACCION', $this->input->post('Id'));
                 $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'de']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'de','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $this->db->set('FECHA_ELIMINA', 'NOW()', false);
             return $this->db->update('t_deudores', ['ESTADO' => 0, 'USUARIO_ELIMINA' => $this->session->userdata('ID_USUARIO')], ['ID_DEUDOR' => $this->input->post('Id')]);
@@ -209,7 +226,7 @@
             {
                 $this->db->set('ACCION', $this->input->post('Id'));
                 $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ae']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ae','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $this->db->set('FECHA_ELIMINA', 'NOW()', false);
             return $this->db->update('t_acreedores', ['ESTADO' => 0, 'USUARIO_ELIMINA' => $this->session->userdata('ID_USUARIO')], ['ID_ACREEDOR' => $this->input->post('Id')]);
@@ -235,7 +252,7 @@
                 $this->db->set('ACCION', $this->input->post('Ideudor'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'da']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'da','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $data = ['NOMBRE' => trim($this->input->post('NOMBRE', true)),
                 'CORREO' => trim($this->input->post('CORREO', true)),
@@ -263,7 +280,7 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('ACCION', $this->input->post('Idacreedor'));
                 $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'aa']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'aa','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $data = ['NOMBRE' => trim($this->input->post('NOMBRE', true)),
                 'CORREO' => trim($this->input->post('CORREO', true)),
@@ -309,16 +326,7 @@
             FROM t_solicitudes INNER JOIN t_deudores USING (ID_DEUDOR)")->result();
         }
 
-        public function SCAcredor()
-        {
-            $this->db->query("UPDATE t_solicitudes set ID_ACREEDOR='$_POST[TO]' where ID_ACREEDOR='$_POST[FROM]'");
-            foreach ($this->db->query("Select  LIGADO from t_acreedores  where ID_ACREEDOR='$_POST[FROM]'")->result() as $ligado) ;
-
-            $this->db->query("UPDATE t_acreedores set LIGADO=$ligado->LIGADO where ID_ACREEDOR='$_POST[TO]'");
-            $this->db->query("UPDATE t_acreedores set LIGADO=0 where ID_ACREEDOR='$_POST[FROM]'");
-        }
-
-        public function SCDeudor()
+        public function SCAcreedor()
         {
             foreach ($this->db->query("SELECT ID_ACREEDOR FROM t_solicitudes WHERE ID_SOLICITUD='$_POST[FROM]'")->result() as $IdAcreedor) ;
             $IdAcreedor = $IdAcreedor->ID_ACREEDOR;
@@ -327,5 +335,17 @@
             $this->db->query("UPDATE t_acreedores set LIGADO=LIGADO+1 where ID_ACREEDOR='$_POST[TO]'");
 
             $this->db->query("UPDATE t_solicitudes  set ID_ACREEDOR='$_POST[TO]' where ID_SOLICITUD='$_POST[FROM]'");
+        }
+
+        public function SCDeudor()
+        {
+            foreach ($this->db->query("SELECT ID_DEUDOR FROM t_solicitudes WHERE ID_SOLICITUD='$_POST[FROM]'")->result() as $IdDeuduor) ;
+            $IdDeuduor = $IdDeuduor->ID_DEUDOR;
+
+            $this->db->query("UPDATE t_deudores set LIGADO=LIGADO-1 where ID_DEUDOR=$IdDeuduor");
+            $this->db->query("UPDATE t_deudores set LIGADO=LIGADO+1 where ID_DEUDOR='$_POST[TO]'");
+
+            $this->db->query("UPDATE t_solicitudes  set ID_DEUDOR='$_POST[TO]' where ID_SOLICITUD='$_POST[FROM]'");
+            $this->db->query("UPDATE t_inmuebles  set ID_PROPIETARIO='$_POST[TO]' where ID_INMUEBLE =(SELECT ID_INMUEBLE FROM t_solicitudes WHERE ID_SOLICITUD='$_POST[FROM]')");
         }
     }

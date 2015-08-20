@@ -10,24 +10,13 @@
         function __construct()
         {
             parent::__construct();
-            $this->load->model('clientes_model');
-        }
 
-        public function index()
-        {
-            if($this->session->userdata('ID_USUARIO'))
-            {
-                $this->load->view('Clientes/Deudores/Deudores');
-            }
-            else
-            {
-                redirect('home', 'refresh');
-            }
+            $this->load->model('clientes_model');
         }
 
         public function CrearDeudor()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_deudores'))
             {
                 $this->Params();
                 $this->Ciudades();
@@ -35,13 +24,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function CrearAcreedor()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_acreedores'))
             {
                 $this->Params();
                 $this->ListarAcreedores();
@@ -50,13 +39,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function SCDeudor()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('deudores'))
             {
                 if(!empty($_POST))
                 {
@@ -64,7 +53,7 @@
                 }
                 else
                 {
-                    $this->Acreedor(false);
+                    $this->Deudor(false);
                     $this->Solicitudes();
                     $this->Params();
                     $this->load->view('Sesion-Credito/SCDeudor', $this->Data);
@@ -72,33 +61,33 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function SCAcreedor()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('acreedores'))
             {
                 if(!empty($_POST))
                 {
-                    $this->clientes_model->SCAcredor();
+                    $this->clientes_model->SCAcreedor();
                 }
                 else
                 {
                     $this->Acreedor(false);
-                    $this->Acreedor();
+                    $this->Solicitudes();
                     $this->Params();
                     $this->load->view('Sesion-Credito/SCAcreedor', $this->Data);
                 }
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
-        public function Params()
+        private function Params()
         {
             $this->Data['Head'] = $this->load->view('User/Head', [], true);
             $this->Data['Header'] = $this->load->view('User/Header', ['Notify' => $this->notificaciones_model->TraeNotificaciones()], true);
@@ -153,19 +142,26 @@
 
         public function RestauraDeudor($Id)
         {
-            $this->clientes_model->RestauraDeudor($Id);
+            if($this->session->can('administrar_deudores'))
+            {
+                $this->clientes_model->RestauraDeudor($Id);
+            }
+
             redirect('app/Notificaciones#de', 'redirect');
         }
 
         public function RestauraAcreedor($Id)
         {
-            $this->clientes_model->RestauraAcreedor($Id);
+            if($this->session->can('administrar_acreedores'))
+            {
+                $this->clientes_model->RestauraAcreedor($Id);
+            }
             redirect('app/Notificaciones#ae', 'redirect');
         }
 
         public function ActualizarDeudor($Id)
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_acreedores'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->clientes_model->TraeDeudor($Id);
@@ -177,18 +173,18 @@
                 }
                 else
                 {
-                    redirect('app', 'refresh');
+                    redirect(site_url(), 'refresh');
                 }
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function ActualizarAcreedor($Id)
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_acreedores'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->clientes_model->TraeAcreedor($Id);
@@ -199,12 +195,12 @@
                 }
                 else
                 {
-                    redirect('app', 'refresh');
+                    redirect(site_url(), 'refresh');
                 }
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
@@ -220,7 +216,7 @@
 
         public function Deudores()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_deudores'))
             {
                 $this->Params();
                 $this->ListarDeudores();
@@ -228,13 +224,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function Acreedores()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_acreedores'))
             {
                 $this->Params();
                 $this->ListarAcreedores();
@@ -242,13 +238,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function VerDeudor($Id)
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_deudores'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->clientes_model->TraeDeudor($Id);
@@ -261,12 +257,12 @@
                 }
                 else
                 {
-                    redirect('app', 'refresh');
+                    redirect(site_url(), 'refresh');
                 }
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
@@ -276,9 +272,9 @@
                     <table id="tabla" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>#Solicitid</th>
                                     <th>Acreedor</th>
-                                    <th>Matricula inmueble</th>
+                                    <th>M.I</th>
                                     <th>Fecha inicio</th>
                                     <th>Fecha fin</th>
                                     <th>Acción</th>
@@ -308,25 +304,64 @@
             }
         }
 
+        public function TraeSolicitudesAcreedor($Id)
+        {
+            $this->Data['Solicitudes'] = '
+                    <table id="tabla" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>#Solicitid</th>
+                                    <th>Deudor</th>
+                                    <th>M.I</th>
+                                    <th>Fecha inicio</th>
+                                    <th>Fecha fin</th>
+                                    <th>Acción</th>
+                                </tr>
+                                </thead>
+                                <tbody>';
+            $c = 0;
+            foreach ($this->clientes_model->TraeSolicitudesAcreedor($Id) as $solicitud)
+            {
+                $c++;
+                $this->Data['Solicitudes'] .= '<tr>
+                 <td>' . $solicitud->SOLICITUD . '</td>
+                 <td>' . $solicitud->NOMBRE_DEUDOR . '</td>
+                 <td>' . $solicitud->MATRICULA . '</td>
+                 <td>' . date_format(new DateTime($solicitud->FECHA_INICIO), 'd/m/Y') . '</td>
+                 <td>' . date_format(new DateTime($solicitud->FECHA_FIN), 'd/m/Y') . '</td>
+                 <td style="text-align:center;">
+                 <a href="' . site_url('versolicitud/' . $solicitud->ID_SOLICITUD) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver más..."></a>&nbsp;&nbsp;</td> </tr>';
+            }
+            if($c > 0)
+            {
+                $this->Data['Solicitudes'] .= '</tbody></table>';
+            }
+            else
+            {
+                $this->Data['Solicitudes'] = '';
+            }
+        }
+
         public function VerAcreedor($Id)
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('administrar_acreedores'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->clientes_model->TraeAcreedor($Id);
                 if($this->Data['Info'] != null)
                 {
+                    $this->TraeSolicitudesAcreedor($Id);
                     $this->Ciudad($this->Data['Info']->ID_CIUDAD);
                     $this->load->view('Clientes/Acreedores/VerAcreedor', $this->Data);
                 }
                 else
                 {
-                    redirect('app', 'refresh');
+                    redirect(site_url(), 'refresh');
                 }
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
@@ -389,7 +424,7 @@
                  <td>' . $acreedor->TELEFONO . '</td>
                  <td>' . $acreedor->DIRECCION . '</td>
                  <td>' . ucfirst(strtolower($acreedor->NOMBRE_CIUDAD)) . '</td>
-                 <td>' . $acreedor->FECHA_REGISTRA . '</td>
+                 <td>' . date('d/m/Y',strtotime($acreedor->FECHA_REGISTRA)). '</td>
                  <td style="text-align:center;">
                  <a href="veracreedor/' . $acreedor->ID_ACREEDOR . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver más..."></a>&nbsp;&nbsp;
                  <a href="actualizaracreedor/' . $acreedor->ID_ACREEDOR . '" style="font-size:20pt;color:  #0065c3" class="ion ion-edit" data-toggle="tooltip" title="Editar"></a>&nbsp;&nbsp;';
@@ -402,7 +437,7 @@
             $this->Data['Acreedores'] .= '</tbody></table>';
         }
 
-        public function TraeReferencias($IdDeudor)
+        private function TraeReferencias($IdDeudor)
         {
             $Referencias = $this->clientes_model->TraeReferencias($IdDeudor);
             $this->Data['Referencias'] = '';
@@ -420,7 +455,7 @@
             }
         }
 
-        public function TraeReferenciasActualizar($IdDeudor)
+        private function TraeReferenciasActualizar($IdDeudor)
         {
             $Referencias = $this->clientes_model->TraeReferencias($IdDeudor);
             $this->Data['Referencias'] = '';
@@ -440,7 +475,7 @@
             }
         }
 
-        public function Acreedor($from = true)
+        private function Acreedor($from = true)
         {
             $acreedores = $this->clientes_model->TraeAcreedores()->result();
 
@@ -465,27 +500,26 @@
             }
         }
 
-        public function Deudor()
+        private function Deudor()
         {
             $this->Data['Deudores'] = '<option value="0">--Seleccione un deudor---</option>';
             $deudores = $this->clientes_model->TraeDeudores();
             foreach ($deudores->result() as $deudor)
             {
-                #Sólo los deudores que tienen un solicitud
-                if($deudor->LIGADO > 0)
-                {
-                    $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '">' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
-                }
+                #Sólo los deudores que tienen una solicitud por lo menos
+
+                $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '">' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
+
             }
         }
 
-        public function Solicitudes()
+        private function Solicitudes()
         {
             $this->Data['Solicitudes'] = '<option value="0">--Seleccione una solicitud---</option>';
             $solicitudes = $this->clientes_model->TraeSolicitudesDD();
             foreach ($solicitudes as $solicitud)
             {
-                $this->Data['Solicitudes'] .= '<option value="'. $solicitud->ID_SOLICITUD . '"> #' . $solicitud->SOLICITUD . ' cc:'.$solicitud->DOCUMENTO . ' - ' . $solicitud->NOMBRE . '</option>';
+                $this->Data['Solicitudes'] .= '<option value="' . $solicitud->ID_SOLICITUD . '"> #' . $solicitud->SOLICITUD . ' cc:' . $solicitud->DOCUMENTO . ' - ' . $solicitud->NOMBRE . '</option>';
             }
         }
     }

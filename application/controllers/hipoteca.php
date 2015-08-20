@@ -13,7 +13,7 @@
 
         public function CrearSolicitud()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('administrar_solicitudes'))
             {
                 $this->load->model('parametros_model');
                 $this->Data['Solicitud'] = $this->parametros_model->TraeConsecutivo('SOLICITUD');
@@ -21,19 +21,19 @@
                 $this->Params();
                 $this->load->view('Hipotecas/Solicitudes/CrearSolicitud', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function CrearInmueble()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('administrar_inmuebles'))
             {
                 $this->Deudores();
                 $this->Ciudades();
                 $this->Params();
                 $this->load->view('Hipotecas/Inmuebles/CrearInmueble', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function InsertaSolicitud()
@@ -43,30 +43,29 @@
 
         public function InsertaInmueble()
         {
-            var_dump($_POST);
             $this->hipotecas_model->InsertaInmueble();
         }
 
         public function Inmuebles()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('administrar_inmuebles'))
             {
                 $this->TraeInmuebles();
                 $this->Params();
                 $this->load->view('Hipotecas/Inmuebles/Inmuebles', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function Solicitudes()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('administrar_solicitudes'))
             {
                 $this->TraeSolicitudes();
                 $this->Params();
                 $this->load->view('Hipotecas/Solicitudes/Solicitudes', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function Clientes()
@@ -82,7 +81,7 @@
 
         public function VerInmueble($Id)
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('administrar_inmuebles'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->hipotecas_model->TraeInmueble($Id);
@@ -90,14 +89,14 @@
                 {
                     $this->load->view('Hipotecas/Inmuebles/VerInmueble', $this->Data);
                 }
-                else redirect('app', 'refresh');
+                else redirect(site_url(), 'refresh');
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function VerSolicitud($Id)
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('administrar_solicitudes'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->hipotecas_model->TraeSolicitud($Id);
@@ -107,9 +106,9 @@
                     $this->TraeInmuebleSolicitud();
                     $this->load->view('Hipotecas/Solicitudes/VerSolicitud', $this->Data);
                 }
-                else redirect('app', 'refresh');
+                else redirect(site_url(), 'refresh');
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function Deudores($id = - 1)
@@ -311,7 +310,7 @@
 
         public function ActualizarInmueble($Id)
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('administrar_inmuebles'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->hipotecas_model->TraeInmueble($Id);
@@ -321,14 +320,13 @@
                     $this->Ciudades($this->Data['Info']->ID_CIUDAD);
                     $this->load->view('Hipotecas/Inmuebles/ActualizarInmueble', $this->Data);
                 }
-                else redirect('app', 'refresh');
+                else redirect(site_url(), 'refresh');
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function ActualizaInmueble()
         {
-            var_dump($_POST);
             $this->hipotecas_model->ActualizaInmueble();
         }
 

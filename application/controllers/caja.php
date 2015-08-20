@@ -1,7 +1,4 @@
-<?php if(!defined('BASEPATH'))
-{
-    exit('No direct script access allowed');
-}
+<?php
 
     class Caja extends CI_Controller
     {
@@ -10,14 +7,13 @@
         function __construct()
         {
             parent::__construct();
-            $this->load->model('clientes_model');
-            $this->load->model('caja_model');
-            $this->load->model('parametros_model');
+            $this->load->model(['clientes_model', 'caja_model', 'parametros_model']);
+            $this->load->library('fpdf/pdf');
         }
 
         public function Recibos()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_recibos'))
             {
                 $this->TraeRecibos();
                 $this->Params();
@@ -25,7 +21,7 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
@@ -74,7 +70,7 @@
 
         public function AnularRecibo($id)
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_recibos'))
             {
                 $this->caja_model->AnularRecibo($id);
                 redirect('caja/Recibos', 'refresh');
@@ -93,7 +89,7 @@
 
         public function CrearRecibo()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('administrar_recibos'))
             {
                 $this->load->model('parametros_model');
                 $this->Data['RECIBO'] = $this->parametros_model->TraeConsecutivo('RECIBO');
@@ -103,13 +99,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function CuadreDiario()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('realizar_informes'))
             {
                 if(!empty($_POST))
                 {
@@ -124,13 +120,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function InformeDeudor()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('realizar_informes'))
             {
                 if(!empty($_POST))
                 {
@@ -145,13 +141,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function InformeAcreedor()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('realizar_informes'))
             {
                 if(!empty($_POST))
                 {
@@ -166,13 +162,13 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
         public function InformeIngresosDiarios()
         {
-            if($this->session->userdata('ID_USUARIO'))
+            if($this->session->can('realizar_informes'))
             {
                 if(!empty($_POST))
                 {
@@ -187,7 +183,7 @@
             }
             else
             {
-                redirect('home', 'refresh');
+                redirect(site_url(), 'refresh');
             }
         }
 
@@ -305,7 +301,7 @@
             $pdf->Cell($pdf->PageNo());
         }
 
-        public function ImprimeInformeDeudor()
+        private function ImprimeInformeDeudor()
         {
             foreach ($this->caja_model->TraeSolicitud($this->input->post('ID_SOLICITUD'))->result() as $solicitud) ;
             $this->load->library('fpdf/pdf');
@@ -331,12 +327,15 @@
             $pdf->Cell(85, 6, 'tel. ' . $solicitud->TELEFONO, 0, 0, 'L');
             #Dirección Deudor
             $pdf->SetXY(20, 32 + ++$r * 6);
-            $pdf->Cell(85, 6, utf8_decode($solicitud->DIRECCION_DEUDOR), 0, 0, 'L');
+            $pdf->Cell(85, 6, 'dir. ' . utf8_decode($solicitud->DIRECCION_DEUDOR), 0, 0, 'L');
             $pdf->Line(190, 61, 20, 61);
             $r += 2;
             $pdf->SetFont('Arial', 'B', 11);
             $pdf->Text(21, 58, 'Hipoteca');
             $pdf->SetFont('Arial', '', 10);
+            #FECHA CONSTITUCIÓN
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, utf8_decode('Fecha constitución: ') . MesNombreAbr(round(date_format(new DateTime($solicitud->FECHA_CONSTITUCION), 'm'))) . date_format(new DateTime($solicitud->FECHA_CONSTITUCION), ' d/y'), 0, 0, 'L');
             #Tipo Hipoteca
             $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, 'Hipoteca ' . $solicitud->TIPO_HIPOTECA, 0, 0, 'L');
@@ -346,9 +345,6 @@
             #Notaria
             $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, utf8_decode('Notaría Nro ' . $solicitud->NUMERO_NOTARIA), 0, 0, 'L');
-            #FECHA CONSTITUCIÓN
-            $pdf->SetXY(20, 32 + ++$r * 6);
-            $pdf->Cell(85, 6, utf8_decode('Fecha constitución: ') . MesNombreAbr(round(date_format(new DateTime($solicitud->FECHA_CONSTITUCION), 'm'))) . date_format(new DateTime($solicitud->FECHA_CONSTITUCION), ' d/y'), 0, 0, 'L');
             #M.I No
             $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, 'M.I No ' . $solicitud->MATRICULA, 0, 0, 'L');
@@ -372,11 +368,13 @@
             $pdf->SetFont('Arial', '', 10);
             #----------------------------------------#
             $Vals = $this->caja_model->InteresesPagadosDeudor();
-            $fecha_inicio=new DateTime($solicitud->FECHA_INICIO);
+            $fecha_inicio = new DateTime($solicitud->FECHA_INICIO);
             $Mesinicio = round(date_format($fecha_inicio, 'm'));
             $Diainicio = date_format($fecha_inicio, 'd');
             $Anoinicio = date_format($fecha_inicio, 'y');
             $Anofin = $Anoinicio;
+            $TotalPagado = 0;
+            $TotalDebe = 0;
 
             #-----------------------PAGA ABONOS--------------------
             if($solicitud->ABONADO > 0)
@@ -384,6 +382,17 @@
                 $pdf->SetXY(20, 32 + ++$r * 6);
                 $pdf->Cell(85, 6, 'Abono capital', 1, 0, 'L');
                 $pdf->Cell(85, 6, number_format($solicitud->ABONADO, 0, '', ','), 1, 0, 'R');
+                $TotalPagado += $solicitud->ABONADO;
+            }
+            #-----------------------PAGA COMISIÓN--------------------
+            $pagacom = $this->caja_model->TraePagaComision($solicitud->ID_SOLICITUD);
+
+            if(!is_null($pagacom))
+            {
+                $pdf->SetXY(20, 32 + ++$r * 6);
+                $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbr(date('m', strtotime($pagacom->FECHA))) . date(' d/y', strtotime($pagacom->FECHA)), 1, 0, 'L');
+                $pdf->Cell(85, 6, number_format($pagacom->VALOR, 0, '', ','), 1, 0, 'R');
+                $TotalPagado += $pagacom->VALOR;
             }
 
             #-----------------------PAGA INT--------------------------
@@ -412,11 +421,26 @@
                 $pdf->SetXY(20, 32 + ++$r * 6);
                 $pdf->Cell(85, 6, $int, 1, 0, 'L');
                 $pdf->Cell(85, 6, number_format($Vals['TOTAL'], 0, '', ','), 1, 0, 'R');
+                $TotalPagado += $Vals['TOTAL'];
             }
+            #-----------------------------------------------------------------------------------------
+            #--------------------------PAGA AMPLIACIÓN PLAZO-----------------------------
+            $ap = $this->caja_model->TraePagaAmpliacionPlazo($solicitud->ID_SOLICITUD);
+            if(!is_null($ap))
+            {
+                $pdf->SetXY(20, 32 + ++$r * 6);
+                $pdf->Cell(85, 6, utf8_decode('Ampliación de plazo a ' . MesNombreAbr(date('m', strtotime($ap->FECHA))) . date(' d/y', strtotime($ap->FECHA))), 1, 0, 'L');
+                $pdf->Cell(85, 6, number_format($ap->VALOR, 0, '', ','), 1, 0, 'R');
+                $TotalPagado += $ap->VALOR;
+            }
+            //Total Pagado
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Total:', 1, 0, 'R');
+            $pdf->Cell(85, 6, '$ ' . number_format($TotalPagado, 0, '', ','), 1, 0, 'R');
 
-            #DEBE
+            ############DEBE#####################
             $r++;
-            $pdf->SetFont('Arial', 'B', 11);
             $pdf->Text(20, 32 + ++$r * 6, 'Debe');
             $pdf->SetFont('Arial', '', 10);
 
@@ -425,7 +449,7 @@
             $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, 'Abono capital', 1, 0, 'L');
             $pdf->Cell(85, 6, number_format($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO, 0, '', ','), 1, 0, 'R');
-
+            $TotalDebe += $solicitud->CAPITAL_INICIAL - $solicitud->ABONADO;
             #-----------------------DEBE INT--------------------------
             $Mes = $Mesfin = $Vals['MESES'] + $Mesinicio;
             if($Mes > 12)
@@ -472,33 +496,49 @@
             if($p > 0)
             {
                 $debeInt .= MesNombreAbr($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
+                $calc = $p * ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * ($solicitud->INTERES_MENSUAL / 100);
                 #DEBE INTERESES
                 $pdf->SetXY(20, 32 + ++$r * 6);
                 $pdf->Cell(85, 6, $debeInt, 1, 0, 'L');
-                $pdf->Cell(85, 6, number_format($p * ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * ($solicitud->INTERES_MENSUAL / 100), 0, '', ','), 1, 0, 'R');
+                $pdf->Cell(85, 6, number_format($calc, 0, '', ','), 1, 0, 'R');
+                $TotalDebe += $calc;
             }
-            #-----------------------------------------------------------
-            #COMISIÓN
-            $pdf->SetXY(20, 32 + ++$r * 6);
-            $pdf->Cell(85, 6, utf8_decode('Comisión sep 27/14'), 1, 0, 'L');
-            $pdf->Cell(85, 6, number_format('600000', 0, '', ','), 1, 0, 'R');
-            #AMPLIACIÓN
-            $pdf->SetXY(20, 32 + ++$r * 6);
-            $pdf->Cell(85, 6, utf8_decode('Ampliación a sep 27/14'), 1, 0, 'L');
-            $pdf->Cell(85, 6, number_format('1200000', 0, '', ','), 1, 0, 'R');
-
-            #Blank
-            $pdf->SetXY(20, 32 + ++$r * 6);
-            $pdf->Cell(85, 6, '', 1, 0, 'L');
-            $pdf->Cell(85, 6, '', 1, 0, 'R');
+            #-----------------------------------------------------------------------------
+            #--------------------------DEBE COMISIÓN-----------------------------
+            $comisiones = $this->caja_model->TraeDebeComision($solicitud->ID_SOLICITUD);
+            for ($c = 1; $c <= $comisiones['Comisiones']; $c++)
+            {
+                if($comisiones['InicioDebe'] == 0)
+                {
+                    $fecha = date('Y-m-d', strtotime($solicitud->FECHA_INICIO));
+                    $pdf->SetXY(20, 32 + ++$r * 6);
+                    $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbr(round(date_format(new DateTime($fecha), 'm'))) .
+                        date_format(new DateTime($fecha), ' d/y'), 1, 0, 'L');
+                    $pdf->Cell(85, 6, number_format(($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .035, 0, '', ','), 1, 0, 'R');
+                    $comisiones['InicioDebe'] = 1;
+                }
+                else
+                {
+                    $fecha = date('Y-m-d', strtotime($solicitud->FECHA_INICIO) + 3600 * 24 * 365 * $c * $comisiones['InicioDebe']);
+                    $pdf->SetXY(20, 32 + ++$r * 6);
+                    $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbr(round(date_format(new DateTime($fecha), 'm'))) .
+                        date_format(new DateTime($fecha), ' d/y'), 1, 0, 'L');
+                    $pdf->Cell(85, 6, number_format(($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .03, 0, '', ','), 1, 0, 'R');
+                }
+            }
+            $TotalDebe += ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .03;
+            #Total Debe
             $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Total:', 1, 0, 'R');
+            $pdf->Cell(85, 6, '$ ' . number_format($TotalDebe, 0, '', ','), 1, 0, 'R');
             $pdf->Text(90, 40 + ++$r * 6, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO')))
                 . ' en ' . MesNombreAbr(round(date('m'))) . date(' d/y')));
             $pdf->Output();
             $pdf->Cell($pdf->PageNo());
         }
 
-        public function ImprimeInformeAcreedor()
+        private function ImprimeInformeAcreedor()
         {
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
@@ -512,7 +552,7 @@
             $pdf->SetXY(5, $hheader);
             $pdf->Cell(50, 6, 'DEUDOR', 1, 0, 'C');
             $pdf->SetXY(55, $hheader);
-            $pdf->Cell(50, 6, 'PERIODO DE PAGO', 1, 0, 'C');
+            $pdf->Cell(50, 6, 'CONCEPTO', 1, 0, 'C');
             $pdf->SetXY(105, $hheader);
             $pdf->Cell(20, 6, 'RCBO', 1, 0, 'C');
             $pdf->SetXY(125, $hheader);
@@ -534,7 +574,10 @@
                 switch ($informe->TIPO_MOV)
                 {
                     case 0:
-                        $Pago = 'ABONO A CAPITAL';
+                        $Pago = 'Abono a capital';
+                        break;
+                    case 3:
+                        $Pago = utf8_decode('Ampliación de plazo a ') . MesNombreAbr(date('m', strtotime($informe->INFO_AP))) . date(' d/y', strtotime($informe->INFO_AP));
                         break;
                     case 1:
                         $Mesinicio = round(date_format(new DateTime($informe->FECHA_INICIO), 'm'));
@@ -560,7 +603,7 @@
                         {
                             $Diafin = $Diainicio - 1;
                         }
-                        $Pago = $Diainicio . '/' . $Mesinicio . '/' . $Anoinicio . ' A ' . $Diafin . '/' . $Mesfin . '/' . $Anofin;
+                        $Pago = $Diainicio . '/' . $Mesinicio . '/' . $Anoinicio . ' a ' . $Diafin . '/' . $Mesfin . '/' . $Anofin;
                         break;
                 }
                 #---------------------------------------------------#
@@ -625,9 +668,9 @@
             $pdf->Cell($pdf->PageNo());
         }
 
-        public function ImprimeInformeIngresosDiarios()
+        private function ImprimeInformeIngresosDiarios()
         {
-            $this->load->library('fpdf/pdf');
+
             $pdf = new PDF();
             $pdf->AddPage();
             $hheader = 20;
@@ -683,7 +726,7 @@
             $pdf->Cell($pdf->PageNo());
         }
 
-        public function ImprimeCuadreDiario()
+        private function ImprimeCuadreDiario()
         {
             $this->load->library('fpdf/pdf');
             $pdf = new PDF();
@@ -779,7 +822,8 @@
             $pdf->Text(50, 32 + 6 * $i, utf8_decode('CUADRE N° ' . $this->input->post('NRO')));
             $pdf->Text(95, 32 + 6 * $i, 'TOTAL ENTREGADO');
             $pdf->Text(150, 32 + 6 * $i, number_format($TotalComision + $TotalAdmin, 0, '', ','), 1, 0, 'R');
-            $pdf->Text(70, 40 + 6 * $i, 'REALIZADO POR ' . strtoupper($this->session->userdata('NOMBRE_USUARIO')) . ' ' . date('d/m/Y'));
+            $pdf->Text(70, 40 + 6 * $i, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO'))) . ' en ' . MesNombreAbr(round(date('m'))) . date(' d/y')));
+
             #------------------------------------------------------#
             $pdf->Output();
             $pdf->Cell($pdf->PageNo());
@@ -861,8 +905,7 @@
 
         public function Clientes()
         {
-            $clientes = $this->caja_model->Clientes()->result();
-            foreach ($clientes as $cliente)
+            foreach ($this->caja_model->Clientes()->result() as $cliente)
             {
                 ##Datos
                 $Data['Datos']['Clientes'] = '<h3 style="text-align: center;color:#b00000;"><span class="ion ion-ios-person"></span> Deudor
@@ -907,10 +950,12 @@
                     <div class="chart" id="pagos" style="height: 180px; position: relative;"></div>
                 </div><!-- /.box-body -->';
                 ##Estadísticas
-                $Data['Estadisticas'] = '<div style="margin-top: 30px;"> <span style="font-size:12pt;color: lightslategrey">Porcentaje del pago de la deuda: <span  style="font-weight: bold;color: limegreen">' . number_format(($cliente->ABONADO / $cliente->CAPITAL_INICIAL) * 100, 2, ',', '') . '%</span></span></div>';
+                $Data['Estadisticas'] = '<div style="margin-top: 30px;"> <span style="font-size:12pt;color: lightslategrey">Porcentaje pagado de la deuda: <span  style="font-weight: bold;color: limegreen">' . number_format(($cliente->ABONADO / $cliente->CAPITAL_INICIAL) * 100, 2, ',', '') . '%</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Capital restante: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->CAPITAL_INICIAL - $cliente->ABONADO, 0, '', ',') . '</span></span></div>';
+                $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Número de abonos: <span  style="font-weight: bold;color: limegreen">' . $this->caja_model->ContarAbonos() . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Total abonado al capital: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->ABONADO, 0, '', ',') . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Total suma de intereses: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->ABONO_INTERES, 0, '', ',') . '</span></span></div>';
+
                 ##Abonos
                 $Data['Abonos'] = '<div style="margin-top: 20px;">';
                 $n = 0;
@@ -1082,7 +1127,7 @@
             }
         }
 
-        public function Params()
+        private function Params()
         {
             $this->Data['Head'] = $this->load->view('User/Head', [], true);
             $this->Data['Header'] = $this->load->view('User/Header', ['Notify' => $this->notificaciones_model->TraeNotificaciones()], true);

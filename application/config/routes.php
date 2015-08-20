@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
     #Reserved
-    $route['default_controller'] = "home";
+    $route['default_controller'] = "app";
     $route['404_override'] = 'home/error404';
     #Validaciones
     $route['ValidaCampos'] = 'validaciones/ValidaCampos';

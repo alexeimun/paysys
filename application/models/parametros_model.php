@@ -22,7 +22,7 @@
                 if(file_exists("bak_" . $archivo))
                 {
                     /** Clases necesarias */
-                    $this->load->library('ExcelImport/PHPExcel');
+                    $this->load->library('PHPExcel/Classes/PHPExcel');
                     // Cargando la hoja de cálculo
                     $objReader = new PHPExcel_Reader_Excel2007();
                     $objPHPExcel = $objReader->load("bak_" . $archivo);
@@ -83,7 +83,7 @@
                 if(file_exists("bak_" . $archivo))
                 {
                     /** Clases necesarias */
-                    $this->load->library('ExcelImport/PHPExcel');
+                    $this->load->library('PHPExcel/Classes/PHPExcel');
                     // Cargando la hoja de cálculo
                     $objReader = new PHPExcel_Reader_Excel2007();
                     $objPHPExcel = $objReader->load("bak_" . $archivo);

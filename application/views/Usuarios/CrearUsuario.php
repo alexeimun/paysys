@@ -71,8 +71,8 @@
 
                     <div class="col-lg-push-1 col-lg-4">
                         <select name="NIVEL" id="" class="form-control">
-                            <option value="0">Común</option>
-                            <option value="1">Administrador</option>
+                            <option value="1">Común</option>
+                            <option value="2">Administrador</option>
                         </select>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-9 col-lg-10">
                         <button type="button" class="btn btn-success btn-lg enviar"><span
-                                class="glyphicon glyphicon-send"></span>&nbsp; Actualizar
+                                class="glyphicon glyphicon-send"></span>&nbsp; Guardar
                         </button>
                     </div>
                 </div>
@@ -159,32 +159,42 @@
     //Envíar
     $('.enviar').click(function ()
     {
+        var correo=$('.correo_unico');
         if (validateForm())
         {
             if ($('.confirmar').val() == $('.claveinicial').val())
             {
                 if ($('.claveinicial').val().length > 5)
                 {
-                    $.ajax({
-                        type: 'post', url: 'insertarUsuario', data: {
-                            Chks: ListarCheckBox(),
-                            NOMBRE: $('input[name=NOMBRE]').val(),
-                            CORREO: $('input[name=CORREO]').val(),
-                            CLAVE: $('input[name=CLAVE]').val(),
-                            NIVEL: $('select[name=NIVEL] :selected').val()
-                        },
-                        beforeSend: function ()
+                    $.post(url, {'CORREO': correo.val()}, function (data)
+                    {
+                        if (data != 'no')
                         {
-                            $('body').addClass('Wait');
-                            $('body,html').animate({scrollTop: 0}, 200);
-                            $('#spin').show();
-                        },
-                        success: function ()
-                        {
-                            $('body').removeClass('Wait');
-                            Alerta();
-                            $('#spin').hide();
+                            $.ajax({
+                                type: 'post', url: 'insertarUsuario', data: {
+                                    Chks: ListarCheckBox(),
+                                    NOMBRE: $('input[name=NOMBRE]').val(),
+                                    CORREO: correo.val(),
+                                    CLAVE: $('input[name=CLAVE]').val(),
+                                    NIVEL: $('select[name=NIVEL] :selected').val()
+                                },
+                                beforeSend: function ()
+                                {
+                                    $('body').addClass('Wait');
+                                    $('body,html').animate({scrollTop: 0}, 200);
+                                    $('#spin').show();
+                                },
+                                success: function ()
+                                {
+                                    $('body').removeClass('Wait');
+                                    Alerta();
+                                    $('#spin').hide();
+                                }
+                            });
+
+                            correo.closest('div').addClass('has-error error_correo_existe');
                         }
+                        else correo.closest('div').removeClass('has-error error_correo_existe');
                     });
                 }
                 else Message('La longitud de la contraseña debe ser al menos de 6 dígitos');

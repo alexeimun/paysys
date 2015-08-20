@@ -78,7 +78,7 @@
             {
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('ACCION', $Id->ID_USUARIO, false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ui']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ui','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $this->InsertaPermisos($Chks['Chks'], $Id->ID_USUARIO);
         }
@@ -104,7 +104,7 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('ACCION', $this->input->post('Id'), false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ue']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ue','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
             $this->db->update('t_usuarios', ['ESTADO' => 0], ['ID_USUARIO' => $this->input->post('Id')]);
         }
@@ -123,7 +123,7 @@
 
         public function ActualizaPermisos()
         {
-            $this->db->delete('t_notificaciones', ['TIPO' => 'ua', 'ACCION' => $this->input->post('ID_USUARIO')]);
+            $this->db->delete('t_notificaciones', ['TIPO' => 'ua', 'ACCION' => $this->input->post('ID_USUARIO'),'USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             $this->db->update('t_usuarios', ['NIVEL' => $this->input->post('NIVEL')], ['ID_USUARIO' => $this->input->post('ID_USUARIO')]);
             foreach ($this->TraeUsuariosNotificaion()->result() as $campo)
             {
@@ -156,6 +156,17 @@
         public function TraePermisos($IdUsuario)
         {
             return $this->db->query('SELECT AUTORIZADO FROM t_permisos WHERE ID_USUARIO=' . $IdUsuario)->result();
+        }
+
+        public function TraePermisosUsuario($IdUsuario)
+        {
+            return $this->db->query("SELECT
+                t_modulos.NOMBRE
+
+                FROM t_permisos
+                INNER JOIN t_modulos USING(ID_MODULO)
+
+                WHERE	t_permisos.AUTORIZADO=1 AND ID_USUARIO =$IdUsuario")->result();
         }
 
         public function TraeSubModulos($IdMod)

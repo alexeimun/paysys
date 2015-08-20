@@ -1,4 +1,4 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php
 
     class Usuario extends CI_Controller
     {
@@ -18,13 +18,16 @@
 
         public function index()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('NIVEL') == 2)
             {
                 $this->Params();
                 $this->ListarUsuarios();
                 $this->load->view('Usuarios/Usuarios', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function ActualizaUsuarioPerfil()
@@ -34,45 +37,60 @@
 
         public function CrearUsuario()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('NIVEL') == 2)
             {
                 $this->Params();
                 $this->Data['Modulos'] = $this->ListarModulos();
                 $this->load->view('Usuarios/CrearUsuario', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function ActualizarUsuario($Id)
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('NIVEL') == 2)
             {
                 $this->Data['Info'] = $this->usuarios_model->TraeUsuario($Id);
-                if ($this->Data['Info'] != null)
+                if($this->Data['Info'] != null)
                 {
                     $this->Params();
                     $this->Data['Modulos'] = $this->ListarPermisos($Id);
                     $this->load->view('Usuarios/ActualizarUsuario', $this->Data);
                 }
-                else redirect('app', 'refresh');
+                else
+                {
+                    redirect(site_url(), 'refresh');
+                }
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function VerUsuario($Id)
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('NIVEL') == 2)
             {
                 $this->Data['Info'] = $this->usuarios_model->TraeUsuario($Id);
-                if ($this->Data['Info'] != null)
+                if($this->Data['Info'] != null)
                 {
                     $this->Params();
                     $this->Data['Modulos'] = $this->ListarPermisos($Id);
                     $this->load->view('Usuarios/VerUsuario', $this->Data);
                 }
-                else redirect('app', 'refresh');
+                else
+                {
+                    redirect(site_url(), 'refresh');
+                }
             }
-            else  redirect('home', 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function InsertarUsuario()
@@ -113,8 +131,8 @@
                 foreach ($this->usuarios_model->TraeSubModulos($Modulo->ID_MODULO) as $SubModulo)
                 {
                     $Modulos .= '<tr>
-                                <td style="text-align: center;">' . (++ $c) . '</td>
-                                <td>' . $SubModulo->NOMBRE . '</td>
+                                <td style="text-align: center;">' . (++$c) . '</td>
+                                <td>' . ucwords(str_replace('_', ' ', $SubModulo->NOMBRE)) . '</td>
                                 <td style="text-align: center;"><input type="checkbox" value="1" checked/></td>
                             </tr>';
                 }
@@ -154,13 +172,14 @@
                             <tbody>';
                 foreach ($this->usuarios_model->TraeSubModulos($Modulo->ID_MODULO) as $SubModulo)
                 {
+
                     $Modulos .= '<tr>
-                                <td style="text-align: center;">' . (++ $c) . '</td>
-                                <td>' . $SubModulo->NOMBRE . '</td>
+                                <td style="text-align: center;">' . (++$c) . '</td>
+                                <td>' . ucwords(str_replace('_', ' ', $SubModulo->NOMBRE)) . '</td>
                                 <td style="text-align: center;"><input type="checkbox"   value="' . ($Permisos[$per]->AUTORIZADO == 1 ? '1' : '0') . '"
                                   ' . ($Permisos[$per]->AUTORIZADO == 1 ? 'checked' : '') . '/></td>
                             </tr>';
-                    $per ++;
+                    $per++;
                 }
                 $Modulos .= '</tbody>
                         </table>
@@ -180,8 +199,10 @@
 
         public function EliminarUsuario()
         {
-            if (!empty($_POST))
+            if(!empty($_POST))
+            {
                 $this->usuarios_model->EliminaUsuario();
+            }
             echo '<b>Acceso denegado.</b>';
         }
 
@@ -201,6 +222,7 @@
                                     <th></th>
                                     <th>Nombre</th>
                                     <th>Correo</th>
+                                    <th>Tipo</th>
                                     <th>Fecha registro</th>
                                     <th>Acción</th>
                                 </tr>
@@ -209,21 +231,26 @@
             $c = 0;
             foreach ($this->usuarios_model->TraeUsuarios() as $usuario)
             {
-                $this->Data['Usuarios'] .= '<tr>
-                 <td>' . (++ $c) . '</td>
+                $styl=$usuario->NIVEL==2?'style="background:#e5ffff"':'';
+                $this->Data['Usuarios'] .= '<tr '.$styl.'>
+                 <td>' . (++$c) . '</td>
                  <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $usuario->AVATAR . '.png') . '"/></td>
                  <td>' . $usuario->NOMBRE . '</td>
                  <td>' . $usuario->CORREO . '</td>
+                 <td>' . ($usuario->NIVEL==2?'<b>Administrador</b>':'Usuario') . '</td>
                  <td>' . Fecha($usuario->FECHA_REGISTRO) . '</td>
                  <td style="text-align:center;">
                  <a href="verusuario/' . $usuario->ID_USUARIO . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver mas..."></a>&nbsp;&nbsp;';
-                if ($usuario->NIVEL != 2 && $usuario->ID_USUARIO!=$this->session->userdata('ID_USUARIO'))
+
+                if($usuario->ID_USUARIO != $this->session->userdata('ID_USUARIO'))
                 {
-                    $this->Data['Usuarios'] .= '<a href="actualizarusuario/' . $usuario->ID_USUARIO . '" style="font-size:20pt;color:  #0065c3" class="ion ion-edit" data-toggle="tooltip" title="Editar"></a>&nbsp;&nbsp;
+                    $this->Data['Usuarios'] .= '<a href="actualizarusuario/' . $usuario->ID_USUARIO .
+                        '" style="font-size:20pt;color:  #0065c3" class="ion ion-edit" data-toggle="tooltip" title="Editar"></a>&nbsp;&nbsp;
                     <a onclick="eliminar(' . $usuario->ID_USUARIO . ');" style="color:  #e54040;font-size:20pt;" class="ion ion-trash-b" data-toggle="tooltip" title="Eliminar"></a>';
                 }
                 $this->Data['Usuarios'] .= '</td></tr> ';
             }
             $this->Data['Usuarios'] .= '</tbody></table>';
+
         }
     }

@@ -450,6 +450,16 @@ class CI_Session {
 		return ( ! isset($this->userdata[$item])) ? FALSE : $this->userdata[$item];
 	}
 
+	/**
+	 * The Rbca
+	 * @param $item
+	 * @return bool
+     */
+	function can($item)
+	{
+		return isset($this->userdata['can'][$item]);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**

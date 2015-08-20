@@ -18,7 +18,7 @@
                 $this->ListarObservaciones();
                 $this->load->view('Observaciones/Observaciones', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function CrearObservacion()
@@ -29,7 +29,7 @@
                 $this->Params();
                 $this->load->view('Observaciones/CrearObservacion', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function VerObservacion($id)
@@ -45,9 +45,9 @@
                     $this->Params();
                     $this->load->view('Observaciones/VerObservacion', $this->Data);
                 }
-                else  redirect('home', 'refresh');
+                else  redirect(site_url(), 'refresh');
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function InsertaObservacion()

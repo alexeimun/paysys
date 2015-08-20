@@ -20,7 +20,7 @@
 }
 
 .error_clave::after {
-    content: '( ! ) La contraseña no coinside';
+    content: '( ! ) Las contraseñas no coinside';
 }
 
 .error_telefono::after {

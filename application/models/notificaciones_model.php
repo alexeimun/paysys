@@ -276,7 +276,7 @@
                INNER JOIN t_usuarios ON t_usuarios.ID_USUARIO=t_notificaciones.USUARIO_ACCION
                INNER JOIN t_deudores ON t_deudores.ID_DEUDOR=t_notificaciones.ACCION AND t_deudores.ESTADO=0
 
-                WHERE TIPO='de'AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
+                WHERE TIPO='de' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
             if ($DE != '')
             {
                 $de = '<table class="table table-striped">
@@ -638,6 +638,7 @@
                 if ($c == 0) $vs = '';
                 else $vs .= '</tbody></table>';
             }
+            //var_dump($de);exit;
             $Note['DI'] = $di;
             $Note['DA'] = $da;
             $Note['DE'] = $de;

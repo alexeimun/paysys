@@ -23,25 +23,24 @@
 
         public function Empresa()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('empresa'))
             {
                 $this->Data['Empresa'] = $this->parametros_model->TraeInformacionEmpresa();
                 $this->Params();
                 $this->load->view('Parametros/Empresa', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function Consecutivos()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('consecutivos'))
             {
                 $this->Data['Consecutivos'] = $this->parametros_model->TraeConsecutivos();
-//                var_dump($this->Data['Consecutivos'][0]->NOMBRE );exit;
                 $this->Params();
                 $this->load->view('Parametros/Consecutivos', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function ExportaDeudores()
@@ -67,42 +66,42 @@
 
         public function ImportarDeudores()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('importar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Deudores/ImportarDeudores', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function ImportarAcreedores()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('importar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Acreedores/ImportarAcreedores', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function ExportarDeudores()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('exportar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Deudores/ExportarDeudores', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function ExportarAcreedores()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if ($this->session->can('exportar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Acreedores/ExportarAcreedores', $this->Data);
             }
-            else  redirect('home', 'refresh');
+            else  redirect(site_url(), 'refresh');
         }
 
         public function Params()

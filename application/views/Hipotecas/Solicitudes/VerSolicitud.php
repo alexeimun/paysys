@@ -149,54 +149,6 @@
 
                 <div class="form-group">
                     <div class="row">
-                        <label class="col-lg-4 control-label">ajuste %:</label>
-
-                        <div class="col-lg-2">
-                            <input type="text" value="0.5" class="form-control obligatorio numero porcentaje"
-                                   name="AJUSTE">
-                        </div>
-                        <div class="col-lg-5">
-                            <div class="input-group">
-                                <div class="input-group-btn" style="text-align: center;width: 120px;">
-                                    <select name="" class="form-control" id="periodoajuste">
-                                        <option value="1">Mensual</option>
-                                        <option value="6" selected>Semestral</option>
-                                        <option value="12">Anual</option>
-                                    </select>
-                                </div>
-                                <input type="text" id="ajuste" class="visor form-control" value="$ 0"
-                                       class="form-control obligatorio numero porcentaje" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
-                        <label class="col-lg-4 control-label">Comisión oficina %:</label>
-
-                        <div class="col-lg-2">
-                            <input type="text" value="3" class="form-control obligatorio numero porcentaje"
-                                   name="COMISION_OFICINA">
-                        </div>
-                        <div class="col-lg-5">
-                            <div class="input-group">
-                                <div class="input-group-btn" style="text-align: center;width: 120px;">
-                                    <select name="" class="form-control" id="periodocomision">
-                                        <option value="1">Mensual</option>
-                                        <option value="6">Semestral</option>
-                                        <option value="12">Anual</option>
-                                    </select>
-                                </div>
-                                <input type="text" id="comision" class="visor form-control" value="$ 0"
-                                       class="form-control obligatorio numero porcentaje" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="row">
                         <label class="col-lg-4 control-label">Cuota Administración %:</label>
 
                         <div class="col-lg-2">
@@ -262,8 +214,6 @@
         var interes = Math.round(capital * ($('input[name=INTERES_MENSUAL]').val() / 100))
         $('#admin').val(Math.round($('#periodoadmin :selected').val() * interes * ($('input[name=CUOTA_ADMINISTRACION]').val() / 100)));
         $('#interes').val($('#periodointeres :selected').val() * interes);
-        $('#ajuste').val(Math.round($('#periodoajuste :selected').val() * capital * ($('input[name=AJUSTE]').val() / 100)));
-        $('#comision').val(Math.round($('#periodocomision :selected').val() * capital * ($('input[name=COMISION_OFICINA]').val() / 100)));
 
         $('.visor').priceFormat({
             prefix: '$ ',

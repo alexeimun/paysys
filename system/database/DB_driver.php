@@ -247,7 +247,7 @@ class CI_DB_driver {
      * @param    string    An SQL query string
      * @param bool $binds
      * @param bool $return_object
-     * @return mixed
+     * @return mixed|CI_DB_result
      */
     function query($sql, $binds = FALSE, $return_object = TRUE)
 	{

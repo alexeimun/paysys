@@ -20,11 +20,11 @@
 
         public function InsertaPagoTemp($type = 0)
         {
-            if ($type == 1)
+            if($type == 1)
             {
                 $query = "INSERT INTO t_pago_temp (CONCEPTO,VALOR,TIPO,METADATO,ID_SOLICITUD,ID_USUARIO) VALUES";
                 $size = count($_POST['REG'][0]);
-                for ($i = 0; $i < $size; $i ++)
+                for ($i = 0; $i < $size; $i++)
                     $query .= "('" . $_POST['REG'][1][$i] . "'," . $_POST['REG'][2][$i] . ",1," . $_POST['REG'][0][$i] . "," . $this->input->post('IdSol') . "," . $this->session->userdata('ID_USUARIO') . ")" . ($i + 1 < $size ? "," : '');
                 $this->db->query($query);
             }
@@ -32,13 +32,16 @@
             {
                 $CHEQUE = isset($_POST['CHEQUE']) ? $_POST['CHEQUE'] : '';
                 $BANCO = isset($_POST['BANCO']) ? $_POST['BANCO'] : '';
+
                 $this->db->insert('t_pago_temp', ['CONCEPTO' => $this->input->post('CONCEPTO'),
-                    'TIPO' => $this->input->post('TIPO_RECIBO'),
+                    #Si se trata de una ampliación con valor 0, no s cobra
+                    'TIPO' => ($this->input->post('VALOR') == 0 && $this->input->post('TIPO_RECIBO') == 3) ? -1 : $this->input->post('TIPO_RECIBO'),
                     'VALOR' => $this->input->post('VALOR'),
                     'CHEQUE' => $CHEQUE,
                     'BANCO' => $BANCO,
+                    'METADATO' => $this->input->post('METADATO') == '' ? null : $this->input->post('METADATO'),
                     'ID_SOLICITUD' => $this->input->post('IdSol'),
-                    'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                    'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
                 ]);
             }
         }
@@ -50,15 +53,15 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('ACCION', $Consecutivo, false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ri']);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ri','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
             }
-            $this->session->set_userdata(['First' => 'Original']);
             $Secuencia = 0;
             $TotalAbonado = 0;
             $TotalInteres = 0;
             $TotalAC = 0;
             $TotalAP = 0;
             $TotalComision = 0;
+            $Tmeses = 0;
             foreach ($this->TraePagosTemp($IdSol) as $pagotemp)
             {
                 switch ($pagotemp->TIPO)
@@ -72,91 +75,105 @@
                     case 2:
                         $TotalAC += $pagotemp->VALOR;
                         break;
+                    case -1:
                     case 3:
-                        $TotalAP += $pagotemp->VALOR;
-                        $Tmeses = strpos($pagotemp->CONCEPTO, 'doce') ? 12 : 6;
+                        $TotalAP = $pagotemp->VALOR;
+                        $Tmeses = $pagotemp->METADATO;
                         break;
                     case 4:
                         $TotalComision += $pagotemp->VALOR;
                         break;
                 }
-                $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_movimientos',
-                    ['CONCEPTO' => $pagotemp->CONCEPTO,
-                        'VALOR' => $pagotemp->VALOR,
-                        'CHEQUE' => $pagotemp->CHEQUE,
-                        'BANCO' => $pagotemp->BANCO,
-                        'CONSECUTIVO' => $Consecutivo,
-                        'DESCRIPCION' => $pagotemp->METADATO,
-                        'TIPO_MOV' => $pagotemp->TIPO,
-                        'SECUENCIA' => ++ $Secuencia,
-                        'ID_SOLICITUD' => $IdSol,
-                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
-                    ]);
+                if($pagotemp->TIPO == -1)
+                {
+                    $this->db->query("UPDATE t_solicitudes SET FECHA_FIN=DATE_ADD(FECHA_FIN, INTERVAL $Tmeses MONTH) WHERE ID_SOLICITUD=" . $IdSol);
+                    $this->db->delete('t_pago_temp', ['ID_USUARIO' => $this->session->userdata('ID_USUARIO'), 'ID_SOLICITUD' => $IdSol]);
+                    echo 'true';
+                    exit;
+                }
+                if($pagotemp->TIPO != 2)
+                {
+                    $this->db->set('FECHA', 'NOW()', false);
+                    $this->db->insert('t_movimientos',
+                        ['CONCEPTO' => $pagotemp->CONCEPTO,
+                            'VALOR' => $pagotemp->VALOR,
+                            'CHEQUE' => $pagotemp->CHEQUE,
+                            'BANCO' => $pagotemp->BANCO,
+                            'CONSECUTIVO' => $Consecutivo,
+                            'DESCRIPCION' => $pagotemp->METADATO,
+                            'TIPO_MOV' => $pagotemp->TIPO,
+                            'SECUENCIA' => ++$Secuencia,
+                            'ID_SOLICITUD' => $IdSol,
+                            'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
+                        ]);
+                }
             }
             $this->db->update('t_consecutivos', ['CONSECUTIVO' => $Consecutivo + 1], ['NOMBRE' => 'RECIBO']);
-            if ($TotalAbonado > 0)
+            if($TotalAbonado > 0)
             {
                 $this->db->query("UPDATE t_solicitudes SET ABONADO=ABONADO+ $TotalAbonado  WHERE ID_SOLICITUD= $IdSol");
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->insert('t_movimientos',
                     ['VALOR' => $TotalAbonado,
                         'CONSECUTIVO' => $Consecutivo,
-                        'SECUENCIA' => ++ $Secuencia,
+                        'SECUENCIA' => ++$Secuencia,
                         'ID_SOLICITUD' => $IdSol,
                         'DESCRIPCION' => 'TA',
-                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
                     ]);
             }
-            if ($TotalInteres > 0)
+            if($TotalInteres > 0)
             {
                 $this->db->query("UPDATE t_solicitudes SET ABONO_INTERES=ABONO_INTERES+ $TotalInteres  WHERE ID_SOLICITUD= $IdSol");
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->insert('t_movimientos',
                     ['VALOR' => $TotalInteres,
                         'CONSECUTIVO' => $Consecutivo,
-                        'SECUENCIA' => ++ $Secuencia,
+                        'SECUENCIA' => ++$Secuencia,
                         'ID_SOLICITUD' => $IdSol,
                         'DESCRIPCION' => 'TI',
-                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
                     ]);
             }
-            if ($TotalAC > 0)
+            if($TotalAC > 0)
             {
                 $this->db->query('UPDATE t_solicitudes SET CAPITAL_INICIAL=CAPITAL_INICIAL+' . $TotalAC . ' WHERE ID_SOLICITUD=' . $IdSol);
-                $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_movimientos',
-                    ['VALOR' => $TotalAC,
-                        'CONSECUTIVO' => $Consecutivo,
-                        'SECUENCIA' => ++ $Secuencia,
-                        'ID_SOLICITUD' => $IdSol,
-                        'DESCRIPCION' => 'TAC',
-                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
-                    ]);
+                //$this->db->set('FECHA', 'NOW()', false);
+                //$this->db->insert('t_movimientos',
+                //    ['VALOR' => $TotalAC,
+                //        'CONSECUTIVO' => $Consecutivo,
+                //        'SECUENCIA' => ++$Secuencia,
+                //        'ID_SOLICITUD' => $IdSol,
+                //        'DESCRIPCION' => 'TAC',
+                //        'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
+                //    ]);
+                echo 'true';
+                exit;
             }
-            if ($TotalAP > 0)
+            if($TotalAP > 0)
             {
-                $this->db->query("UPDATE t_solicitudes SET FECHA_FIN=DATE_ADD(FECHA_FIN, INTERVAL $Tmeses MONTH) WHERE ID_SOLICITUD=" . $IdSol);
+                $this->db->query("UPDATE t_solicitudes SET FECHA_FIN=DATE_ADD(FECHA_FIN, INTERVAL $Tmeses MONTH) WHERE ID_SOLICITUD= $IdSol");
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->insert('t_movimientos',
                     ['VALOR' => $TotalAP,
                         'CONSECUTIVO' => $Consecutivo,
-                        'SECUENCIA' => ++ $Secuencia,
+                        'SECUENCIA' => ++$Secuencia,
                         'ID_SOLICITUD' => $IdSol,
                         'DESCRIPCION' => 'TAP',
-                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                        'INFO_AP' => $this->db->query("SELECT FECHA_FIN FROM t_solicitudes WHERE ID_SOLICITUD=$IdSol")->result()[0],
+                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
                     ]);
             }
-            if ($TotalComision > 0)
+            if($TotalComision > 0)
             {
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->insert('t_movimientos',
                     ['VALOR' => $TotalComision,
                         'CONSECUTIVO' => $Consecutivo,
-                        'SECUENCIA' => ++ $Secuencia,
+                        'SECUENCIA' => ++$Secuencia,
                         'ID_SOLICITUD' => $IdSol,
                         'DESCRIPCION' => 'TC',
-                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
                     ]);
             }
             ##TOTAL_RECIBO
@@ -164,13 +181,14 @@
             $this->db->insert('t_movimientos',
                 ['VALOR' => $TotalInteres + $TotalAbonado + $TotalAC + $TotalAP + $TotalComision,
                     'CONSECUTIVO' => $Consecutivo,
-                    'SECUENCIA' => ++ $Secuencia,
+                    'SECUENCIA' => ++$Secuencia,
                     'ID_SOLICITUD' => $IdSol,
                     'DESCRIPCION' => 'TR',
                     'BANCO' => $this->input->post('BANCO'),
                     'CHEQUE' => $this->input->post('CHEQUE'),
-                    'ID_USUARIO' => $this->session->userdata('ID_USUARIO')
+                    'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
                 ]);
+            $this->session->set_userdata(['First' => 'Original']);
             $this->db->delete('t_pago_temp', ['ID_USUARIO' => $this->session->userdata('ID_USUARIO'), 'ID_SOLICITUD' => $IdSol]);
             $this->session->set_userdata(['ConsecutivoRecibo' => $Consecutivo]);
         }
@@ -196,12 +214,18 @@
                WHERE ID_SOLICITUD= " . $this->input->post('IdSol'));
         }
 
+        public function ContarAbonos()
+        {
+            foreach ($this->db->query("SELECT count(*) C FROM  t_movimientos  WHERE TIPO_MOV=0 AND ID_SOLICITUD=" . $this->input->post('IdSol'))->result() as $field)
+                return $field->C;
+        }
+
         public function TraePagosTemp($IdSol)
         {
             return $this->db->query("SELECT
                 ID_PAGO_TEMP,
                 TIPO,
-                CASE TIPO WHEN 0 THEN 'Abono' WHEN 1 THEN 'Intereses' WHEN 2 THEN 'Ampliación C' WHEN 3 THEN 'Ampliación P' WHEN 4 THEN 'COMISIÓN' END TIPO_ESCRITO,
+                CASE TIPO WHEN 0 THEN 'Abono' WHEN 1 THEN 'Intereses' WHEN 2 THEN 'Ampliación C' WHEN 3 THEN 'Ampliación P' WHEN -1 THEN 'Ampliación P' WHEN 4 THEN 'COMISIÓN' END TIPO_ESCRITO,
                 CONCEPTO,
                 VALOR,
                 CHEQUE,
@@ -330,7 +354,6 @@
                 return ['MESES' => $res->MESES, 'TOTAL' => $res->TOTAL];
         }
 
-
         public function TraeInfoRecibo()
         {
             return $this->db->query("SELECT
@@ -374,6 +397,7 @@
                 mo.DESCRIPCION,
                 mo.TIPO_MOV,
                 mo.CONSECUTIVO,
+                mo.INFO_AP,
                 t_solicitudes.CUOTA_ADMINISTRACION ADMINISTRACION,
                 t_solicitudes.FECHA_INICIO,
                 t_solicitudes.FECHA_FIN
@@ -384,7 +408,7 @@
                INNER  JOIN t_deudores ON t_deudores.ID_DEUDOR=t_solicitudes.ID_DEUDOR
                INNER  JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_solicitudes.ID_ACREEDOR
 
-               WHERE  mo.FECHA>='" . $this->input->post('DESDE') . "' AND mo.FECHA<='" . $this->input->post('HASTA') . "' AND
+               WHERE TIPO_MOV IN (0,1,3) AND mo.FECHA>='" . $this->input->post('DESDE') . "' AND mo.FECHA<='" . $this->input->post('HASTA') . "' AND
                 t_acreedores.ID_ACREEDOR=" . $this->input->post('ID_ACREEDOR') . " AND  mo.TIPO_MOV IS NOT NULL")->result();
         }
 
@@ -396,7 +420,7 @@
             so.CUOTA_ADMINISTRACION
              FROM t_movimientos
             INNER JOIN t_solicitudes so USING (ID_SOLICITUD)
-            WHERE TIPO_MOV IS NOT NULL AND FECHA='" . $this->input->post('FECHA') . "' ORDER BY CONSECUTIVO")->result();
+            WHERE TIPO_MOV IN (0,1,3,4) AND FECHA='" . $this->input->post('FECHA') . "' ORDER BY CONSECUTIVO")->result();
         }
 
         public function TraeComisión($IdSol)
@@ -419,9 +443,10 @@
         {
             foreach ($this->db->query("SELECT CONSECUTIVO FROM t_consecutivos WHERE NOMBRE='CUADRE'")->result() as $c) return $c->CONSECUTIVO;
         }
+
         public function TraeIngresosDiarios()
         {
-           return $this->db->query("SELECT CONSECUTIVO,
+            return $this->db->query("SELECT CONSECUTIVO,
            t_acreedores.NOMBRE NOMBRE_ACREEDOR,
            t_deudores.NOMBRE NOMBRE_DEUDOR,
            VALOR,
@@ -432,5 +457,42 @@
           INNER  JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_solicitudes.ID_ACREEDOR
 
           WHERE FECHA ='$_POST[FECHA]' AND DESCRIPCION='TR'")->result();
+        }
+
+        public function TraeDebeComision($IdSolicitud)
+        {
+            #Cuento las comisiones que ya ha pagado el deudor
+            $ComisionesPagadas = $this->db->query("SELECT
+            count(*) CANTIDAD
+            from t_movimientos
+            WHERE t_movimientos.TIPO_MOV=4 AND t_movimientos.ID_SOLICITUD=$IdSolicitud")->result();
+            $ComisionesPagadas = $ComisionesPagadas[0]->CANTIDAD;
+            #Hago una operación con las comisiones pagadas y los años que han pasado desde FECHA_INICIO
+            $DebeComisiones = $this->db->query("SELECT FLOOR(DATEDIFF(FECHA_FIN,FECHA_INICIO)/365) -$ComisionesPagadas AS RESULTADO
+            FROM t_solicitudes
+            WHERE ID_SOLICITUD=$IdSolicitud")->result();
+            #Sí hay deudas, muestra cuantas son (int)
+            return ['Comisiones' => $DebeComisiones[0]->RESULTADO, 'InicioDebe' => $ComisionesPagadas];
+        }
+
+        public function TraePagaAmpliacionPlazo($IdSol)
+        {
+            return @$this->db->query("SELECT
+            VALOR,
+            DESCRIPCION,
+            INFO_AP AS FECHA
+            from t_movimientos
+
+            WHERE TIPO_MOV=3 AND ID_SOLICITUD=$IdSol ORDER BY FECHA DESC limit 1")->result()[0];
+        }
+
+        public function TraePagaComision($IdSolicitud)
+        {
+            return $this->db->query("SELECT
+              t_movimientos.VALOR,
+              t_movimientos.FECHA
+            from t_movimientos
+
+            WHERE t_movimientos.TIPO_MOV=4 AND t_movimientos.ID_SOLICITUD=$IdSolicitud ORDER BY FECHA DESC  LIMIT  1")->result()[0];
         }
     }

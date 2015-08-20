@@ -32,7 +32,7 @@
                 <hr style="border: 1px solid #b00000;"/>
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">Transferir:</label>
+                    <label data-toggle="tooltip" title="Seleccione el deudor de la solicitud a transferir" class="col-lg-2 control-label">Transferir:</label>
 
                     <div class="col-lg-10">
                         <select name="FROM" class="form-control chosen-select" style="width:320px;">
@@ -42,12 +42,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-lg-2 control-label">A:</label>
+                    <label data-toggle="tooltip" title="Seleccione el deudor que recibirá la hipoteca" class="col-lg-2 control-label">A:</label>
 
                     <div class="col-lg-10">
                         <select name="TO" class="form-control chosen-select"
                                 style="width:320px;">
-                            <?= $Acreedores ?>
+                            <?= $Deudores ?>
                         </select>
                     </div>
                 </div>
@@ -96,6 +96,7 @@
                 label: 'Cerrar',
                 action: function (dialogItself) {
                     dialogItself.close();
+                    location.href='sesion_credito_deudor';
                 }
             }]
         });

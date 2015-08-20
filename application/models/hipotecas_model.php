@@ -177,12 +177,10 @@
                 'FECHA_INICIO' => $this->input->post('FECHA_INICIO'),
                 'FECHA_FIN' => $this->input->post('FECHA_FIN'),
                 'FECHA_FIN' => $this->input->post('FECHA_FIN'),
-                'AJUSTE' => $this->input->post('AJUSTE'),
                 'TIPO_HIPOTECA' => $this->input->post('TIPO_HIPOTECA'),
                 'HIPOTECADO' => $this->input->post('HIPOTECADO'),
                 'CAPITAL_INICIAL' => $this->input->post('CAPITAL_INICIAL'),
                 'INTERES_MENSUAL' => $this->input->post('INTERES_MENSUAL'),
-                'COMISION_OFICINA' => $this->input->post('COMISION_OFICINA'),
                 'CUOTA_ADMINISTRACION' => $this->input->post('CUOTA_ADMINISTRACION')];
             $this->db->insert('t_solicitudes', $Data);
             $this->db->update('t_consecutivos', ['CONSECUTIVO' => $this->input->post('SOLICITUD') + 1], ['NOMBRE' => 'SOLICITUD']);

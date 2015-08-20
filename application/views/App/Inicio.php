@@ -18,6 +18,7 @@
         <!-- Main content -->
         <?= $Dashboard ?>
     </div>
+    </div>
     <!-- /.content-wrapper -->
     <?= $Footer ?>
 </body>
