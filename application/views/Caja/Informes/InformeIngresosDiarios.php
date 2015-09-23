@@ -2,16 +2,8 @@
 <?= $Head ?>
 
 <body class="skin-blue sidebar-mini">
-<link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/docsupport/prism.css">
-<link rel="stylesheet" href="<?= base_url() ?>public/js/DropDown/chosen.css">
-<script src="<?= base_url() ?>public/js/DropDown/chosen.jquery.js" type="text/javascript"></script>
-<script src="<?= base_url() ?>public/js/DropDown/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
-<script src="<?= base_url() ?>public/js/DropDown/docsupport/combo.js"></script>
-<!--Jvalidator-->
-<script src="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.js"></script>
-<link rel="stylesheet" href="<?= base_url() ?>public/plugins/Jvalidator/Jvalidator.css">
+<script src="<?= base_url('public/plugins/excelExport/jquery.battatech.excelexport.js') ?>"></script>
 
-<script src="<?= base_url() ?>public/plugins/priceFormat/priceFormat.js"></script>
 
 
 <div class="wrapper">
@@ -29,7 +21,7 @@
         </section>
         <!-- Main content -->
         <div class="container">
-            <form method="post"  target="_blank" class="form-horizontal col-md-7" role="form"
+            <form method="post" target="_blank" class="form-horizontal col-md-6" role="form"
                   action="informeingresosdiarios"
                   style="margin-left: 20%;">
                 <hr style="border: 1px solid #3c8dbc;"/>
@@ -45,10 +37,16 @@
                 </div>
                 <br>
                 <!--Envíar-->
-                <div class="form-group">
-                    <div class="col-lg-offset-5 col-lg-10">
+                <div class="row">
+                    <div class="col-lg-offset-4 col-lg-3">
                         <button type="submit" class="btn btn-success btn-lg"><span
                                 class="glyphicon glyphicon-print"></span>&nbsp; Imprimir
+                        </button>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <button type="button" class="btn btn-success btn-lg exportar"><span
+                                class="glyphicon glyphicon-folder-open"></span>&nbsp; Exportar
                         </button>
                     </div>
                 </div>
@@ -56,18 +54,37 @@
             </form>
         </div>
         <br/><br/>
+
+        <div id="table" style="display: none;">
+            <table id="mtable" style="font-family: 'Allerta' , arial , sans-serif;font-size: 16pt;"></table>
+        </div>
     </div>
 </div>
+
 <script>
-    $('form').on('submit', function ()
-    {
-        if ($('select').val() == 0)
-        {
-            event.preventDefault();
-            Message('Debe seleccionar un Acreedor');
+    $(document).ready(function () {
+
+        $('.exportar').on('click', function () {
+            $.ajax({
+                type: 'post', url: '<?=site_url('parametro/ExportaIngresosDiarios') ?>', data: $('form').serialize(),
+                success: function (data) {
+                    ArmarTabla(data);
+                    $('div.content-header').html('<div class="callout callout-info no-margin"> <h4>Éxito!</h4>Se ha exportado un libro de excel con los deudores</div>').hide().show(700);
+                }
+            });
+        });
+        function ArmarTabla(tabla) {
+            var nombre = 'Cuadre diario <?=date('d-m-Y') ?>';
+
+            $('#mtable').html($(tabla).html());
+
+            $("#temp").battatech_excelexport({
+                containerid: "table", datatype: 'table', worksheetName: nombre
+            });
         }
     });
 </script>
+
 
 <?= $Footer ?>
 

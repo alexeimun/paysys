@@ -1,4 +1,7 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if(!defined('BASEPATH'))
+{
+    exit('No direct script access allowed');
+}
 
     class Hipoteca extends CI_Controller
     {
@@ -13,7 +16,7 @@
 
         public function CrearSolicitud()
         {
-            if ($this->session->can('administrar_solicitudes'))
+            if($this->session->can('administrar_solicitudes'))
             {
                 $this->load->model('parametros_model');
                 $this->Data['Solicitud'] = $this->parametros_model->TraeConsecutivo('SOLICITUD');
@@ -21,19 +24,25 @@
                 $this->Params();
                 $this->load->view('Hipotecas/Solicitudes/CrearSolicitud', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function CrearInmueble()
         {
-            if ($this->session->can('administrar_inmuebles'))
+            if($this->session->can('administrar_inmuebles'))
             {
                 $this->Deudores();
                 $this->Ciudades();
                 $this->Params();
                 $this->load->view('Hipotecas/Inmuebles/CrearInmueble', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function InsertaSolicitud()
@@ -48,24 +57,30 @@
 
         public function Inmuebles()
         {
-            if ($this->session->can('administrar_inmuebles'))
+            if($this->session->can('administrar_inmuebles'))
             {
                 $this->TraeInmuebles();
                 $this->Params();
                 $this->load->view('Hipotecas/Inmuebles/Inmuebles', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function Solicitudes()
         {
-            if ($this->session->can('administrar_solicitudes'))
+            if($this->session->can('administrar_solicitudes'))
             {
                 $this->TraeSolicitudes();
                 $this->Params();
                 $this->load->view('Hipotecas/Solicitudes/Solicitudes', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function Clientes()
@@ -81,46 +96,63 @@
 
         public function VerInmueble($Id)
         {
-            if ($this->session->can('administrar_inmuebles'))
+            if($this->session->can('administrar_inmuebles'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->hipotecas_model->TraeInmueble($Id);
-                if ($this->Data['Info'] != null)
+                if($this->Data['Info'] != null)
                 {
                     $this->load->view('Hipotecas/Inmuebles/VerInmueble', $this->Data);
                 }
-                else redirect(site_url(), 'refresh');
+                else
+                {
+                    redirect(site_url(), 'refresh');
+                }
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function VerSolicitud($Id)
         {
-            if ($this->session->can('administrar_solicitudes'))
+            if($this->session->can('administrar_solicitudes'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->hipotecas_model->TraeSolicitud($Id);
                 $this->Data['Pagares'] = $this->hipotecas_model->TraePagares($Id);
-                if ($this->Data['Info'] != null)
+                if($this->Data['Info'] != null)
                 {
                     $this->TraeInmuebleSolicitud();
                     $this->load->view('Hipotecas/Solicitudes/VerSolicitud', $this->Data);
                 }
-                else redirect(site_url(), 'refresh');
+                else
+                {
+                    redirect(site_url(), 'refresh');
+                }
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
-        public function Deudores($id = - 1)
+        public function Deudores($id = -1)
         {
-            $sel = $id == - 1 ? 'selected' : '';
+            $sel = $id == -1 ? 'selected' : '';
             $this->Data['Deudores'] = '<option value="0" ' . $sel . '>--Seleccione un deudor---</option>';
             $deudores = $this->clientes_model->TraeDeudores();
             foreach ($deudores->result() as $deudor)
             {
-                if ($deudor->ID_DEUDOR == $id)
+                if($deudor->ID_DEUDOR == $id)
+                {
                     $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '" selected>' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
-                else $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '">' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
+                }
+                else
+                {
+                    $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '">' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
+                }
             }
         }
 
@@ -130,11 +162,16 @@
             $this->Data['Ciudades'] = '';
             foreach ($ciudades->result() as $ciudad)
             {
-                if ($ciudad->ID_CIUDAD == $Id)
+                if($ciudad->ID_CIUDAD == $Id)
+                {
                     $this->Data['Ciudades'] .=
                         '<option style="text-align:left;" value ="' . $ciudad->ID_CIUDAD . '" selected>' . $ciudad->NOMBRE . ',&nbsp;&nbsp;' . $ciudad->DEPARTAMENTO . '</option>';
-                else  $this->Data['Ciudades'] .=
-                    '<option style="text-align:left;" value ="' . $ciudad->ID_CIUDAD . '">' . $ciudad->NOMBRE . ',&nbsp;&nbsp;' . $ciudad->DEPARTAMENTO . '</option>';
+                }
+                else
+                {
+                    $this->Data['Ciudades'] .=
+                        '<option style="text-align:left;" value ="' . $ciudad->ID_CIUDAD . '">' . $ciudad->NOMBRE . ',&nbsp;&nbsp;' . $ciudad->DEPARTAMENTO . '</option>';
+                }
             }
         }
 
@@ -192,11 +229,16 @@
                  <td>' . date_format(new DateTime($inmueble->FECHA_ENTREGA_ESCRITURA), 'd/m/Y') . '</td>
                  <td style="text-align:center;">
                  <a href="verinmueble/' . $inmueble->ID_INMUEBLE . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver mas..."></a>&nbsp;&nbsp;';
-                if ($inmueble->UTILIZADO == 0)
+                if($inmueble->UTILIZADO == 0)
+                {
                     $this->Data['Inmuebles'] .= '
                      <a href="actualizarinmueble/' . $inmueble->ID_INMUEBLE . '" style="font-size:20pt;color:  #0065c3" class="ion ion-edit" data-toggle="tooltip" title="Editar"></a>&nbsp;&nbsp;
                     <a onclick="eliminar(' . $inmueble->ID_INMUEBLE . ');return false" style="color:  #e54040;font-size:20pt;" class="ion ion-trash-b" data-toggle="tooltip" title="Eliminar"></a> </td> </tr> ';
-                else $this->Data['Inmuebles'] .= '</td></tr> ';
+                }
+                else
+                {
+                    $this->Data['Inmuebles'] .= '</td></tr> ';
+                }
             }
             $this->Data['Inmuebles'] .= '</tbody></table>';
         }
@@ -211,10 +253,10 @@
                                     <th>Deudor</th>
                                     <th>Acreedor</th>
                                     <th>Tipo inmueble</th>
-                                    <th>Tipo hipoteca</th>
                                     <th>Capital inicial</th>
                                     <th>Fecha inicio</th>
                                     <th>Fecha vence</th>
+                                    <th>Estado</th>
                                     <th>Acción</th>
                                 </tr>
                                 </thead>
@@ -236,15 +278,39 @@
                         $solicitud->TIPO_INMUEBLE = 'Lote';
                         break;
                 }
+                //var_dump( $solicitud->ESTADO_HIPOTECA);exit;
+                #Comfirmo sí ya ha pagado la hipoteca para cancelarla
+                if($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO == 0 && $solicitud->ESTADO_HIPOTECA != 3)
+                {
+                    $this->clientes_model->DemandarDeudorParams(3, $solicitud->ID_SOLICITUD);
+                    $solicitud->ESTADO_HIPOTECA = 3;
+                }
+
+                switch ($solicitud->ESTADO_HIPOTECA)
+                {
+                    case 1:
+                        $color = 'rgba(40, 95, 255, 0.59)';
+                        $text = 'Vigente';
+                        break;
+                    case 2:
+                        $color = 'rgba(245, 13, 10, 0.55)';
+                        $text = 'Demandado';
+                        break;
+                    case 3:
+                        $color = 'rgba(0, 255, 90, 0.98)';
+                        $text = 'Cancelado';
+                        break;
+                }
+
                 $this->Data['Solicitudes'] .= '<tr>
                  <td style="text-align: center;">' . $solicitud->SOLICITUD . '</td>
                  <td>' . $solicitud->NOMBRE_DEUDOR . '</td>
                  <td>' . $solicitud->NOMBRE_ACREEDOR . '</td>
                  <td>' . $solicitud->TIPO_INMUEBLE . '</td>
-                 <td>' . $solicitud->TIPO_HIPOTECA . '</td>
                  <td>' . number_format($solicitud->CAPITAL_INICIAL, 0, '', ',') . '</td>
                  <td>' . date_format(new DateTime($solicitud->FECHA_INICIO), 'd/m/Y') . '</td>
                  <td>' . date_format(new DateTime($solicitud->FECHA_FIN), 'd/m/Y') . '</td>
+                 <td style="background:' . $color . ';text-align:center;color: white;">' . $text . '</td>
                  <td style="text-align:center;">
                  <a href="versolicitud/' . $solicitud->ID_SOLICITUD . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver mas..."></a>&nbsp;&nbsp;';
                 $this->Data['Solicitudes'] .= '
@@ -280,7 +346,10 @@
                                 </tr>';
                 $c = false;
             }
-            if ($c) $Inmuebles .= '<tr><td style="text-align: center;" colspan="7">El deudor no tiene inmuebles o no estan disponibles...</td></tr>';
+            if($c)
+            {
+                $Inmuebles .= '<tr><td style="text-align: center;" colspan="7">El deudor no tiene inmuebles o no estan disponibles...</td></tr>';
+            }
             $Inmuebles .= '</tbody></table>';
             echo $Inmuebles;
         }
@@ -310,19 +379,25 @@
 
         public function ActualizarInmueble($Id)
         {
-            if ($this->session->can('administrar_inmuebles'))
+            if($this->session->can('administrar_inmuebles'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->hipotecas_model->TraeInmueble($Id);
-                if ($this->Data['Info'] != null)
+                if($this->Data['Info'] != null)
                 {
                     $this->Deudores($this->Data['Info']->ID_DEUDOR);
                     $this->Ciudades($this->Data['Info']->ID_CIUDAD);
                     $this->load->view('Hipotecas/Inmuebles/ActualizarInmueble', $this->Data);
                 }
-                else redirect(site_url(), 'refresh');
+                else
+                {
+                    redirect(site_url(), 'refresh');
+                }
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function ActualizaInmueble()

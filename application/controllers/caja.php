@@ -166,6 +166,27 @@
             }
         }
 
+        public function pazysalvo()
+        {
+            if($this->session->can('realizar_informes'))
+            {
+                if(!empty($_POST))
+                {
+                    $this->ImprimePazySalvo();
+                }
+                else
+                {
+                    $this->Params();
+                    $this->Solicitudes();
+                    $this->load->view('Caja/Informes/PazySalvo', $this->Data);
+                }
+            }
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
+        }
+
         public function InformeIngresosDiarios()
         {
             if($this->session->can('realizar_informes'))
@@ -233,8 +254,7 @@
             #End Headers
             #Parameters Values
             $pdf->Text(40, 20, date_format(new DateTime($info->FECHA), date('d/m/Y')));
-            $pdf->Text(75, 20, $Empresa->DIRECCION . '  Tel. ' . substr($Empresa->TELEFONO, 0, 3) . ' ' . substr($Empresa->TELEFONO, 3, 2)
-                . ' ' . substr($Empresa->TELEFONO, 5, 5 + strlen($Empresa->TELEFONO) - 5));
+            $pdf->Text(75, 20, $Empresa->DIRECCION . '  Tel. ' . Telefono($Empresa->TELEFONO));
 //            $pdf->Text(152, 26, strtoupper(utf8_decode('Principal')));#Oficina value
             $pdf->Text(162, 26, strtoupper(utf8_decode('Medellín')));#Ciudad value
             $pdf->Text(165, 32, number_format($info->CAPITAL_INICIAL - $info->ABONADO, 0, '', ','));#Saldo actual value
@@ -255,6 +275,18 @@
             $i = 0;
             $Total = 0;
             foreach ($this->caja_model->TraeRecibo() as $campo)
+            {
+                $Total += $campo->VALOR;
+                $pdf->SetXY(10, 49 + $i * $h);
+                $pdf->Cell(20, 6, ($i + 1), 1, 0, 'C');# Index
+                $pdf->SetXY(30, 49 + $i * $h);
+                $pdf->Cell(120, 6, utf8_decode($campo->CONCEPTO), 1, 0, 'L');# Concept
+                $pdf->SetXY(150, 49 + $i * $h);
+                $pdf->Cell(50, 6, number_format($campo->VALOR, 0, '', ','), 1, 0, 'C');# Value
+                $i++;
+            }
+            #TraeIntereses
+            foreach ($this->caja_model->TraeInteresesPorConsecutivo($this->session->userdata('ConsecutivoRecibo')) as $campo)
             {
                 $Total += $campo->VALOR;
                 $pdf->SetXY(10, 49 + $i * $h);
@@ -294,7 +326,7 @@
             $pdf->Cell(50, 6, 'Elaborado Por', 0, 0, 'C');# Made by
             $pdf->SetFont('Arial', '', 9);
             $pdf->SetXY(150, 60 + $i * $h);
-            $pdf->Cell(50, 6, strtoupper(utf8_decode($info->NOMBRE_USUARIO)), 0, 0, 'C');# Made by
+            $pdf->Cell(50, 6, utf8_decode(strtoupper($info->NOMBRE_USUARIO)), 0, 0, 'C');# Made by
             ##unsetting Firts for the duplicate check
             $this->session->set_userdata(['First' => '']);
             $pdf->Output();
@@ -367,7 +399,8 @@
             $pdf->Text(20, 32 + ++$r * 6, 'Pagado');
             $pdf->SetFont('Arial', '', 10);
             #----------------------------------------#
-            $Vals = $this->caja_model->InteresesPagadosDeudor();
+            $Interes = $this->caja_model->InteresesPagadosDeudor();
+            $Vals = $this->caja_model->InteresesPagadosDeudor1();
             $fecha_inicio = new DateTime($solicitud->FECHA_INICIO);
             $Mesinicio = round(date_format($fecha_inicio, 'm'));
             $Diainicio = date_format($fecha_inicio, 'd');
@@ -396,32 +429,14 @@
             }
 
             #-----------------------PAGA INT--------------------------
-            if($Vals['MESES'] > 0)
+            if($Interes->num_rows() > 0)
             {
-                $Mesfin = $Vals['MESES'] + $Mesinicio;
-                if($Mesfin > 12)
-                {
-                    $Mesfin -= 12;
-                    $Anofin++;
-                }
-                if($Diainicio - 1 == 0)
-                {
-                    $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                }
-                else if($Diainicio - 1 > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)))
-                {
-                    $Diafin = date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/));
-                }
-                else
-                {
-                    $Diafin = $Diainicio - 1;
-                }
-                $int = 'Int de ' . MesNombreAbr($Mesinicio) . ' ' . $Diainicio . '/' . $Anoinicio . ' a ' . MesNombreAbr($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
+                $Interes = $Interes->result()[0];
                 #INTERESES PAGADOS
                 $pdf->SetXY(20, 32 + ++$r * 6);
-                $pdf->Cell(85, 6, $int, 1, 0, 'L');
-                $pdf->Cell(85, 6, number_format($Vals['TOTAL'], 0, '', ','), 1, 0, 'R');
-                $TotalPagado += $Vals['TOTAL'];
+                $pdf->Cell(85, 6, $Interes->CONCEPTO, 1, 0, 'L');
+                $pdf->Cell(85, 6, number_format($Interes->VALOR, 0, '', ','), 1, 0, 'R');
+                $TotalPagado += $Interes->VALOR;
             }
             #-----------------------------------------------------------------------------------------
             #--------------------------PAGA AMPLIACIÓN PLAZO-----------------------------
@@ -668,9 +683,59 @@
             $pdf->Cell($pdf->PageNo());
         }
 
+        private function ImprimePazySalvo()
+        {
+            $this->load->library('fpdf/pdf');
+            $pdf = new PDF();
+            $pdf->AddPage();
+            foreach ($this->caja_model->TraeSolicitud($this->input->post('ID_SOLICITUD'))->result() as $solicitud) ;
+            $protocolista=$this->parametros_model->TraeInformacionEmpresa();
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->Text(70, 15, 'CERTIFICADO DE PAZ Y SALVO');
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Text(20, 25, utf8_decode('Medellín, ') . strtolower(MesNombre(date('m'))) . ' ' . round(date('d')) . ' de ' . date('Y'));
+            $pdf->SetXY(20, 35);
+            $pdf->MultiCell(171, 5, utf8_decode('Certificamos que: El (La)  señor(a)  '.strtoupper($solicitud->NOMBRE_DEUDOR).' (a) con cedula de ciudadanía No.  '.number_format($solicitud->DOCUMENTO_DEUDOR,0,'','.').' se encuentra   a  PAZ SALVO   Por todo concepto  con el señor (A) '.strtoupper($solicitud->NOMBRE_ACREEDOR).'. Y  la empresa INVERBIENES LTDA.'));
+            $pdf->SetFont('Arial', 'I', 9);
+            $pdf->Text(20, 57, utf8_decode('Fecha de Cancelación: ') .  MesNombre($this->input->post('FECHA_CANCELACION')).' '.date('d/Y'),strtotime($this->input->post('FECHA_CANCELACION')));
+            $pdf->Text(20, 62, 'Esc.  No. '.$solicitud->NUMERO_ESCRITURA.' DE '.strtoupper(MesNombre($solicitud->FECHA_CONSTITUCION)).' '.date('d/Y',strtotime($solicitud->FECHA_CONSTITUCION)));
+            $pdf->Text(20, 67, utf8_decode('Notaria 15 del Circulo de Medellín'));
+            $pdf->Line(85, 95, 155, 95);
+            $pdf->SetFont('Arial', 'BI', 10);
+            $pdf->Text(40, 77, 'PROTOCOLISTA '.utf8_decode($protocolista->NOMBRE_PROTOCOLISTA).' TELEFONO  '.Telefono($protocolista->TELEFONO_PROTOCOLISTA));
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Text(90, 100, 'Firma y sello de INVERBIENES LTDA.');
+            $pdf->SetFont('Arial', '', 7);
+            $pdf->Text(90, 108, utf8_decode('RECUERDE REALIZAR LA CANCELACIÓN EN NOTARIA'));
+            $pdf->Text(106, 112, utf8_decode('RENTAS  Y REGISTRO'));
+            ##ONCE AGAIN########################################################################################################
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->Text(70, $pdf->GetY()+85, 'CERTIFICADO DE PAZ Y SALVO');
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Text(20, 95+$pdf->GetY(), utf8_decode('Medellín, ') . strtolower(MesNombre(date('m'))) . ' ' . round(date('d')) . ' de ' . date('Y'));
+            $pdf->SetXY(20, 105+$pdf->GetY());
+            $pdf->MultiCell(171, 5, utf8_decode('Certificamos que: El (La)  señor(a)  '.strtoupper($solicitud->NOMBRE_DEUDOR).' (a) con cedula de ciudadanía No.  '.number_format($solicitud->DOCUMENTO_DEUDOR,0,'','.').' se encuentra   a  PAZ SALVO   Por todo concepto  con el señor (A) '.strtoupper($solicitud->NOMBRE_ACREEDOR).'. Y  la empresa INVERBIENES LTDA.'));
+            $pdf->SetFont('Arial', 'I', 9);
+            $pdf->Text(20, 7+$pdf->GetY(), utf8_decode('Fecha de Cancelación: ') .  MesNombre($this->input->post('FECHA_CANCELACION')).' '.date('d/Y'),strtotime($this->input->post('FECHA_CANCELACION')));
+            $pdf->Text(20, 12+$pdf->GetY(), 'Esc.  No. '.$solicitud->NUMERO_ESCRITURA.' DE '.strtoupper(MesNombre($solicitud->FECHA_CONSTITUCION)).' '.date('d/Y',strtotime($solicitud->FECHA_CONSTITUCION)));
+            $pdf->Text(20, 17+$pdf->GetY(), utf8_decode('Notaria 15 del Circulo de Medellín'));
+            $pdf->Line(85, 45+$pdf->GetY(), 155, 45+$pdf->GetY());
+            $pdf->SetFont('Arial', 'BI', 10);
+            $pdf->Text(40, 27+$pdf->GetY(), 'PROTOCOLISTA '.utf8_decode($protocolista->NOMBRE_PROTOCOLISTA).' TELEFONO  '.Telefono($protocolista->TELEFONO_PROTOCOLISTA));
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->Text(90, 50+$pdf->GetY(), 'Firma y sello de INVERBIENES LTDA.');
+            $pdf->SetFont('Arial', '', 7);
+            $pdf->Text(90, 58+$pdf->GetY(), utf8_decode('RECUERDE REALIZAR LA CANCELACIÓN EN NOTARIA'));
+            $pdf->Text(106, 62+$pdf->GetY(), utf8_decode('RENTAS  Y REGISTRO'));
+
+            //RECORDAR PEGRA LO DE ARRIBA DE NUEVO ABAJO
+            #------------------------------------------------------#
+            $pdf->Output();
+            $pdf->Cell($pdf->PageNo());
+        }
+
         private function ImprimeInformeIngresosDiarios()
         {
-
             $pdf = new PDF();
             $pdf->AddPage();
             $hheader = 20;
@@ -684,13 +749,11 @@
             $pdf->SetXY(15, $hheader);
             $pdf->Cell(20, 6, 'Recibo', 1, 0, 'C');
             $pdf->SetXY(35, $hheader);
-            $pdf->Cell(60, 6, 'Deudor', 1, 0, 'C');
-            $pdf->SetXY(95, $hheader);
-            $pdf->Cell(50, 6, 'Acreedor', 1, 0, 'C');
-            $pdf->SetXY(145, $hheader);
+            $pdf->Cell(66, 6, 'Deudor', 1, 0, 'C');
+            $pdf->SetXY(101, $hheader);
+            $pdf->Cell(66, 6, 'Acreedor', 1, 0, 'C');
+            $pdf->SetXY(167, $hheader);
             $pdf->Cell(25, 6, 'Valor', 1, 0, 'C');
-            $pdf->SetXY(170, $hheader);
-            $pdf->Cell(22, 6, 'Fecha', 1, 0, 'C');
             $pdf->SetFont('Arial', '', 9);
 
             $i = 1;
@@ -701,13 +764,11 @@
                 $pdf->SetXY(15, $hheader + $h * $i);
                 $pdf->Cell(20, 6, $ingreso->CONSECUTIVO, 1, 0, 'C');
                 $pdf->SetXY(35, $hheader + $h * $i);
-                $pdf->Cell(60, 6, $ingreso->NOMBRE_DEUDOR, 1, 0, 'C');
-                $pdf->SetXY(95, $hheader + $h * $i);
-                $pdf->Cell(50, 6, $ingreso->NOMBRE_ACREEDOR, 1, 0, 'C');
-                $pdf->SetXY(145, $hheader + $h * $i);
+                $pdf->Cell(66, 6, $ingreso->NOMBRE_DEUDOR, 1, 0, 'C');
+                $pdf->SetXY(101, $hheader + $h * $i);
+                $pdf->Cell(66, 6, $ingreso->NOMBRE_ACREEDOR, 1, 0, 'C');
+                $pdf->SetXY(167, $hheader + $h * $i);
                 $pdf->Cell(25, 6, number_format($ingreso->VALOR, 0, '', ','), 1, 0, 'C');
-                $pdf->SetXY(170, $hheader + $h * $i);
-                $pdf->Cell(22, 6, date_format(new DateTime($ingreso->FECHA), 'd/m/Y'), 1, 0, 'C');
                 $i++;
                 $Total += $ingreso->VALOR;
             }
@@ -907,6 +968,12 @@
         {
             foreach ($this->caja_model->Clientes()->result() as $cliente)
             {
+                #Comfirmo sí ya ha pagado la hipoteca para cancelarla
+                if($cliente->CAPITAL_INICIAL - $cliente->ABONADO == 0 && $cliente->ESTADO_HIPOTECA != 3)
+                {
+                    $this->clientes_model->DemandarDeudorParams(3, $cliente->ID_SOLICITUD);
+                    $cliente->ESTADO_HIPOTECA = 3;
+                }
                 ##Datos
                 $Data['Datos']['Clientes'] = '<h3 style="text-align: center;color:#b00000;"><span class="ion ion-ios-person"></span> Deudor
                 </h3>
@@ -978,11 +1045,7 @@
                 }
                 ##Intereses
                 $Data['Intereses'] = '';
-                $Meses = floor((strtotime($cliente->FECHA_FIN) - strtotime($cliente->FECHA_INICIO)) / 2592000);
                 $Valor = ($cliente->CAPITAL_INICIAL - $cliente->ABONADO) * ($cliente->INTERES_MENSUAL / 100);
-                $fecha_dia = round(date_format(new DateTime($cliente->FECHA_INICIO), 'd'));
-                $fecha_mes = round(date_format(new DateTime($cliente->FECHA_INICIO), 'm'));
-                $fecha_ano = date_format(new DateTime($cliente->FECHA_INICIO), 'Y');
                 $Data['Intereses'] = '<table id="tabla" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
@@ -990,111 +1053,145 @@
                                     <th style="text-align:center;color:#1B7E5A">Valor</th>
                                     <th style="text-align:center;color:#1B7E5A">Concepto</th>
                                     <th style="text-align:center;color:#1B7E5A">Estado</th>';
+
                 if($this->input->post('Tipo') == 0)
                 {
                     $Data['Intereses'] .= '<th style="text-align:center;color:#1B7E5A">Acción</th>';
                 }
-                $Data['Intereses'] .= '</tr>
-                                </thead>
-                                <tbody></tbody>';
-                $intereses = [];
-                $valores = [];
-                $conceptos = [];
-                foreach ($this->caja_model->TraeInteresPago()->result() as $interes)
+                $Data['Intereses'] .= '</tr> </thead><tbody>';
+
+                $this->load->library('SmartInterest/SmartInterest');
+
+                $Interest = new SmartInterest($this->caja_model->TraeIntereses($cliente->ID_SOLICITUD));
+
+                $actual = new DateTime(date('Y-m-d'));
+                $pivot = new DateTime($cliente->FECHA_INICIO);
+                $pivot2 = new DateTime($cliente->FECHA_INICIO);
+                $inicio = new DateTime($cliente->FECHA_INICIO);
+                $Meses = floor($inicio->diff(new DateTime($cliente->FECHA_FIN))->days / 30);
+                $capitaldeuda = $cliente->CAPITAL_INICIAL * ($cliente->INTERES_MENSUAL / 100);
+                for ($mes = 1; $mes <= $Meses; $mes++)
                 {
-                    array_push($intereses, [$interes->DESCRIPCION]);
-                    array_push($valores, [$interes->VALOR]);
-                    array_push($conceptos, [$interes->CONCEPTO]);
-                }
-                $fecha_mes2 = $fecha_mes;
-                $fecha_ano2 = $fecha_ano;
-                for ($i = 1; $i <= $Meses; $i++)
-                {
-                    $fecha_mes2++;
-                    if($fecha_mes2 > 12)
+                    $accion = $this->input->post('Tipo') == 0;
+
+                    $pivot->add(new DateInterval('P1M'));
+                    $pivot->sub(new DateInterval('P1D'));
+
+                    $diff = $actual->diff($pivot);
+
+                    if($diff->invert == 1)
                     {
-                        $fecha_mes2 = 1;
-                        $fecha_ano2++;
-                    }
-                    //Mes desde
-                    if($fecha_dia > date("t", mktime(0, 0, 0, $fecha_mes/*mes*/, 1, $fecha_ano /*año*/)))
-                    {
-                        $dia = date("t", mktime(0, 0, 0, $fecha_mes/*mes*/, 1, $fecha_ano /*año*/));
-                    }
-                    else
-                    {
-                        $dia = $fecha_dia;
-                    }
-                    //Mes hasta
-                    if($fecha_dia - 1 == 0)
-                    {
-                        $dia_2 = date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/));
-                    }
-                    else if($fecha_dia - 1 > date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/)))
-                    {
-                        $dia_2 = date("t", mktime(0, 0, 0, $fecha_mes2/*mes*/, 1, $fecha_ano2 /*año*/));
-                    }
-                    else
-                    {
-                        $dia_2 = $fecha_dia - 1;
-                    }
-                    #Buscando anteriores pagos de intereses
-                    $num = 0;
-                    $valor = 0;
-                    $concepto = 0;
-                    $pagado = '';
-                    if($this->input->post('Tipo') == 0)
-                    {
-                        $accion = '<td style="text-align:center;"><input type="checkbox"></td></tr>';
-                        $pagado = '<td style="text-align:center;"><input type="checkbox" checked disabled></td></tr>';
-                    }
-                    else
-                    {
-                        $accion = '';
-                    }
-                    for ($h = 0; $h < count($intereses); $h++)
-                    {
-                        if(in_array($i, $intereses[$h]))
+                        #Sí el pivot es menor a la fecha actual
+
+                        if($Interest->HasInterest($mes))
                         {
-                            $num = $intereses[$h][0];
-                            $valor = $valores[$h][0];
-                            $concepto = $conceptos[$h][0];
-                            break;
+                            #Lo que ha pagado antes
+                            $p = null;
+
+                            foreach ($Interest->GetInterest($mes) as $i => $period)
+                            {
+                                $capitaldeuda = $period->VALOR;
+
+                                if(!is_null($period->PERIODO))
+                                {
+                                    $m = date("t", mktime(0, 0, 0, $pivot2->format('m'), 1, $pivot2->format('Y')));
+                                    $m = $pivot2->diff(new DateTime($period->PERIODO))->days / $m;
+                                    if($i == 0)
+                                    {
+                                        $valor = $m * $capitaldeuda;
+
+                                    }
+                                    else
+                                    {
+                                        $valor = (1 - $m) * $capitaldeuda;
+                                    }
+                                }
+                                else
+                                {
+                                    $valor = $capitaldeuda;
+                                }
+
+                                $Data['Intereses'] .= $Interest->Row(['value' => $valor, 'concept' => $period->CONCEPTO, 'status' => 1, 'month' => $period->MES, 'period' => $period->PERIODO, 'action' => $accion]);
+                                $p = $period;
+                            }
+                            if(isset($i) && $i == 0 && !is_null($p->PERIODO))
+                            {
+                                $Data['Intereses'] .= $Interest->Row(['value' => (1 - $m) * $capitaldeuda, 'date1' => (new DateTime($period->PERIODO))->add(new DateInterval('P1D')),
+                                    'date2' => (new DateTime($pivot2->format('Y-m-d')))->sub(new DateInterval('P1D')), 'status' => 2, 'month' => $period->MES, 'period' => $period->PERIODO, 'action' => $accion]);
+                            }
+                        }
+                        else
+                        {
+                            #Tiene mora
+                            $Data['Intereses'] .= $Interest->Row(['value' => $capitaldeuda, 'date1' => $pivot2, 'date2' => $pivot, 'status' => 3, 'month' => $mes, 'action' => $accion]);
                         }
                     }
-                    $Data['Intereses'] .= '<tr>
-                         <td style="text-align:center;">' . $i . '</td>
-                         <td style="text-align:center;">' . number_format($valor == 0 ? $Valor : $valor, 0, '', ',') . '</td>';
-                    if($num == 0)
-                    {
-                        $Data['Intereses'] .= '<td spellcheck="false" contenteditable="true" style="text-align:center;">INTERESES DE ' . $dia . '-' . MesNombreAbr($fecha_mes) . '-' . $fecha_ano . ' A ' . $dia_2 . '-' . MesNombreAbr($fecha_mes2) . '-' . $fecha_ano2 . '</td>';
-                    }
                     else
                     {
-                        $Data['Intereses'] .= '<td style="text-align:center;">' . $concepto . '</td>';
+                        #Sí el pivot es mayor a la fecha actual
+
+                        if($Interest->HasInterest($mes))
+                        {
+                            $p = null;
+
+                            #Lo que ha pagado después
+                            foreach ($Interest->GetInterest($mes) as $i => $period)
+                            {
+                                $capitaldeuda = $period->VALOR;
+
+                                if(!is_null($period->PERIODO))
+                                {
+                                    $m = date("t", mktime(0, 0, 0, $pivot2->format('m'), 1, $pivot2->format('Y')));
+                                    $m = $pivot2->diff(new DateTime($period->PERIODO))->days / $m;
+                                    if($i == 0)
+                                    {
+                                        $valor = $m * $capitaldeuda;
+
+                                    }
+                                    else
+                                    {
+                                        $valor = (1 - $m) * $capitaldeuda;
+                                    }
+                                }
+                                else
+                                {
+                                    $valor = $capitaldeuda;
+                                }
+
+                                $Data['Intereses'] .= $Interest->Row(['value' => $valor, 'concept' => $period->CONCEPTO, 'status' => 1, 'month' => $period->MES, 'period' => $period->PERIODO, 'action' => $accion]);
+                                $p = $period;
+                            }
+                            if(isset($i) && $i == 0 && !is_null($p->PERIODO))
+                            {
+                                $Data['Intereses'] .= $Interest->Row(['value' => (1 - $m) * $capitaldeuda, 'date1' => (new DateTime($period->PERIODO))->add(new DateInterval('P1D')),
+                                    'date2' => (new DateTime($pivot2->format('Y-m-d')))->sub(new DateInterval('P1D')), 'status' => 2, 'month' => $period->MES, 'period' => $period->PERIODO, 'action' => $accion]);
+                            }
+                        }
+                        #Sin pagar
+                        else if($actual->diff($pivot2)->days < 4)
+                        {
+                            $Data['Intereses'] .= $Interest->Row(['value' => $Valor, 'date1' => $pivot2, 'date2' => $pivot, 'status' => 2, 'month' => $mes, 'action' => $accion]);
+                        }
+                        else if($actual >= $pivot2 && $actual <= $pivot)
+                        {
+                            $pivot->add(new DateInterval('P1D'));
+                            $d1 = $pivot2->diff($actual)->days;
+                            $d2 = $actual->diff($pivot)->days;
+                            $d = $pivot2->diff($pivot)->days;
+                            $pivot->sub(new DateInterval('P1D'));
+                            //echo $d1."\n".$d2."\n".$d."\n";exit;
+                            $Data['Intereses'] .= $Interest->Row(['value' => $Valor * ($d1 / $d), 'date1' => $pivot2, 'date2' => $actual, 'month' => $mes, 'period' => $actual->format('Y-m-d'), 'status' => 2, 'action' => $accion]);
+                            $Data['Intereses'] .= $Interest->Row(['value' => $Valor * ($d2 / $d), 'date1' => $actual, 'period' => $actual->format('Y-m-d'), 'date2' => $pivot, 'month' => $mes, 'status' => 2, 'action' => $accion]);
+                        }
+                        else
+                        {
+                            $Data['Intereses'] .= $Interest->Row(['value' => $Valor, 'date1' => $pivot2, 'date2' => $pivot, 'status' => 2, 'month' => $mes, 'action' => $accion]);
+                        }
                     }
-                    if($num != 0)
-                    {
-                        $Data['Intereses'] .= '<td style="text-align:center;background: #1B7E5A;"><span style="font-weight: bold;color:white;">Pagado</span></td>';
-                        $Data['Intereses'] .= $pagado;
-                    }
-                    else if(strtotime('now') > strtotime($fecha_ano2 . '-' . $fecha_mes2 . '-' . $dia_2))
-                    {
-                        $Data['Intereses'] .= '<td style="text-align:center;background: #c10000;"><span style="font-weight: bold;color:white;">En mora</span></td>';
-                        $Data['Intereses'] .= $accion;
-                    }
-                    else
-                    {
-                        $Data['Intereses'] .= '<td style="text-align:center;background: #0062cc;"><span style="font-weight: bold;color:white;">Sin pagar</span></td>';
-                        $Data['Intereses'] .= $accion;
-                    }
-                    $fecha_mes++;
-                    if($fecha_mes > 12)
-                    {
-                        $fecha_mes = 1;
-                        $fecha_ano++;
-                    }
+                    $pivot2->add(new DateInterval('P1M'));
+                    $pivot->add(new DateInterval('P1D'));
                 }
+
                 $Data['Intereses'] .= '</body></table>';
                 echo json_encode($Data);
             }

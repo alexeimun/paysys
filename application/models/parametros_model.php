@@ -155,11 +155,7 @@
         public function ActualizaEmpresa()
         {
             $this->db->set('FECHA_ACTUALIZA', 'NOW()', false);
-            $this->db->update('t_empresa', ['GERENTE' => $this->input->post('GERENTE'),
-                'NIT' => $this->input->post('NIT'),
-                'CORREO' => $this->input->post('CORREO'),
-                'TELEFONO' => $this->input->post('TELEFONO'),
-                'DIRECCION' => $this->input->post('DIRECCION')]);
+            $this->db->update('t_empresa', $this->input->post(null, true));
         }
 
         public function ActualizaConsecutivos()

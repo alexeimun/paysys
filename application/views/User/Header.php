@@ -1,6 +1,6 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="<?= site_url('app') ?>" class="logo">
+    <a href="<?= site_url() ?>" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini"><i class="ion ion-android-home"></i></span>
         <!-- logo for regular state and mobile devices -->

@@ -15,6 +15,7 @@
     ##Rutas Clientes##
     #Deudores
     $route['deudores'] = 'cliente/Deudores';
+    $route['demandardeudor'] = 'cliente/DemandarDeudor';
     $route['verdeudor/(:num)'] = 'cliente/VerDeudor/$1';
     $route['actualizardeudor/(:num)'] = 'cliente/ActualizarDeudor/$1';
     $route['actualizaDeudor'] = 'cliente/ActualizaDeudor';
@@ -82,6 +83,8 @@
     $route['informeingresosdiarios'] = 'caja/InformeIngresosDiarios';
     #Cuadre diario
     $route['cuadrediario'] = 'caja/CuadreDiario';
+    #Paz y salvo
+    $route['pazysalvo'] = 'caja/PazySalvo';
     #Deudores
     $route['informedeudor'] = 'caja/InformeDeudor';
     #Acreedores

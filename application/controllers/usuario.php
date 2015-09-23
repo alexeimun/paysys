@@ -238,7 +238,7 @@
                  <td>' . $usuario->NOMBRE . '</td>
                  <td>' . $usuario->CORREO . '</td>
                  <td>' . ($usuario->NIVEL==2?'<b>Administrador</b>':'Usuario') . '</td>
-                 <td>' . Fecha($usuario->FECHA_REGISTRO) . '</td>
+                 <td>' . Momento($usuario->FECHA_REGISTRO) . '</td>
                  <td style="text-align:center;">
                  <a href="verusuario/' . $usuario->ID_USUARIO . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver mas..."></a>&nbsp;&nbsp;';
 

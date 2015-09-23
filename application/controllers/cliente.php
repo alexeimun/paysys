@@ -122,12 +122,26 @@
 
         public function InsertaDeudor()
         {
-            $this->clientes_model->InsertaDeudor();
+            if($this->input->is_ajax_request())
+            {
+                $this->clientes_model->InsertaDeudor();
+            }
+            else
+            {
+                show_404('home/error404');
+            }
         }
 
         public function InsertaAcreedor()
         {
-            $this->clientes_model->InsertaAcreedor();
+            if($this->input->is_ajax_request())
+            {
+                $this->clientes_model->InsertaAcreedor();
+            }
+            else
+            {
+                show_404('home/error404');
+            }
         }
 
         public function ActualizaDeudor()
@@ -266,6 +280,53 @@
             }
         }
 
+        public function DemandarDeudor()
+        {
+            if($this->session->can('administrar_deudores'))
+            {
+                if($this->input->is_ajax_request())
+                {
+                    if($this->input->post('ACTION') == 'switch')
+                    {
+                        switch ($this->clientes_model->TraeDeudorEstado())
+                        {
+                            case 1:
+                                echo input_submit(['class' => 'col-lg-offset-5 col-lg-10', 'icon' => 'briefcase', 'text' => 'Demandar', 'id' => 'boton', 'color' => 'danger'], 'data-tipo="2"');
+                                break;
+                            case 2:
+                                echo input_submit(['class' => 'col-lg-offset-5 col-lg-10', 'icon' => 'briefcase', 'text' => 'Quitar demanda'], 'data-tipo="1"');
+                                break;
+                            default:
+                                echo '<p>La hipoteca está cancelada!</p>';
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        $this->clientes_model->DemandarDeudor();
+                    }
+                }
+                else
+                {
+                    $this->Params();
+                    $this->Solicitudes();
+                    $this->load->view('Clientes/Deudores/DemandarDeudor', $this->Data);
+                }
+            }
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
+        }
+
+        public function DemandaAjax()
+        {
+            if($this->input->is_ajax_request())
+            {
+
+            }
+        }
+
         public function TraeSolicitudesDeudor($Id)
         {
             $this->Data['Solicitudes'] = '
@@ -344,7 +405,7 @@
 
         public function VerAcreedor($Id)
         {
-            if($this->session->userdata('administrar_acreedores'))
+            if($this->session->can('administrar_acreedores'))
             {
                 $this->Params();
                 $this->Data['Info'] = $this->clientes_model->TraeAcreedor($Id);
@@ -373,10 +434,10 @@
                                 <thead>
                                 <tr>
                                     <th>Nombre</th>
+                                    <th>Documento</th>
                                     <th>Teléfono</th>
                                     <th>Dirección</th>
                                     <th>Ciudad</th>
-                                    <th>Fecha registro</th>
                                     <th>Acción</th>
                                 </tr>
                                 </thead>
@@ -386,9 +447,9 @@
                 $this->Data['Deudores'] .= '<tr>
                  <td>' . $deudor->NOMBRE_DEUDOR . '</td>
                  <td>' . $deudor->TELEFONO . '</td>
+                 <td>' . $deudor->DOCUMENTO . '</td>
                  <td>' . $deudor->DIRECCION . '</td>
                  <td>' . ucfirst(strtolower($deudor->NOMBRE_CIUDAD)) . '</td>
-                 <td>' . date_format(new DateTime($deudor->FECHA_REGISTRA), 'd/m/Y') . '</td>
                  <td style="text-align:center;">
                  <a href="verdeudor/' . $deudor->ID_DEUDOR . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver más..."></a>&nbsp;&nbsp;
                  <a href="actualizardeudor/' . $deudor->ID_DEUDOR . '" style="font-size:20pt;color:  #0065c3" class="ion ion-edit" data-toggle="tooltip" title="Editar"></a>&nbsp;&nbsp;';
@@ -410,6 +471,7 @@
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
+                                    <th>Documento</th>
                                     <th>Dirección</th>
                                     <th>Ciudad</th>
                                     <th>Fecha registro</th>
@@ -421,10 +483,11 @@
             {
                 $this->Data['Acreedores'] .= '<tr>
                  <td>' . $acreedor->NOMBRE_ACREEDOR . '</td>
+                 <td>' . $acreedor->DOCUMENTO . '</td>
                  <td>' . $acreedor->TELEFONO . '</td>
                  <td>' . $acreedor->DIRECCION . '</td>
                  <td>' . ucfirst(strtolower($acreedor->NOMBRE_CIUDAD)) . '</td>
-                 <td>' . date('d/m/Y',strtotime($acreedor->FECHA_REGISTRA)). '</td>
+                 <td>' . date('d/m/Y', strtotime($acreedor->FECHA_REGISTRA)) . '</td>
                  <td style="text-align:center;">
                  <a href="veracreedor/' . $acreedor->ID_ACREEDOR . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver más..."></a>&nbsp;&nbsp;
                  <a href="actualizaracreedor/' . $acreedor->ID_ACREEDOR . '" style="font-size:20pt;color:  #0065c3" class="ion ion-edit" data-toggle="tooltip" title="Editar"></a>&nbsp;&nbsp;';
@@ -507,9 +570,7 @@
             foreach ($deudores->result() as $deudor)
             {
                 #Sólo los deudores que tienen una solicitud por lo menos
-
                 $this->Data['Deudores'] .= '<option value="' . $deudor->ID_DEUDOR . '">' . $deudor->DOCUMENTO . ' - ' . $deudor->NOMBRE_DEUDOR . '</option>';
-
             }
         }
 

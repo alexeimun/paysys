@@ -27,9 +27,11 @@
              SOLICITUD,
              ID_SOLICITUD,
              CAPITAL_INICIAL,
+             ESTADO_HIPOTECA,
              t_deudores.NOMBRE AS NOMBRE_DEUDOR,
              t_acreedores.NOMBRE AS NOMBRE_ACREEDOR,
              t_solicitudes.FECHA_INICIO,
+             t_solicitudes.ABONADO,
              t_solicitudes.FECHA_FIN,
              if(TIPO_HIPOTECA=0,'Cerrada','Abierta')AS  TIPO_HIPOTECA,
              t_inmuebles.TIPO_INMUEBLE

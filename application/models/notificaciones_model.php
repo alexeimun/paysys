@@ -160,7 +160,7 @@
                 foreach ($this->observaciones_model->TraerComentariosNotificacion() as $Comentario)
                 {
                     $Data['Filas'] .= '<li><a href="' . site_url('vercomentario/' . $Comentario->ID_COMENTARIO . '/' . $Comentario->ID_OBSERVACION) . '"><i class="ion ion-ios-compose" style="color: #ded623;">
-                        </i><span style="color: #5e626a;">' . explode(' ', $Comentario->NOMBRE)[0] . ' ha comentado. ' . Fecha($Comentario->FECHA_COMENTARIO) . '</span></a></li>';
+                        </i><span style="color: #5e626a;">' . explode(' ', $Comentario->NOMBRE)[0] . ' ha comentado. ' . Momento($Comentario->FECHA_COMENTARIO) . '</span></a></li>';
                 }
             }
             #OBSERVACIONES
@@ -170,7 +170,7 @@
                 foreach ($this->observaciones_model->TraerObservacionesNotificacion() as $Observacion)
                 {
                     $Data['Filas'] .= '<li><a href="' . site_url('Procesarobservacion/' . $Observacion->ID_OBSERVACION) . '"><i class="ion ion-ios-compose" style="color: #ded623;">
-                        </i><span style="color: #5e626a;">' . explode(' ', $Observacion->NOMBRE)[0] . ' ha hecho una observación. ' . Fecha($Observacion->FECHA) . '</span></a></li>';
+                        </i><span style="color: #5e626a;">' . explode(' ', $Observacion->NOMBRE)[0] . ' ha hecho una observación. ' . Momento($Observacion->FECHA) . '</span></a></li>';
                 }
             }
             #Footer
@@ -215,7 +215,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_DEUDOR . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a target="_blank" href="' . site_url('verdeudor/' . $campo->ID_DEUDOR) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver deudor"></a></td>
                                 </tr>';
                 }
@@ -255,7 +255,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_DEUDOR . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                             <td> <a target="_blank" href="' . site_url('verdeudor/' . $campo->ID_DEUDOR) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver deudor"></a></td>
 
                                 </tr>';
@@ -296,7 +296,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_DEUDOR . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a href="' . site_url('RestaurarDeudor/' . $campo->ID_DEUDOR) . '" style="font-size:20pt;color:  #5094ba" class="ion ion-ios-redo" data-toggle="tooltip" title="Restaurar"></a></td>
                                 </tr>';
                 }
@@ -337,7 +337,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_ACREEDOR . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a target="_blank" href="' . site_url('veracreedor/' . $campo->ID_ACREEDOR) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver acreedor"></a></td>
                                 </tr>';
                 }
@@ -377,7 +377,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_ACREEDOR . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a target="_blank" href="' . site_url('veracreedor/' . $campo->ID_ACREEDOR) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver acreedor"></a></td>
                                 </tr>';
                 }
@@ -417,7 +417,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_ACREEDOR . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                    <td> <a href="' . site_url('RestaurarAcreedor/' . $campo->ID_ACREEDOR) . '" style="font-size:20pt;color:  #5094ba" class="ion ion-ios-redo" data-toggle="tooltip" title="Restaurar"></a></td>
                                   </tr>';
                 }
@@ -457,7 +457,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_REGISTRA . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a target="_blank" href="' . site_url('verusuario/' . $campo->ID_USUARIO) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver usuario"></a></td>
                                 </tr>';
                 }
@@ -497,7 +497,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_REGISTRA . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a target="_blank" href="' . site_url('verusuario/' . $campo->ID_USUARIO) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver usuario"></a></td>
                                 </tr>';
                 }
@@ -537,7 +537,7 @@
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_REGISTRA . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a href="' . site_url('RestaurarUsuario/' . $campo->ID_USUARIO) . '" style="font-size:20pt;color:  #5094ba" class="ion ion-ios-redo" data-toggle="tooltip" title="Restaurar"></a></td>
 
                                      </tr>';
@@ -581,7 +581,7 @@
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->CONSECUTIVO . '</td>
                                     <td>' . number_format($campo->VALOR, 0, '', ',') . '</td>
-                                    <td>' . Fecha($campo->FECHA) . '</td>
+                                    <td>' . Momento($campo->FECHA) . '</td>
                                     <td> <a href="' . site_url('verrecibo/' . $campo->CONSECUTIVO) . '" target="_blank" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver recibo"></a></td>
                                 </tr>';
                 }

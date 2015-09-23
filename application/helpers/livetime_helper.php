@@ -2,8 +2,12 @@
 {
     exit('No direct script access allowed');
 }
-    function Fecha($date)
+    function Momento($date)
     {
+        if(is_null($date) || empty($date))
+        {
+            return 'N/A';
+        }
         #########Ajuste de horas según la zona horaria
         $ajustehora = -3;
         #########
@@ -11,6 +15,7 @@
         $ahora = strtotime(date('Y-m-d H:i:s')) + $ajustehora * 3600;
         $diff = $ahora - $fecha;
         $DIA = 86400 + 15000;
+
         if($diff < 6)
         {
             $momento = 'hace un segundo';
@@ -140,14 +145,32 @@
 
     function MesNombre($Mes)
     {
+        if(!is_numeric($Mes))
+        {
+            $Mes = date('m', strtotime($Mes));
+        }
         $Meses = [1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril', 5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'];
-        return $Meses[$Mes];
+        return $Meses[round($Mes)];
+    }
+
+    function FechaFormal($Fecha, $abr = true)
+    {
+        $Fecha = $Fecha == 'now' ? date('Y-m-d') : $Fecha;
+        $abr = $abr === true ? MesNombreAbr($Fecha) : MesNombre($Fecha);
+        return round(date('d', strtotime($Fecha))) . ' de ' . $abr . '/' . date('Y', strtotime($Fecha));
+    }
+
+    function Fecha($Fecha = 'now')
+    {
+        return $Fecha == 'now' ? round(date('d')) . date('/m-Y') : date('d/m/Y', strtotime($Fecha));
     }
 
     function MesNombreAbr($Mes)
     {
-        $Mes = round($Mes);
-
+        if(!is_numeric($Mes))
+        {
+            $Mes = date('m', strtotime($Mes));
+        }
         $Meses = [1 => 'Ene', 2 => 'Feb', 3 => 'Mar', 4 => 'Abr', 5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Ago', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dic'];
-        return $Meses[$Mes];
+        return $Meses[round($Mes)];
     }

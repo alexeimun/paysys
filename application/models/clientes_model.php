@@ -152,7 +152,7 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('ACCION', $this->input->post('DOCUMENTO'), false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'di','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'di', 'USUARIO_ACCION' => $this->session->userdata('ID_USUARIO')]);
             }
             $Deudor = array_slice($this->input->post(null, true), 0, 8);
             $this->db->set('FECHA_REGISTRA', 'NOW()', false);
@@ -171,7 +171,7 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('ACCION', $this->input->post('DOCUMENTO'), false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ai','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ai', 'USUARIO_ACCION' => $this->session->userdata('ID_USUARIO')]);
             }
             $this->db->set('FECHA_REGISTRA', 'NOW()', false);
             $_POST['MANEJO_CARTERA'] = isset($_POST['MANEJO_CARTERA']) ? 1 : 0;
@@ -214,10 +214,24 @@
             {
                 $this->db->set('ACCION', $this->input->post('Id'));
                 $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'de','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'de', 'USUARIO_ACCION' => $this->session->userdata('ID_USUARIO')]);
             }
             $this->db->set('FECHA_ELIMINA', 'NOW()', false);
             return $this->db->update('t_deudores', ['ESTADO' => 0, 'USUARIO_ELIMINA' => $this->session->userdata('ID_USUARIO')], ['ID_DEUDOR' => $this->input->post('Id')]);
+        }
+
+        public function TraeDeudorEstado()
+        {
+            return $this->db->query("SELECT  ESTADO_HIPOTECA  FROM t_solicitudes WHERE ID_SOLICITUD=".$this->input->post('ID_SOLICITUD'))->result()[0]->ESTADO_HIPOTECA;
+        }
+
+        public function DemandarDeudor()
+        {
+            $this->db->update('t_solicitudes', ['ESTADO_HIPOTECA' => $this->input->post('ESTADO')], ['ID_SOLICITUD' => $this->input->post('ID_SOLICITUD')]);
+        }
+        public function DemandarDeudorParams($estado,$idsol)
+        {
+            $this->db->update('t_solicitudes', ['ESTADO_HIPOTECA' => $estado], ['ID_SOLICITUD' => $idsol]);
         }
 
         public function EliminarAcreedor()
@@ -226,7 +240,7 @@
             {
                 $this->db->set('ACCION', $this->input->post('Id'));
                 $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ae','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'ae', 'USUARIO_ACCION' => $this->session->userdata('ID_USUARIO')]);
             }
             $this->db->set('FECHA_ELIMINA', 'NOW()', false);
             return $this->db->update('t_acreedores', ['ESTADO' => 0, 'USUARIO_ELIMINA' => $this->session->userdata('ID_USUARIO')], ['ID_ACREEDOR' => $this->input->post('Id')]);
@@ -252,7 +266,7 @@
                 $this->db->set('ACCION', $this->input->post('Ideudor'));
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'da','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'da', 'USUARIO_ACCION' => $this->session->userdata('ID_USUARIO')]);
             }
             $data = ['NOMBRE' => trim($this->input->post('NOMBRE', true)),
                 'CORREO' => trim($this->input->post('CORREO', true)),
@@ -280,7 +294,7 @@
                 $this->db->set('USUARIO_ACCION', $this->session->userdata('ID_USUARIO'));
                 $this->db->set('ACCION', $this->input->post('Idacreedor'));
                 $this->db->set('FECHA', 'NOW()', false);
-                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'aa','USUARIO_ACCION'=>$this->session->userdata('ID_USUARIO')]);
+                $this->db->insert('t_notificaciones', ['ID_USUARIO' => $campo->ID_USUARIO, 'TIPO' => 'aa', 'USUARIO_ACCION' => $this->session->userdata('ID_USUARIO')]);
             }
             $data = ['NOMBRE' => trim($this->input->post('NOMBRE', true)),
                 'CORREO' => trim($this->input->post('CORREO', true)),

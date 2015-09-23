@@ -147,6 +147,13 @@
 <script>
     url = '<?=site_url('ValidaCampos') ?>';
     cliente = 'Acreedor';
+    
+    $('input[name=RECLAMA_PERSONALMENTE]').on('ifChanged', function () {
+        $('input[name=NUMERO_CUENTA]').toggleClass('obligatorio');
+        $('input[name=NUMERO_CUENTA]').closest('div').removeClass('has-error error');
+        $('input[name=NOMBRE_CUENTA]').toggleClass('obligatorio').end().closest('div').removeClass('has-error');
+        $('input[name=NOMBRE_CUENTA]').closest('div').removeClass('has-error error');
+    });
 
     $('form').on(events, elements, function () {jValidate($(this), event)});
 

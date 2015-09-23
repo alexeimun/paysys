@@ -48,6 +48,7 @@
         public function ValidarCredenciales()
         {
             $log = $this->usuarios_model->ValidarCredenciales($this->input->post('usuario', true), $this->input->post('clave', true));
+		
             if($log != null)
             {
                 $this->load->model('hipotecas_model');
@@ -79,7 +80,7 @@
             }
             else
             {
-                redirect(site_url(), 'refresh');
+                redirect('home', 'refresh');
             }
         }
 

@@ -52,7 +52,7 @@
                     <?php endif; ?>
 
                     <span class="col-lg-push-1 col-lg-3 badge bg-blue-gradient"
-                          style="padding: 5px;margin-left: 10px;"><?= Fecha($Info->FECHA) ?></span>
+                          style="padding: 5px;margin-left: 10px;"><?= Momento($Info->FECHA) ?></span>
                 </div>
                 <br>
 

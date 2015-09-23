@@ -1,4 +1,7 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if(!defined('BASEPATH'))
+{
+    exit('No direct script access allowed');
+}
 
     class Parametro extends CI_Controller
     {
@@ -7,8 +10,11 @@
         function __construct()
         {
             parent::__construct();
-            $this->load->model('clientes_model');
-            $this->load->model('parametros_model');
+            $this->load->model(['clientes_model', 'parametros_model', 'caja_model']);
+            if(!$this->session->userdata('ID_USUARIO'))
+            {
+                redirect('home', 'refresh');
+            }
         }
 
         public function ImportaDeudores()
@@ -21,26 +27,46 @@
             $this->parametros_model->ImportaAcreedores();
         }
 
+        public function pazysalvo()
+        {
+            if($this->input->is_ajax_request())
+            {
+
+            }
+            else
+            {
+                $this->Data['Empresa'] = $this->parametros_model->TraeInformacionEmpresa();
+                $this->Params();
+                $this->load->view('Parametros/PazySalvo', $this->Data);
+            }
+        }
+
         public function Empresa()
         {
-            if ($this->session->can('empresa'))
+            if($this->session->can('empresa'))
             {
                 $this->Data['Empresa'] = $this->parametros_model->TraeInformacionEmpresa();
                 $this->Params();
                 $this->load->view('Parametros/Empresa', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function Consecutivos()
         {
-            if ($this->session->can('consecutivos'))
+            if($this->session->can('consecutivos'))
             {
                 $this->Data['Consecutivos'] = $this->parametros_model->TraeConsecutivos();
                 $this->Params();
                 $this->load->view('Parametros/Consecutivos', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function ExportaDeudores()
@@ -53,11 +79,23 @@
             $this->ListarAcreedores();
         }
 
-        public function ActualizaEmpresa()
+        public function ExportaCuadreDiario()
         {
-            $this->parametros_model->ActualizaEmpresa();
+            $this->ListarCuadreDiario();
         }
 
+        public function ExportaIngresosDiarios()
+        {
+            $this->ListarIngresosDiarios();
+        }
+
+        public function ActualizaEmpresa()
+        {
+            if($this->input->is_ajax_request())
+            {
+                $this->parametros_model->ActualizaEmpresa();
+            }
+        }
 
         public function ActualizaConsecutivos()
         {
@@ -66,42 +104,54 @@
 
         public function ImportarDeudores()
         {
-            if ($this->session->can('importar_clientes'))
+            if($this->session->can('importar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Deudores/ImportarDeudores', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function ImportarAcreedores()
         {
-            if ($this->session->can('importar_clientes'))
+            if($this->session->can('importar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Acreedores/ImportarAcreedores', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function ExportarDeudores()
         {
-            if ($this->session->can('exportar_clientes'))
+            if($this->session->can('exportar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Deudores/ExportarDeudores', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function ExportarAcreedores()
         {
-            if ($this->session->can('exportar_clientes'))
+            if($this->session->can('exportar_clientes'))
             {
                 $this->Params();
                 $this->load->view('Parametros/Clientes/Acreedores/ExportarAcreedores', $this->Data);
             }
-            else  redirect(site_url(), 'refresh');
+            else
+            {
+                redirect(site_url(), 'refresh');
+            }
         }
 
         public function Params()
@@ -157,7 +207,7 @@
                                 <thead>
                                     <tr><th colspan="7"></th></tr>
                                 <tr>
-                                    <th style="border-style: dashed" colspan="7" rowspan="2">ARCHIVO EXPORTADO EL <span style="color:green;">'. date('d-m-Y') . '</span> POR ' . $this->session->userdata('NOMBRE_USUARIO') . '</th>
+                                    <th style="border-style: dashed" colspan="7" rowspan="2">ARCHIVO EXPORTADO EL <span style="color:green;">' . date('d-m-Y') . '</span> POR ' . $this->session->userdata('NOMBRE_USUARIO') . '</th>
                                     </tr>
                                     <tr><th colspan="7"></th></tr>
                                     <tr><th colspan="7"></th></tr>
@@ -182,6 +232,91 @@
                  <td>' . $acreedor->CORREO . '</td>
                  <td>' . ucfirst(strtolower($acreedor->NOMBRE_CIUDAD)) . '</td>
                  <td>' . $acreedor->FECHA_REGISTRA . '</td></tr> ';
+            }
+            $table .= '</tbody></table>';
+            echo $table;
+        }
+
+        private function ListarCuadreDiario()
+        {
+            $table = ' <table id="tabla" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr><th colspan="5"></th></tr>
+                                <tr>
+                                    <th style="border-style: dashed" colspan="5" rowspan="2">ARCHIVO EXPORTADO EL <span style="color:green;">' . date('d-m-Y') . '</span> POR ' . $this->session->userdata('NOMBRE_USUARIO') . '</th>
+                                    </tr>
+                                    <tr><th colspan="5"></th></tr>
+                                    <tr><th colspan="5"></th></tr>
+                                    <tr>
+                                    <th style="background:#3c8dbc;color:white;">Recibo</th>
+                                    <th style="background:#3c8dbc;color:white;">Valor</th>
+                                    <th style="background:#3c8dbc;color:white;">%</th>
+                                    <th style="background:#3c8dbc;color:white;">Admon</th>
+                                    <th style="background:#3c8dbc;color:white;">Comisión</th>
+                                </tr>
+                                </thead>
+                                <tbody>';
+            $TotalComision = 0;
+            $TotalAdmin = 0;
+            foreach ($this->caja_model->TraeCuadreDiario() as $cuadre)
+            {
+                $comision = '';
+                if($cuadre->TIPO_MOV == 0)
+                {
+                    $ptge = "0";
+                    $admin = '-';
+                }
+                else if($cuadre->TIPO_MOV == 4)
+                {
+                    $ptge = '30';
+                    $admin = '-';
+                    $comision = $cuadre->VALOR * .3;
+                    $TotalComision += $comision;
+                }
+                else
+                {
+                    $ptge = $cuadre->CUOTA_ADMINISTRACION;
+                    $admin = $cuadre->VALOR * ($cuadre->CUOTA_ADMINISTRACION / 100);
+                    $TotalAdmin += $admin;
+                }
+                $table .= '<tr>
+                 <td>' . $cuadre->CONSECUTIVO . '</td>
+                 <td>' . number_format($cuadre->VALOR, 0, '', '.') . '</td>
+                 <td>%' . $ptge . '</td>
+                 <td>' . ($admin == '-' ? '- ' : number_format($admin, 0, '', '.')) . '</td>
+                 <td>' . ($comision != '' ? number_format($comision, 0, '', '.') : '$ 0') . '</td></tr> ';
+            }
+            $table .= '</tbody></table>';
+            echo $table;
+        }
+
+        private function ListarIngresosDiarios()
+        {
+            $table = ' <table id="tabla" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr><th colspan="4"></th></tr>
+                                <tr>
+                                    <th style="border-style: dashed" colspan="4" rowspan="2">ARCHIVO EXPORTADO EL <span style="color:green;">' . date('d-m-Y') . '</span> POR ' . $this->session->userdata('NOMBRE_USUARIO') . '</th>
+                                    </tr>
+                                    <tr><th colspan="4"></th></tr>
+                                    <tr><th colspan="4">' . $this->input->post('FECHA') . '</th></tr>
+                                    <tr>
+                                    <th style="background:#3c8dbc;color:white;">Recibo</th>
+                                    <th style="background:#3c8dbc;color:white;">Deudor</th>
+                                    <th style="background:#3c8dbc;color:white;">Acreedor</th>
+                                    <th style="background:#3c8dbc;color:white;">Valor</th>
+                                </tr>
+                                </thead>
+                                <tbody>';
+
+            foreach ($this->caja_model->TraeIngresosDiarios() as $ingreso)
+            {
+                $table .= '<tr>
+                 <td>' . $ingreso->CONSECUTIVO . '</td>
+                 <td>' . $ingreso->NOMBRE_DEUDOR . '</td>
+                 <td>' . $ingreso->NOMBRE_ACREEDOR . '</td>
+                 <td>' . number_format($ingreso->VALOR, 0, '', '.') . '</td>
+                 </tr> ';
             }
             $table .= '</tbody></table>';
             echo $table;

@@ -54,14 +54,14 @@
                     <label class="col-lg-4 control-label">Último ingreso:</label>
 
                     <div class="col-lg-8">
-                        <input type="text" class="form-control" value="<?= Fecha($Info->FACHA_ULTIMO_INICIO_SESION) ?>"">
+                        <input type="text" class="form-control" value="<?= Momento($Info->FACHA_ULTIMO_INICIO_SESION) ?>"">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-lg-4 control-label">Fecha de registro:</label>
 
                     <div class="col-lg-8">
-                        <input type="text" class="form-control" value="<?= Fecha($Info->FECHA_REGISTRO) ?>"">
+                        <input type="text" class="form-control" value="<?= Momento($Info->FECHA_REGISTRO) ?>"">
                     </div>
                 </div>
 

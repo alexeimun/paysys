@@ -68,7 +68,7 @@
                 $com .= '<div class="form-group">
         <div class="row" style="margin-bottom: 5px;">
             <div class="col-lg-10">
-                <span style="font-size: 11pt;color:lightslategrey">' . $comentario->NOMBRE . ',  ' . Fecha($comentario->FECHA_COMENTARIO) . '</span>
+                <span style="font-size: 11pt;color:lightslategrey">' . $comentario->NOMBRE . ',  ' . Momento($comentario->FECHA_COMENTARIO) . '</span>
             </div>
         </div>
         <div class="row">
@@ -201,7 +201,7 @@
                 else
                     $this->Data['Observaciones'] .= '<td style="font-weight:bold;color:green">Solucionado</td>';
                 $this->Data['Observaciones'] .= '<td style="font-weight:bold;">' . ($observacion->VISTO == 0 ? 'No' : 'Sí') . '</td>';
-                $this->Data['Observaciones'] .= '<td>' . Fecha($observacion->FECHA) . '</td>
+                $this->Data['Observaciones'] .= '<td>' . Momento($observacion->FECHA) . '</td>
                  <td style="text-align:center;" class="bg-blue-gradient">
                  <a href="' . base_url('verobservacion/' . $observacion->ID_OBSERVACION) . '" style="font-size:12pt;color:  white;" class="" data-toggle="tooltip" title="Ver mas..."> Ver más</a></td> </tr>';
             }

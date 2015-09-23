@@ -39,12 +39,13 @@
                   method="post" action="cliente/InsertaAcreedor">
                 <hr style="border: 1px solid #0000c0;"/>
                 <div class="form-group">
-                    <label  class="col-lg-2 control-label">Nombre:</label>
+                    <label class="col-lg-2 control-label">Nombre:</label>
 
                     <div class="col-lg-10">
-                        <input type="text" class="form-control obligatorio" placeholder="Ingrese el nombre" value="<?=$Info->NOMBRE ?>"
+                        <input type="text" class="form-control obligatorio" placeholder="Ingrese el nombre"
+                               value="<?= $Info->NOMBRE ?>"
                                name="NOMBRE"
-                            >
+                        >
                     </div>
                 </div>
                 <div class="form-group">
@@ -52,7 +53,7 @@
 
                     <div class="col-lg-10">
                         <input type="text" class="form-control obligatorio numero documento"
-                               name="DOCUMENTO" value="<?=$Info->DOCUMENTO ?>"
+                               name="DOCUMENTO" value="<?= $Info->DOCUMENTO ?>"
                                placeholder="Ingrese el número del documento">
                     </div>
                 </div>
@@ -60,7 +61,7 @@
                     <label class="col-lg-2 control-label">Ciudad:</label>
 
                     <div class="col-lg-10">
-                        <select  name="ID_CIUDAD" class="form-control chosen-select"
+                        <select name="ID_CIUDAD" class="form-control chosen-select"
                                 style="width:220px;">
                             <?= $Ciudades ?>
                         </select>
@@ -71,7 +72,8 @@
                     <label class="col-lg-2 control-label">Dirección:</label>
 
                     <div class="col-lg-10">
-                        <input type="text" class="form-control obligatorio" value="<?=$Info->DIRECCION ?>" name="DIRECCION"
+                        <input type="text" class="form-control obligatorio" value="<?= $Info->DIRECCION ?>"
+                               name="DIRECCION"
                                placeholder="Ingrese la dirección">
                     </div>
                 </div>
@@ -79,7 +81,8 @@
                     <label class="col-lg-2 control-label">Teléfono:</label>
 
                     <div class="col-lg-10">
-                        <input type="text" class="form-control obligatorio numero telefono" name="TELEFONO" value="<?=$Info->TELEFONO ?>"
+                        <input type="text" class="form-control obligatorio numero telefono" name="TELEFONO"
+                               value="<?= $Info->TELEFONO ?>"
                                placeholder="Ingrese el teléfono">
                     </div>
                 </div>
@@ -87,7 +90,8 @@
                     <label class="col-lg-2 control-label">Celular:</label>
 
                     <div class="col-lg-10">
-                        <input type="text" class="form-control numero telefono" name="CELULAR" value="<?=$Info->CELULAR ?>"
+                        <input type="text" class="form-control numero telefono" name="CELULAR"
+                               value="<?= $Info->CELULAR ?>"
                                placeholder="Ingrese el celular">
                     </div>
                 </div>
@@ -95,7 +99,7 @@
                     <label class="col-lg-2 control-label">Correo:</label>
 
                     <div class="col-lg-10">
-                        <input type="email" class="form-control correo" name="CORREO" value="<?=$Info->CORREO ?>"
+                        <input type="email" class="form-control correo" name="CORREO" value="<?= $Info->CORREO ?>"
                                placeholder="Ingrese el correo electrónico">
                     </div>
                 </div>
@@ -106,7 +110,8 @@
                     <label class="col-lg-4 control-label">Nombre Cuenta:</label>
 
                     <div class="col-lg-8">
-                        <input type="text" class="form-control obligatorio" name="NOMBRE_CUENTA" value="<?=$Info->NOMBRE_CUENTA ?>"
+                        <input type="text" class="form-control obligatorio" name="NOMBRE_CUENTA"
+                               value="<?= $Info->NOMBRE_CUENTA ?>"
                                placeholder="Nombre de la cuenta">
                     </div>
                 </div>
@@ -115,7 +120,8 @@
                     <label class="col-lg-4 control-label">Número Cuenta:</label>
 
                     <div class="col-lg-8">
-                        <input type="text" class="form-control obligatorio numero" name="NUMERO_CUENTA" value="<?=$Info->NUMERO_CUENTA ?>"
+                        <input type="text" class="form-control obligatorio numero" name="NUMERO_CUENTA"
+                               value="<?= $Info->NUMERO_CUENTA ?>"
                                placeholder="Número de la cuenta">
                     </div>
                 </div>
@@ -125,7 +131,8 @@
                     <label class="col-lg-4 control-label"></label>
 
                     <div class="col-lg-8">
-                        <input type="checkbox" name="MANEJO_CARTERA" <?=$Info->MANEJO_CARTERA==1?'checked':'' ?>> <strong> Manejo Cartera</strong>
+                        <input type="checkbox" name="MANEJO_CARTERA" <?= $Info->MANEJO_CARTERA == 1 ? 'checked' : '' ?>>
+                        <strong> Manejo Cartera</strong>
                     </div>
                 </div>
 
@@ -133,7 +140,9 @@
                     <label class="col-lg-4 control-label"></label>
 
                     <div class="col-lg-8">
-                        <input type="checkbox" name="RECLAMA_PERSONALMENTE"  <?=$Info->RECLAMA_PERSONALMENTE==1?'checked':'' ?>>  <strong> Reclama
+                        <input type="checkbox"
+                               name="RECLAMA_PERSONALMENTE" <?= $Info->RECLAMA_PERSONALMENTE == 1 ? 'checked' : '' ?>>
+                        <strong> Reclama
                             Personalmente</strong>
                     </div>
                 </div>
@@ -157,9 +166,18 @@
 <script>
     url = '<?=site_url('ValidaCampos') ?>';
     docId = <?=$Info->DOCUMENTO ?>;
-    cliente='Acreedor';
+    cliente = 'Acreedor';
 
-    $('form').on(events, elements, function () {jValidate($(this), event); });
+    $('input[name=RECLAMA_PERSONALMENTE]').on('ifChanged', function () {
+        $('input[name=NUMERO_CUENTA]').toggleClass('obligatorio');
+        $('input[name=NUMERO_CUENTA]').closest('div').removeClass('has-error error');
+        $('input[name=NOMBRE_CUENTA]').toggleClass('obligatorio').end().closest('div').removeClass('has-error');
+        $('input[name=NOMBRE_CUENTA]').closest('div').removeClass('has-error error');
+    });
+
+    $('form').on(events, elements, function () {
+        jValidate($(this), event);
+    });
 
     (new Spinner({
         lines: 10, width: 4,
@@ -167,14 +185,10 @@
     })).spin(document.getElementById("spin"));
 
     //Envíar
-    $('button:button').click(function ()
-    {
-        if (validateForm())
-        {
-            $.post('ValidaCampos', {'DOCUMENTO': $('input.documento').val(),CLIENTE:cliente}, function (data)
-            {
-                if (data == 'no')
-                {
+    $('button:button').click(function () {
+        if (validateForm()) {
+            $.post('ValidaCampos', {'DOCUMENTO': $('input.documento').val(), CLIENTE: cliente}, function (data) {
+                if (data == 'no') {
                     $('input.documento').closest('div').addClass('has-error error_documento');
                     $('body,html').animate({scrollTop: 0}, 200);
                 }
@@ -182,16 +196,14 @@
             });
         }
     });
-    function Alerta()
-    {
+    function Alerta() {
         BootstrapDialog.show({
             title: '<span style="color: #ffffff;font-size: 20pt;"class="ion ion-checkmark-round"></span>&nbsp;&nbsp; <span style="font-size: 18pt;">Bien hecho...</span>',
             message: 'El acreedor se ha actualizado correctamente...',
             draggable: true,
             buttons: [{
                 label: 'Cerrar',
-                action: function (dialogItself)
-                {
+                action: function (dialogItself) {
                     dialogItself.close();
                     location.href = '<?=site_url('actualizaracreedor').'/'.$Info->ID_ACREEDOR ?>';
                 }
@@ -199,20 +211,17 @@
         });
     }
 
-    function Update()
-    {
+    function Update() {
         $('.dinero').eq(0).val($('.dinero').eq(0).unmask());
         $('.dinero').eq(1).val($('.dinero').eq(1).unmask());
         $.ajax({
             type: 'post', url: '<?=site_url('actualizaAcreedor') ?>', data: $('form').serialize(),
-            beforeSend: function ()
-            {
+            beforeSend: function () {
                 $('body').addClass('Wait');
                 $('body,html').animate({scrollTop: 0}, 200);
                 $('#spin').show();
             },
-            success: function ()
-            {
+            success: function () {
                 $('body').removeClass('Wait');
                 Alerta();
                 $('#spin').hide();
@@ -224,8 +233,7 @@
 
 
 <script>
-    $(function ()
-    {
+    $(function () {
         $('input:checkbox').iCheck({
             checkboxClass: 'icheckbox_square-blue',
             radioClass: 'iradio_square-blue',

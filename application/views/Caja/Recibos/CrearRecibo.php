@@ -462,19 +462,23 @@
         var num = [];
         var concepto = [];
         var valor = [];
+        var mes = [];
+        var periodo = [];
 
         $('#tabs table tbody tr td:nth-of-type(5) input:checked').not(':disabled').each(function (index, element) {
             if ($(this).val() != 'ok') {
                 var tr = $(element).closest('tr');
-                num.push(tr.find('td:nth-of-type(1)').text());
-                valor.push(tr.find('td:nth-of-type(2)').unmask());
                 concepto.push(tr.find('td:nth-of-type(3)').text());
+                valor.push(tr.find('td:nth-of-type(2)').unmask());
+                mes.push(tr.data('mes'));
+                periodo.push(tr.data('periodo'));
                 $(this).val('ok');
             }
         });
-        if (num.length > 0) {
+        if (mes.length > 0) {
             var Field = [];
-            Field.push(num, concepto, valor);
+            Field.push(mes, periodo, concepto, valor);
+            console.log(Field);
             $.post('pagostemp', {
                 REG: Field,
                 TIPO_RECIBO: 1,
@@ -490,7 +494,7 @@
         if (validateForm()) {
             $.post('pagostemp', {
                 IdSol: Solicitud.val(),
-                CONCEPTO: $('input[name=CONCEPTO]').length?$('input[name=CONCEPTO]').val().trim():'',
+                CONCEPTO: $('input[name=CONCEPTO]').length ? $('input[name=CONCEPTO]').val().trim() : '',
                 METADATO: $('input[name=MESES]').length ? $('input[name=MESES]').val() : '',
                 VALOR: $('input[name=VALOR]').unmask(),
                 TIPO_RECIBO: $('select[name=TIPO_RECIBO] :selected').val(),
