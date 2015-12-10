@@ -33,59 +33,59 @@
                 {
                     #Deudores
                     case 'di':
-                        $di ++;
+                        $di++;
                         $c1 = 1;
                         break;
                     case 'de':
-                        $de ++;
+                        $de++;
                         $c3 = 1;
                         break;
                     case 'da':
-                        $da ++;
+                        $da++;
                         $c4 = 1;
                         break;
                     #Acreedores
                     case 'ai':
-                        $ai ++;
+                        $ai++;
                         $c5 = 1;
                         break;
                     case 'ae':
-                        $ae ++;
+                        $ae++;
                         $c7 = 1;
                         break;
                     case 'aa':
-                        $aa ++;
+                        $aa++;
                         $c8 = 1;
                         break;
                     #Usuarios
                     case 'ui':
-                        $ui ++;
+                        $ui++;
                         $c9 = 1;
                         break;
                     case 'ua':
-                        $ua ++;
+                        $ua++;
                         $c10 = 1;
                         break;
                     case 'ue':
-                        $ue ++;
+                        $ue++;
                         $c11 = 1;
                         break;
                     #Recibos
                     case 'ri':
-                        $ri ++;
+                        $ri++;
                         $c12 = 1;
                         break;
                     #Vencimientos
                     case 'vs':
-                        $vs ++;
+                        $vs++;
                         $c13 = 1;
                         break;
                     #Observaciones
                     case 'ci':
-                        $ci ++;
+                        $ci++;
                         break;
                     case 'oi':
-                        $oi ++;
+                        $oi++;
                         break;
                 }
             }
@@ -94,67 +94,67 @@
                         <li class="header">Tienes ' . $rows . ' notificaci' . ($rows > 1 ? 'o' : 'ó') . 'n' . ($rows > 1 ? 'es' : '') . '</li>
                         <li><ul class="menu">';
             #DEUDORES
-            if ($di != 0)
+            if($di != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/di') . '"><i class="ion ion-person-add text-primary">
                         </i><span style="color: #3c8dbc;">' . $di . ' Deudor' . ($di > 1 ? 'es' : '') . ' creado' . ($di > 1 ? 's' : '') . '</span></a></li>';
             }
-            if ($da != 0)
+            if($da != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/da') . '"><i class="ion ion-edit text-yellow">
                         </i><span style="color: #cabb56;">' . $da . ' Deudor' . ($da > 1 ? 'es' : '') . ' modificado' . ($da > 1 ? 's' : '') . '</span></a></li>';
             }
-            if ($de != 0)
+            if($de != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/de') . '"><i class="ion ion-android-delete text-red">
                         </i><span style="color: red;">' . $de . ' Deudor' . ($de > 1 ? 'es' : '') . ' eliminado' . ($de > 1 ? 's' : '') . '</span></a></li>';
             }
             #ACREEDORES
-            if ($ai != 0)
+            if($ai != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/ai') . '"><i class="ion ion-person-add text-primary">
                         </i><span style="color: #3c8dbc;">' . $ai . ' Acreedor' . ($ai > 1 ? 'es' : '') . ' creado' . ($ai > 1 ? 's' : '') . '</span></a></li>';
             }
-            if ($aa != 0)
+            if($aa != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/aa') . '"><i class="ion ion-edit text-yellow">
                         </i><span style="color: #cabb56;">' . $aa . ' Acreedor' . ($aa > 1 ? 'es' : '') . ' modificado' . ($aa > 1 ? 's' : '') . '</span></a></li>';
             }
-            if ($ae != 0)
+            if($ae != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/ae') . '"><i class="ion ion-android-delete text-red">
                         </i><span style="color: red;">' . $ae . ' Acreedor' . ($ae > 1 ? 'es' : '') . ' eliminado' . ($ae > 1 ? 's' : '') . '</span></a></li>';
             }
             #USUARIOS
-            if ($ui != 0)
+            if($ui != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/ui') . '"><i class="ion ion-person-add text-primary">
                         </i><span style="color: #3c8dbc;">' . $ui . ' Usuario' . ($ui > 1 ? 'es' : '') . ' creado' . ($ui > 1 ? 's' : '') . '</span></a></li>';
             }
-            if ($ua != 0)
+            if($ua != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/ua') . '"><i class="ion ion-edit text-yellow">
                         </i><span style="color: #cabb56;">' . $ua . ' Usuario' . ($ua > 1 ? 'es' : '') . ' modificado' . ($ua > 1 ? 's' : '') . '</span></a></li>';
             }
-            if ($ue != 0)
+            if($ue != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/ue') . '"><i class="ion ion-android-delete text-red">
                         </i><span style="color: red;">' . $ue . ' Usuario' . ($ue > 1 ? 'es' : '') . ' eliminado' . ($ue > 1 ? 's' : '') . '</span></a></li>';
             }
             #RECIBOS INSERTADOS
-            if ($ri != 0)
+            if($ri != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/ri') . '"><i class="ion ion-android-add-circle text-green">
                         </i><span style="color: #34a38e;">' . $ri . ' Recibo' . ($ri > 1 ? 's' : '') . ' creado' . ($ri > 1 ? 's' : '') . '</span></a></li>';
             }
             #VENCE SOLICITUD
-            if ($vs != 0)
+            if($vs != 0)
             {
                 $Data['Filas'] .= '<li><a href="' . site_url('vernotificacion/vs') . '"><i class="ion ion-android-add-circle text-red">
                         </i><span style="color: #c6337b;">' . $vs . ' Solicitud' . ($vs > 1 ? 'es' : '') . ' próxima' . ($vs > 1 ? 's' : '') . ' a vencerse</span></a></li>';
             }
             #COMENTARIOS
-            if ($ci != 0)
+            if($ci != 0)
             {
                 $this->load->model('observaciones_model');
                 foreach ($this->observaciones_model->TraerComentariosNotificacion() as $Comentario)
@@ -164,7 +164,7 @@
                 }
             }
             #OBSERVACIONES
-            if ($oi != 0)
+            if($oi != 0)
             {
                 $this->load->model('observaciones_model');
                 foreach ($this->observaciones_model->TraerObservacionesNotificacion() as $Observacion)
@@ -196,7 +196,7 @@
                INNER JOIN t_deudores ON t_deudores.DOCUMENTO=t_notificaciones.ACCION
 
                 WHERE TIPO='di' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($DI != '')
+            if($DI != '')
             {
                 $di = '<table class="table table-striped">
                                 <thead><tr>
@@ -211,7 +211,7 @@
                 foreach ($DI->result() as $campo)
                 {
                     $di .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_DEUDOR . '</td>
@@ -219,8 +219,14 @@
                                     <td> <a target="_blank" href="' . site_url('verdeudor/' . $campo->ID_DEUDOR) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver deudor"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $di = '';
-                else $di .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $di = '';
+                }
+                else
+                {
+                    $di .= '</tbody></table>';
+                }
             }
             #DEUDORES ACTUALIZAR
             $DA = $this->db->query("SELECT DISTINCT
@@ -236,7 +242,7 @@
                INNER JOIN t_deudores ON t_deudores.ID_DEUDOR=t_notificaciones.ACCION 
 
                 WHERE TIPO='da'AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($DA != '')
+            if($DA != '')
             {
                 $da = '<table class="table table-striped">
                                <thead><tr>
@@ -251,7 +257,7 @@
                 foreach ($DA->result() as $campo)
                 {
                     $da .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_DEUDOR . '</td>
@@ -260,8 +266,14 @@
 
                                 </tr>';
                 }
-                if ($c == 0) $da = '';
-                else $da .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $da = '';
+                }
+                else
+                {
+                    $da .= '</tbody></table>';
+                }
             }
             #DEUDORES ELIMINAR
             $DE = $this->db->query("SELECT DISTINCT
@@ -277,7 +289,7 @@
                INNER JOIN t_deudores ON t_deudores.ID_DEUDOR=t_notificaciones.ACCION AND t_deudores.ESTADO=0
 
                 WHERE TIPO='de' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($DE != '')
+            if($DE != '')
             {
                 $de = '<table class="table table-striped">
                                <thead><tr>
@@ -292,7 +304,7 @@
                 foreach ($DE->result() as $campo)
                 {
                     $de .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_DEUDOR . '</td>
@@ -300,8 +312,14 @@
                                     <td> <a href="' . site_url('RestaurarDeudor/' . $campo->ID_DEUDOR) . '" style="font-size:20pt;color:  #5094ba" class="ion ion-ios-redo" data-toggle="tooltip" title="Restaurar"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $de = '';
-                else $de .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $de = '';
+                }
+                else
+                {
+                    $de .= '</tbody></table>';
+                }
                 ##Fin elimina deudores##
             }
             #ACREEDORES INSERTAR
@@ -318,7 +336,7 @@
                INNER JOIN t_acreedores ON t_acreedores.DOCUMENTO=t_notificaciones.ACCION
 
                 WHERE TIPO='ai' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($AI != '')
+            if($AI != '')
             {
                 $ai = '<table class="table table-striped">
                                 <thead><tr>
@@ -333,7 +351,7 @@
                 foreach ($AI->result() as $campo)
                 {
                     $ai .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_ACREEDOR . '</td>
@@ -341,8 +359,14 @@
                                     <td> <a target="_blank" href="' . site_url('veracreedor/' . $campo->ID_ACREEDOR) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver acreedor"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $ai = '';
-                else $ai .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $ai = '';
+                }
+                else
+                {
+                    $ai .= '</tbody></table>';
+                }
             }
             #ACREEDORES ACTUALIZAR
             $AA = $this->db->query("SELECT DISTINCT
@@ -358,7 +382,7 @@
                INNER JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_notificaciones.ACCION
 
                 WHERE TIPO='aa' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($AA != '')
+            if($AA != '')
             {
                 $aa = '<table class="table table-striped">
                                 <thead><tr>
@@ -373,7 +397,7 @@
                 foreach ($AA->result() as $campo)
                 {
                     $aa .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_ACREEDOR . '</td>
@@ -381,8 +405,14 @@
                                     <td> <a target="_blank" href="' . site_url('veracreedor/' . $campo->ID_ACREEDOR) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver acreedor"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $aa = '';
-                else $aa .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $aa = '';
+                }
+                else
+                {
+                    $aa .= '</tbody></table>';
+                }
             }
             #ACREEDORES ELIMINAR
             $AE = $this->db->query("SELECT DISTINCT
@@ -398,7 +428,7 @@
                INNER JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_notificaciones.ACCION
 
                 WHERE t_acreedores.ESTADO=0 AND TIPO='ae' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($AE != '')
+            if($AE != '')
             {
                 $ae = '<table class="table table-striped">
                                 <thead><tr>
@@ -413,7 +443,7 @@
                 foreach ($AE->result() as $campo)
                 {
                     $ae .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_ACREEDOR . '</td>
@@ -421,8 +451,14 @@
                                    <td> <a href="' . site_url('RestaurarAcreedor/' . $campo->ID_ACREEDOR) . '" style="font-size:20pt;color:  #5094ba" class="ion ion-ios-redo" data-toggle="tooltip" title="Restaurar"></a></td>
                                   </tr>';
                 }
-                if ($c == 0) $ae = '';
-                else $ae .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $ae = '';
+                }
+                else
+                {
+                    $ae .= '</tbody></table>';
+                }
             }
             #USUARIOS INSERTAR
             $UI = $this->db->query("SELECT DISTINCT
@@ -438,7 +474,7 @@
                INNER JOIN t_usuarios AS USUARIO ON USUARIO.ID_USUARIO=t_notificaciones.USUARIO_ACCION
 
                 WHERE TIPO='ui' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($UI != '')
+            if($UI != '')
             {
                 $ui = '<table class="table table-striped">
                                 <thead><tr>
@@ -453,7 +489,7 @@
                 foreach ($UI->result() as $campo)
                 {
                     $ui .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_REGISTRA . '</td>
@@ -461,8 +497,14 @@
                                     <td> <a target="_blank" href="' . site_url('verusuario/' . $campo->ID_USUARIO) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver usuario"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $ui = '';
-                else $ui .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $ui = '';
+                }
+                else
+                {
+                    $ui .= '</tbody></table>';
+                }
             }
             #USUARIOS ACTUALIZAR
             $UA = $this->db->query("SELECT DISTINCT
@@ -478,7 +520,7 @@
                INNER JOIN t_usuarios AS USUARIO ON USUARIO.ID_USUARIO=t_notificaciones.USUARIO_ACCION
 
                 WHERE TIPO='ua' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($UA != '')
+            if($UA != '')
             {
                 $ua = '<table class="table table-striped">
                                 <thead><tr>
@@ -493,7 +535,7 @@
                 foreach ($UA->result() as $campo)
                 {
                     $ua .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_REGISTRA . '</td>
@@ -501,8 +543,14 @@
                                     <td> <a target="_blank" href="' . site_url('verusuario/' . $campo->ID_USUARIO) . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver usuario"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $ua = '';
-                else $ua .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $ua = '';
+                }
+                else
+                {
+                    $ua .= '</tbody></table>';
+                }
             }
             #USUARIOS ELIMINAR
             $UE = $this->db->query("SELECT DISTINCT
@@ -518,7 +566,7 @@
                INNER JOIN t_usuarios AS USUARIO ON USUARIO.ID_USUARIO=t_notificaciones.USUARIO_ACCION
 
                 WHERE USUARIO_REGISTRA.ESTADO=0 AND TIPO='ue' AND t_notificaciones.ID_USUARIO=" . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($UE != '')
+            if($UE != '')
             {
                 $ue = '<table class="table table-striped">
                                 <thead><tr>
@@ -533,7 +581,7 @@
                 foreach ($UE->result() as $campo)
                 {
                     $ue .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->NOMBRE_REGISTRA . '</td>
@@ -542,8 +590,14 @@
 
                                      </tr>';
                 }
-                if ($c == 0) $ue = '';
-                else $ue .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $ue = '';
+                }
+                else
+                {
+                    $ue .= '</tbody></table>';
+                }
             }
             #RECIBOS INSERTAR
             $RI = $this->db->query("SELECT DISTINCT
@@ -560,7 +614,7 @@
 
                 WHERE t_notificaciones.TIPO='ri' AND t_movimientos.DESCRIPCION= 'TR' AND t_notificaciones.ID_USUARIO=
                 " . $this->session->userdata('ID_USUARIO') . ' ORDER BY t_notificaciones.FECHA DESC');
-            if ($RI != '')
+            if($RI != '')
             {
                 $ri = '<table class="table table-striped">
                                 <thead><tr>
@@ -576,7 +630,7 @@
                 foreach ($RI->result() as $campo)
                 {
                     $ri .= ' <tr>
-                                    <td>' . ++ $c . '.</td>
+                                    <td>' . ++$c . '.</td>
                                     <td><img class="img-circle" style="height:25px;width:25px;" src="' . base_url('public/images/Avatars/avatar' . $campo->AVATAR) . '.png"/></td>
                                     <td>' . $campo->NOMBRE_USUARIO . '</td>
                                     <td>' . $campo->CONSECUTIVO . '</td>
@@ -585,8 +639,14 @@
                                     <td> <a href="' . site_url('verrecibo/' . $campo->CONSECUTIVO) . '" target="_blank" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver recibo"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $ri = '';
-                else $ri .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $ri = '';
+                }
+                else
+                {
+                    $ri .= '</tbody></table>';
+                }
             }
             #VENCE SOLICITUD
             $VS = $this->db->query("SELECT DISTINCT
@@ -606,7 +666,7 @@
                INNER  JOIN t_acreedores ON t_acreedores.ID_ACREEDOR=t_solicitudes.ID_ACREEDOR
                WHERE t_solicitudes.ESTADO=1 AND  t_deudores.ESTADO=1 AND t_acreedores.ESTADO=1 AND t_inmuebles.ESTADO=1
                 AND  t_notificaciones.TIPO='vs'  ORDER BY t_notificaciones.FECHA DESC")->result();
-            if ($VS != '')
+            if($VS != '')
             {
                 $vs = '<table class="table table-striped">
                                 <thead><tr>
@@ -623,7 +683,7 @@
                 foreach ($VS as $campo)
                 {
                     $dias = (strtotime($campo->FECHA_FIN) - strtotime(date('Y-m-d'))) / (3600 * 24) . ' días';
-                    $c ++;
+                    $c++;
                     $vs .= ' <tr>
                                     <td>' . $campo->SOLICITUD . '</td>
                                     <td>' . $campo->NOMBRE_DEUDOR . '</td>
@@ -635,8 +695,14 @@
                                     <td> <a href="' . site_url('versolicitud/' . $campo->ID_SOLICITUD) . '" target="_blank" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver solicitud"></a></td>
                                 </tr>';
                 }
-                if ($c == 0) $vs = '';
-                else $vs .= '</tbody></table>';
+                if($c == 0)
+                {
+                    $vs = '';
+                }
+                else
+                {
+                    $vs .= '</tbody></table>';
+                }
             }
             //var_dump($de);exit;
             $Note['DI'] = $di;

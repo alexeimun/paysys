@@ -76,7 +76,6 @@
             $this->db->delete('t_notificaciones', ['TIPO' => $Tipo, 'ACCION' => $Accion]);
         }
 
-
         public function TraeObservacion($id)
         {
             $query = $this->db->query("SELECT
@@ -101,7 +100,7 @@
             $autor = true;
             $q1 = $this->db->query("SELECT ID_USUARIO FROM t_observaciones WHERE ID_OBSERVACION= " . $id)->result();
             foreach ($q1 as $campo) ;
-            if ($campo->ID_USUARIO != $this->session->userdata('ID_USUARIO'))
+            if($campo->ID_USUARIO != $this->session->userdata('ID_USUARIO'))
             {
                 $this->db->update('t_observaciones', ['VISTO' => '1'], ['ID_OBSERVACION' => $id]);
                 $autor = false;
@@ -143,10 +142,10 @@
             }
         }
 
-        public function InsertaArchivo($RutaArchivo,$NombreArchivo)
+        public function InsertaArchivo($RutaArchivo, $NombreArchivo)
         {
             $this->db->set('ID_USUARIO', $this->session->userdata('ID_USUARIO'));
-            $this->db->insert('t_archivos', ['RUTA_ARCHIVO'=>$RutaArchivo,'NOMBRE_ARCHIVO' => $NombreArchivo]);
+            $this->db->insert('t_archivos', ['RUTA_ARCHIVO' => $RutaArchivo, 'NOMBRE_ARCHIVO' => $NombreArchivo]);
         }
 
         public function TraeArchivos($mode, $IdObs = 0)

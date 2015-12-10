@@ -16,7 +16,7 @@
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
 
-                <li  class="">
+                <li class="">
                     <a href="<?= site_url('crearobservacion') ?>" data-toggle="tooltip" title="Crear una observación">
                         <span class="badge info" style="background: #ff7701"> <span class="ion ion-plus"></span> OBSERVACION !!</span>
                     </a>
@@ -35,7 +35,7 @@
                 <li class="dropdown notifications-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i style="font-size: 14pt;" class="fa ion-ios-bell-outline"></i>
-                        <?php if ($Notify['Cantidad'] > 0) echo '<span class="label label-danger" style="padding: 8px;font-size: 12pt">' . $Notify['Cantidad'] . '</span>' ?>
+                        <?php if($Notify['Cantidad'] > 0) echo '<span class="label label-danger" style="padding: 8px;font-size: 12pt">' . $Notify['Cantidad'] . '</span>' ?>
                     </a>
                     <?= $Notify['Filas'] ?>
                 </li>

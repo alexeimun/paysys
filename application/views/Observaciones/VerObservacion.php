@@ -33,7 +33,7 @@
                 <div class="form-group">
                     <span class="col-lg-push-1 col-lg-2 badge bg-yellow-gradient"
                           style="padding: 5px;">Prioridad: <?= $Info->PRIORIDAD ?></span>
-                    <?php if ($Info->ESTADO == 1): ?>
+                    <?php if($Info->ESTADO == 1): ?>
                         <span class="col-lg-push-1 col-lg-3 badge bg-green-gradient"
                               style="padding: 5px;margin-left: 10px;"><span class="ion ion-checkmark-round"></span> Solucionado</span>
                     <?php else: ?>
@@ -41,7 +41,7 @@
                               style="padding: 5px;margin-left: 10px;"><span class="ion ion-close-circled"> </span> Sin Solucionar</span>
                     <?php endif ?>
 
-                    <?php if ($Info->VISTO == 1): ?>
+                    <?php if($Info->VISTO == 1): ?>
                         <span class="col-lg-push-1 col-lg-2 badge bg-green-gradient"
                               style="padding: 5px;margin-left: 10px;"><span class="ion ion-checkmark-round"></span> Visto</span>
 
@@ -91,21 +91,21 @@
                     </div>
                 </div>
 
-                <?php if($Galeria!=''): ?>
-                <h3 style="text-align: left;color:#8b8c8f" id="inmueble"><span style="font-size: 23pt;"
-                                                                               class="ion ion-paperclip"></span>
-                    Archivos adjuntos...</h3>
-                <hr style="border: 1px dashed #8b8c8f;"/>
-                <div class="form-group galeria">
-                    <?= $Galeria ?>
-                </div>
-                <hr style="border: 1px dashed #8b8c8f;"/>
+                <?php if($Galeria != ''): ?>
+                    <h3 style="text-align: left;color:#8b8c8f" id="inmueble"><span style="font-size: 23pt;"
+                                                                                   class="ion ion-paperclip"></span>
+                        Archivos adjuntos...</h3>
+                    <hr style="border: 1px dashed #8b8c8f;"/>
+                    <div class="form-group galeria">
+                        <?= $Galeria ?>
+                    </div>
+                    <hr style="border: 1px dashed #8b8c8f;"/>
                 <?php endif ?>
             </form>
 
             <br><br>
 
-            <?php if ($Autor && $Info->ESTADO == 0): ?>
+            <?php if($Autor && $Info->ESTADO == 0): ?>
                 <form id="solucionar" class="form-horizontal col-md-7" role="form" style="margin-left: 20%;"
                       method="post">
                     <div class="form-group">
@@ -127,6 +127,7 @@
                     <img style="width: 70px;height: 60px;"
                          src="<?= base_url() ?>public/images/Avatars/avatar<?= $this->session->userdata('AVATAR') ?>.png"
                          class="col-lg-2 img-responsive form-control" alt="User Image"/>
+
                     <div class="col-lg-10">
 
                         <div class="input-group">
@@ -169,11 +170,11 @@
 
     $('body').on('click', '.cajon', function ()
     {
-        if($(this).hasClass('doc'))
+        if ($(this).hasClass('doc'))
         {
             window.open('<?=base_url('observacionesimages') ?>' + '/' + $(this).attr('data-id'));
         }
-        else window.open('<?=site_url('DescargarArchivo') ?>' + '/' + $(this).attr('data-id')+'/'+$(this).attr('data-name'));
+        else window.open('<?=site_url('DescargarArchivo') ?>' + '/' + $(this).attr('data-id') + '/' + $(this).attr('data-name'));
     });
 
     $('.comentar').click(function ()
@@ -201,7 +202,8 @@
 </script>
 <style>
 
-    .op {
+    .op
+    {
         background: #ffffff;
         opacity: .8;
         cursor: pointer;

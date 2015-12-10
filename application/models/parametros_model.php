@@ -40,10 +40,11 @@
                         }
                         $Excel[$i]['nombre'] = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue();
                         $Excel[$i]['telefono'] = $objPHPExcel->getActiveSheet()->getCell('B' . $i)->getCalculatedValue();
-                        $Excel[$i]['documento'] = $objPHPExcel->getActiveSheet()->getCell('C' . $i)->getCalculatedValue();
-                        $Excel[$i]['direccion'] = $objPHPExcel->getActiveSheet()->getCell('D' . $i)->getCalculatedValue();
-                        $Excel[$i]['correo'] = $objPHPExcel->getActiveSheet()->getCell('E' . $i)->getCalculatedValue();
-                        $Excel[$i]['encargado'] = $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getCalculatedValue();
+                        $Excel[$i]['celular'] = $objPHPExcel->getActiveSheet()->getCell('C' . $i)->getCalculatedValue();
+                        $Excel[$i]['documento'] = $objPHPExcel->getActiveSheet()->getCell('D' . $i)->getCalculatedValue();
+                        $Excel[$i]['direccion'] = $objPHPExcel->getActiveSheet()->getCell('E' . $i)->getCalculatedValue();
+                        $Excel[$i]['correo'] = $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getCalculatedValue();
+                        $Excel[$i]['encargado'] = $objPHPExcel->getActiveSheet()->getCell('G' . $i)->getCalculatedValue();
                     }
                 }
                 $first = true;
@@ -54,13 +55,13 @@
                     {
                         if($first)
                         {
-                            $sql = "INSERT INTO t_deudores(NOMBRE,TELEFONO,DOCUMENTO,DIRECCION,CORREO,ENCARGADO,ID_CIUDAD,ESTADO,FECHA_REGISTRA)
-              VALUES ('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "','" . $valor['encargado'] . "',1,1,NOW())";
+                            $sql = "INSERT INTO t_deudores(NOMBRE,TELEFONO,CELULAR,DOCUMENTO,DIRECCION,CORREO,ENCARGADO,ID_CIUDAD,ESTADO,FECHA_REGISTRA)
+              VALUES ('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['celular'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "','" . $valor['encargado'] . "',1,1,NOW())";
                             $first = false;
                         }
                         else
                         {
-                            $sql .= ",('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "','" . $valor['encargado'] . "',1,1,NOW())";
+                            $sql .= ",('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['celular'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "','" . $valor['encargado'] . "',1,1,NOW())";
                         }
                     }
                 }
@@ -101,10 +102,11 @@
                         }
                         $Excel[$i]['nombre'] = $objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue();
                         $Excel[$i]['telefono'] = $objPHPExcel->getActiveSheet()->getCell('B' . $i)->getCalculatedValue();
-                        $Excel[$i]['documento'] = $objPHPExcel->getActiveSheet()->getCell('C' . $i)->getCalculatedValue();
-                        $Excel[$i]['direccion'] = $objPHPExcel->getActiveSheet()->getCell('D' . $i)->getCalculatedValue();
-                        $Excel[$i]['correo'] = $objPHPExcel->getActiveSheet()->getCell('E' . $i)->getCalculatedValue();
-                        $Excel[$i]['encargado'] = $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getCalculatedValue();
+                        $Excel[$i]['celular'] = $objPHPExcel->getActiveSheet()->getCell('C' . $i)->getCalculatedValue();
+                        $Excel[$i]['documento'] = $objPHPExcel->getActiveSheet()->getCell('D' . $i)->getCalculatedValue();
+                        $Excel[$i]['direccion'] = $objPHPExcel->getActiveSheet()->getCell('E' . $i)->getCalculatedValue();
+                        $Excel[$i]['correo'] = $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getCalculatedValue();
+                        $Excel[$i]['encargado'] = $objPHPExcel->getActiveSheet()->getCell('G' . $i)->getCalculatedValue();
                     }
                 }
                 $first = true;
@@ -115,13 +117,13 @@
                     {
                         if($first)
                         {
-                            $sql = "INSERT INTO t_acreedores(NOMBRE,TELEFONO,DOCUMENTO,DIRECCION,CORREO,ID_CIUDAD,ESTADO,FECHA_REGISTRA)
-              VALUES ('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "',1,1,NOW())";
+                            $sql = "INSERT INTO t_acreedores(NOMBRE,TELEFONO,CELULAR,DOCUMENTO,DIRECCION,CORREO,ID_CIUDAD,ESTADO,FECHA_REGISTRA)
+              VALUES ('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['celular'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "',1,1,NOW())";
                             $first = false;
                         }
                         else
                         {
-                            $sql .= ",('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "',1,1,NOW())";
+                            $sql .= ",('" . $valor['nombre'] . "','" . $valor['telefono'] . "','" . $valor['celular'] . "','" . $valor['documento'] . "','" . $valor['direccion'] . "','" . $valor['correo'] . "',1,1,NOW())";
                         }
                     }
                 }
