@@ -14,7 +14,6 @@
                 </div>
                 <a href="deudores" class="small-box-footer">Más información <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-
         </div>
         <!-- ./col -->
         <div class="col-lg-3 col-xs-6">
