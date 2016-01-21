@@ -96,7 +96,7 @@
                     echo 'true';
                     exit;
                 }
-                if($pagotemp->TIPO != 2 && $pagotemp->TIPO != 1)
+                if($pagotemp->TIPO != 1)
                 {
                     $this->db->set('FECHA', 'NOW()', false);
                     $this->db->insert('t_movimientos',
@@ -156,17 +156,15 @@
             {
                 $this->db->query('UPDATE t_solicitudes SET CAPITAL_INICIAL=CAPITAL_INICIAL+' . $TotalAC . ' WHERE ID_SOLICITUD=' . $IdSol);
                 $this->db->delete('t_pago_temp', ['ID_USUARIO' => $this->session->userdata('ID_USUARIO'), 'ID_SOLICITUD' => $IdSol]);
-                //$this->db->set('FECHA', 'NOW()', false);
-                //$this->db->insert('t_movimientos',
-                //    ['VALOR' => $TotalAC,
-                //        'CONSECUTIVO' => $Consecutivo,
-                //        'SECUENCIA' => ++$Secuencia,
-                //        'ID_SOLICITUD' => $IdSol,
-                //        'DESCRIPCION' => 'TAC',
-                //        'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
-                //    ]);
-                echo 'true';
-                exit;
+                $this->db->set('FECHA', 'NOW()', false);
+                $this->db->insert('t_movimientos',
+                    ['VALOR' => $TotalAC,
+                        'CONSECUTIVO' => $Consecutivo,
+                        'SECUENCIA' => ++$Secuencia,
+                        'ID_SOLICITUD' => $IdSol,
+                        'DESCRIPCION' => 'TAC',
+                        'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
+                    ]);
             }
             if($TotalAP > 0)
             {
@@ -178,7 +176,7 @@
                         'SECUENCIA' => ++$Secuencia,
                         'ID_SOLICITUD' => $IdSol,
                         'DESCRIPCION' => 'TAP',
-                        'INFO_AP' => $this->db->query("SELECT FECHA_FIN FROM t_solicitudes WHERE ID_SOLICITUD=$IdSol")->result()[0],
+                        'INFO_AP' => $this->db->query("SELECT FECHA_FIN FROM t_solicitudes WHERE ID_SOLICITUD=$IdSol")->result()[0]->FECHA_FIN,
                         'ID_USUARIO' => $this->session->userdata('ID_USUARIO'),
                     ]);
             }

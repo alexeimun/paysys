@@ -124,7 +124,7 @@
                     <label class="col-lg-3 control-label"></label>
 
                     <div class="col-lg-9">
-                        <input type="checkbox" name="RECLAMA_PERSONALMENTE" checked> <strong> Reclama
+                        <input type="checkbox" name="RECLAMA_PERSONALMENTE"> <strong> Reclama
                             Personalmente</strong>
                     </div>
                 </div>

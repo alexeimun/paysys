@@ -173,7 +173,6 @@
             hideHover: "auto"
         });
     }
-
 </script>
 
 <script>
@@ -334,7 +333,7 @@
                 return '<div class="form-group">' +
                         ' <label class="col-lg-4 control-label">Valor:</label>' +
                         '<div class="col-lg-6">' +
-                        '<input type="text" class="form-control numero dinero" name="VALOR" placeholder="Ingrese el valor apagar">' +
+                        '<input type="text" class="form-control numero dinero" name="VALOR" placeholder="Ingrese el valor a pagar">' +
                         '</div>' +
                         '</div>' +
                         '<div class="form-group">' +
@@ -350,14 +349,31 @@
                 break;
             case 2:
                 return '<div class="form-group">' +
+                        ' <label class="col-lg-4 control-label">Concepto:</label>' +
+                        '<div class="col-lg-5">' +
+                        '<input type="text" class="form-control obligatorio" name="CONCEPTO"' +
+                        'placeholder="Ingrese el concepto" value="Ampliación de capital">' +
+                        '</div>' +
+                        '</div>' +
+                    '<div class="form-group">' +
                         ' <label class="col-lg-4 control-label">Valor:</label>' +
                         '<div class="col-lg-5">' +
                         '<input type="text" class="form-control numero dinero" name="VALOR"' +
-                        'placeholder="Ingrese el valor apagar">' +
+                        'placeholder="Ingrese el valor a pagar">' +
                         '</div>' +
                         '</div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">%:</label>' +
+                    '<div class="col-lg-2">' +
+                    '<input class="form-control porcentaje numero"  id="ac" value="3.5">' +
+                    '</div></div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Comisión:</label>' +
+                    '<div class="col-lg-3">' +
+                    '<input class="form-control numero dinero"  id="acvalue" value="0">' +
+                    '</div></div>' +
                         '<div class="form-group">' +
-                        '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
+                        '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregarac"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
                         ' </div>' +
                         ' </div>';
                 break;
@@ -375,7 +391,7 @@
                         '<div class="form-group">' +
                         ' <label class="col-lg-4 control-label">Valor:</label>' +
                         '<div class="col-lg-5">' +
-                        '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .005)) + '" name="VALOR" placeholder="Ingrese el valor apagar">' +
+                        '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .005)) + '" name="VALOR" placeholder="Ingrese el valor a pagar">' +
                         '</div>' +
                         '</div>' +
                         '<div class="form-group">' +
@@ -393,7 +409,7 @@
                 return '<div class="form-group">' +
                         ' <label class="col-lg-4 control-label">Valor:</label>' +
                         '<div class="col-lg-5">' +
-                        '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .03)) + '" name="VALOR" id="comisionvalor" placeholder="Ingrese el valor apagar">' +
+                        '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .03)) + '" name="VALOR" id="comisionvalor" placeholder="Ingrese el valor a pagar">' +
                         '</div>' +
                         '</div>' +
                         '<div class="form-group">' +
@@ -426,6 +442,23 @@
         });
     });
 
+    //Ampliación de capital
+    $('body').on('keyup', '#ac', function () {
+        $('input#acvalue').val(Math.round($('input[name=VALOR]').unmask() * (+$(this).val() / 100)));
+        $('input#acvalue').priceFormat({
+            prefix: '$ ',
+            thousandsSeparator: ','
+        });
+    });
+    $('body').on('keyup', 'input[name=VALOR]', function () {
+        $('input#acvalue').val(Math.round($(this).unmask() * (+$('input#ac').val() / 100)));
+        $('input#acvalue').priceFormat({
+            prefix: '$ ',
+            thousandsSeparator: ','
+        });
+    });
+    //Fin ampliación de capital
+
     function FormaPago(tipo) {
         if (tipo == 0) {
             return '<div class="form-group">' +
@@ -453,6 +486,9 @@
     $('body').on('click', '.agregar', function () {
         agregaPagoTemp();
     });
+    $('body').on('click', '.agregarac', function () {
+        agregaACTemp();
+    });
 
     $('body').on('change', 'select[name=FORMA_PAGO]', function () {
         $('#formapago').html(FormaPago($('select[name=FORMA_PAGO] :selected').val()));
@@ -478,7 +514,6 @@
         if (mes.length > 0) {
             var Field = [];
             Field.push(mes, periodo, concepto, valor);
-            console.log(Field);
             $.post('pagostemp', {
                 REG: Field,
                 TIPO_RECIBO: 1,
@@ -497,6 +532,21 @@
                 CONCEPTO: $('input[name=CONCEPTO]').length ? $('input[name=CONCEPTO]').val().trim() : '',
                 METADATO: $('input[name=MESES]').length ? $('input[name=MESES]').val() : '',
                 VALOR: $('input[name=VALOR]').unmask(),
+                TIPO_RECIBO: $('select[name=TIPO_RECIBO] :selected').val(),
+                action: 'agregar'
+            }, function (data) {
+                $('#tablapagos').html(data);
+            });
+        }
+    }
+    //Pago temporal ampliación de capital
+    function agregaACTemp() {
+        if (validateForm()) {
+            $.post('pagostemp', {
+                IdSol: Solicitud.val(),
+                CONCEPTO: $('input[name=CONCEPTO]').length ? $('input[name=CONCEPTO]').val().trim() : '',
+                VALOR: $('input#acvalue').unmask(),
+                METADATO: $('input[name=VALOR]').unmask(),
                 TIPO_RECIBO: $('select[name=TIPO_RECIBO] :selected').val(),
                 action: 'agregar'
             }, function (data) {
