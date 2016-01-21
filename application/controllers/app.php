@@ -67,7 +67,7 @@
                 );
 
                 $Data = [];
-                #Trae permisos del usuario
+                #Trae los permisos del usuario
                 foreach ($this->usuarios_model->TraePermisosUsuario($this->session->userdata('ID_USUARIO')) as $key => $permiso)
                 {
                     $Data[$permiso->NOMBRE] = 1;
