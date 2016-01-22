@@ -628,7 +628,7 @@
                 #Periodo pago
                 $pdf->SetXY(55, 26 + 6 * $i);
                 $pdf->Cell(50, 6, $Pago, 1, 0, 'C');
-                #RCBO
+                #RECIBO
                 $pdf->SetXY(105, 26 + 6 * $i);
                 $pdf->Cell(20, 6, $informe->CONSECUTIVO, 1, 0, 'C');
                 #Valor
