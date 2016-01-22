@@ -1179,7 +1179,6 @@
                             $d2 = $actual->diff($pivot)->days;
                             $d = $pivot2->diff($pivot)->days;
                             $pivot->sub(new DateInterval('P1D'));
-                            //echo $d1."\n".$d2."\n".$d."\n";exit;
                             $Data['Intereses'] .= $Interest->Row(['value' => $Valor * ($d1 / $d), 'date1' => $pivot2, 'date2' => $actual, 'month' => $mes, 'period' => $actual->format('Y-m-d'), 'status' => 2, 'action' => $accion]);
                             $Data['Intereses'] .= $Interest->Row(['value' => $Valor * ($d2 / $d), 'date1' => $actual, 'period' => $actual->format('Y-m-d'), 'date2' => $pivot, 'month' => $mes, 'status' => 2, 'action' => $accion]);
                         }
