@@ -1128,7 +1128,7 @@
                     }
                     else
                     {
-                        #Sí el pivot es mayor a la fecha actual
+                        #Si el pivot es mayor a la fecha actual
 
                         if($Interest->HasInterest($mes))
                         {
