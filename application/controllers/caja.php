@@ -1122,7 +1122,7 @@
                         }
                         else
                         {
-                            #Tiene mora
+                            #Si tiene mora
                             $Data['Intereses'] .= $Interest->Row(['value' => $capitaldeuda, 'date1' => $pivot2, 'date2' => $pivot, 'status' => 3, 'month' => $mes, 'action' => $accion]);
                         }
                     }
