@@ -1134,7 +1134,7 @@
                         {
                             $p = null;
 
-                            #Lo que ha pagado después
+                            #Lo que  se ha pagado después
                             foreach ($Interest->GetInterest($mes) as $i => $period)
                             {
                                 $capitaldeuda = $period->VALOR;
