@@ -9,7 +9,7 @@
                     class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-                <p><?= $this->session->userdata('NOMBRE_USUARIO') ?></p>
+                <p><?= (strlen($this->session->userdata('NOMBRE_USUARIO')) > 23 ? trim(substr($this->session->userdata('NOMBRE_USUARIO'), 0, 23)).'...' : $this->session->userdata('NOMBRE_USUARIO')) ?></p>
 
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -191,7 +191,8 @@
                     </li>
                     <li><a href="<?= site_url('consecutivos') ?>"><i class="fa ion-pound"></i> Consecutivos</a>
                     </li>
-                    <li><a href="<?= site_url('parametro/pazysalvo') ?>"><i class="fa ion-ios-list-outline"></i> Paz y salvo</a>
+                    <li><a href="<?= site_url('parametro/pazysalvo') ?>"><i class="fa ion-ios-list-outline"></i> Paz y
+                            salvo</a>
                     </li>
                     </li>
                 </ul>

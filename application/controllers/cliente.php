@@ -446,9 +446,9 @@
             {
                 $this->Data['Deudores'] .= '<tr>
                  <td>' . $deudor->NOMBRE_DEUDOR . '</td>
-                 <td>' . $deudor->TELEFONO . '</td>
-                 <td>' . $deudor->DOCUMENTO . '</td>
-                 <td>' . $deudor->DIRECCION . '</td>
+                 <td>' . ($deudor->DOCUMENTO == '' || $deudor->DOCUMENTO == 0 ? "<b>N/A</b>" : $deudor->DOCUMENTO) . '</td>
+                 <td>' . ($deudor->TELEFONO == '' || $deudor->TELEFONO == 0 ? "<b>N/A</b>" : $deudor->TELEFONO) . '</td>
+                 <td>' . ($deudor->DIRECCION == '' || $deudor->DIRECCION == 0 ? "<b>N/A</b>" : $deudor->DIRECCION) . '</td>
                  <td>' . ucfirst(strtolower($deudor->NOMBRE_CIUDAD)) . '</td>
                  <td style="text-align:center;">
                  <a href="verdeudor/' . $deudor->ID_DEUDOR . '" style="font-size:20pt;color:  #29a84b" class="ion ion-ios-paper" data-toggle="tooltip" title="Ver más..."></a>&nbsp;&nbsp;
@@ -483,9 +483,9 @@
             {
                 $this->Data['Acreedores'] .= '<tr>
                  <td>' . $acreedor->NOMBRE_ACREEDOR . '</td>
-                 <td>' . $acreedor->DOCUMENTO . '</td>
-                 <td>' . $acreedor->TELEFONO . '</td>
-                 <td>' . $acreedor->DIRECCION . '</td>
+                  <td>' . ($acreedor->DOCUMENTO == '' || $acreedor->DOCUMENTO == 0 ? "<b>N/A</b>" : $acreedor->DOCUMENTO) . '</td>
+                 <td>' . ($acreedor->TELEFONO == '' || $acreedor->TELEFONO == 0 ? "<b>N/A</b>" : $acreedor->TELEFONO) . '</td>
+                 <td>' . ($acreedor->DIRECCION == '' || $acreedor->DIRECCION == 0 ? "<b>N/A</b>" : $acreedor->DIRECCION) . '</td>
                  <td>' . ucfirst(strtolower($acreedor->NOMBRE_CIUDAD)) . '</td>
                  <td>' . date('d/m/Y', strtotime($acreedor->FECHA_REGISTRA)) . '</td>
                  <td style="text-align:center;">

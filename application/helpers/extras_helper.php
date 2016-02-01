@@ -13,3 +13,13 @@
             return $tel;
         }
     }
+    function Ucspecial($txt)
+    {
+        $txt = str_replace('á', 'Á', $txt);
+        $txt = str_replace('é', 'É', $txt);
+        $txt = str_replace('í', 'Í', $txt);
+        $txt = str_replace('ó', 'Ó', $txt);
+        $txt = str_replace('ú', 'Ú', $txt);
+        $txt = str_replace('ñ', 'Ñ', $txt);
+        return strtoupper($txt);
+    }

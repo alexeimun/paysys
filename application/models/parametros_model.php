@@ -106,7 +106,6 @@
                         $Excel[$i]['documento'] = $objPHPExcel->getActiveSheet()->getCell('D' . $i)->getCalculatedValue();
                         $Excel[$i]['direccion'] = $objPHPExcel->getActiveSheet()->getCell('E' . $i)->getCalculatedValue();
                         $Excel[$i]['correo'] = $objPHPExcel->getActiveSheet()->getCell('F' . $i)->getCalculatedValue();
-                        $Excel[$i]['encargado'] = $objPHPExcel->getActiveSheet()->getCell('G' . $i)->getCalculatedValue();
                     }
                 }
                 $first = true;

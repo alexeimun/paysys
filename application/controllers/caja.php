@@ -267,8 +267,8 @@
             $pdf->SetFont('Arial', '', 9);
             $pdf->Text(40, 26, number_format($info->DOCUMENTO_DEUDOR, 0, '', ',')); #Cedula Deudor
             $pdf->SetFont('Arial', 'IB', 9);
-            $pdf->Text(62, 26, strtoupper(utf8_decode($info->NOMBRE_DEUDOR)) . ' Tel. ' . $info->TELEFONO); #Nombre Deudor
-            $pdf->Text(62, 32, strtoupper(utf8_decode($info->NOMBRE_ACREEDOR))); #Nombre Acreedor
+            $pdf->Text(62, 26, strtoupper(Ucspecial(utf8_decode($info->NOMBRE_DEUDOR))) . ' Tel. ' . $info->TELEFONO); #Nombre Deudor
+            $pdf->Text(62, 32, strtoupper(Ucspecial(utf8_decode($info->NOMBRE_ACREEDOR)))); #Nombre Acreedor
             $pdf->SetFont('Arial', '', 9);
             #Values Table
             $h = 6;
@@ -326,7 +326,7 @@
             $pdf->Cell(50, 6, 'Elaborado Por', 0, 0, 'C');# Made by
             $pdf->SetFont('Arial', '', 9);
             $pdf->SetXY(150, 60 + $i * $h);
-            $pdf->Cell(50, 6, utf8_decode(strtoupper($info->NOMBRE_USUARIO)), 0, 0, 'C');# Made by
+            $pdf->Cell(50, 6, utf8_decode(strtoupper(Ucspecial(strlen($this->session->userdata('NOMBRE_USUARIO')) > 25 ? trim(substr($this->session->userdata('NOMBRE_USUARIO'), 0, 25)) : $this->session->userdata('NOMBRE_USUARIO')))), 0, 0, 'C');# Made by
             ##unsetting Firts for the duplicate check
             $this->session->set_userdata(['First' => '']);
             $pdf->Output();
@@ -689,20 +689,20 @@
             $pdf = new PDF();
             $pdf->AddPage();
             foreach ($this->caja_model->TraeSolicitud($this->input->post('ID_SOLICITUD'))->result() as $solicitud) ;
-            $protocolista=$this->parametros_model->TraeInformacionEmpresa();
+            $protocolista = $this->parametros_model->TraeInformacionEmpresa();
             $pdf->SetFont('Arial', 'B', 12);
             $pdf->Text(70, 15, 'CERTIFICADO DE PAZ Y SALVO');
             $pdf->SetFont('Arial', '', 10);
             $pdf->Text(20, 25, utf8_decode('Medellín, ') . strtolower(MesNombre(date('m'))) . ' ' . round(date('d')) . ' de ' . date('Y'));
             $pdf->SetXY(20, 35);
-            $pdf->MultiCell(171, 5, utf8_decode('Certificamos que: El (La)  señor(a)  '.strtoupper($solicitud->NOMBRE_DEUDOR).' (a) con cedula de ciudadanía No.  '.number_format($solicitud->DOCUMENTO_DEUDOR,0,'','.').' se encuentra   a  PAZ SALVO   Por todo concepto  con el señor (A) '.strtoupper($solicitud->NOMBRE_ACREEDOR).'. Y  la empresa INVERBIENES LTDA.'));
+            $pdf->MultiCell(171, 5, utf8_decode('Certificamos que: El (La)  señor(a)  ' . strtoupper($solicitud->NOMBRE_DEUDOR) . ' (a) con cedula de ciudadanía No.  ' . number_format($solicitud->DOCUMENTO_DEUDOR, 0, '', '.') . ' se encuentra   a  PAZ SALVO   Por todo concepto  con el señor (A) ' . strtoupper($solicitud->NOMBRE_ACREEDOR) . '. Y  la empresa INVERBIENES LTDA.'));
             $pdf->SetFont('Arial', 'I', 9);
-            $pdf->Text(20, 57, utf8_decode('Fecha de Cancelación: ') .  MesNombre($this->input->post('FECHA_CANCELACION')).' '.date('d/Y'),strtotime($this->input->post('FECHA_CANCELACION')));
-            $pdf->Text(20, 62, 'Esc.  No. '.$solicitud->NUMERO_ESCRITURA.' DE '.strtoupper(MesNombre($solicitud->FECHA_CONSTITUCION)).' '.date('d/Y',strtotime($solicitud->FECHA_CONSTITUCION)));
+            $pdf->Text(20, 57, utf8_decode('Fecha de Cancelación: ') . MesNombre($this->input->post('FECHA_CANCELACION')) . ' ' . date('d/Y'), strtotime($this->input->post('FECHA_CANCELACION')));
+            $pdf->Text(20, 62, 'Esc.  No. ' . $solicitud->NUMERO_ESCRITURA . ' DE ' . strtoupper(MesNombre($solicitud->FECHA_CONSTITUCION)) . ' ' . date('d/Y', strtotime($solicitud->FECHA_CONSTITUCION)));
             $pdf->Text(20, 67, utf8_decode('Notaria 15 del Circulo de Medellín'));
             $pdf->Line(85, 95, 155, 95);
             $pdf->SetFont('Arial', 'BI', 10);
-            $pdf->Text(40, 77, 'PROTOCOLISTA '.utf8_decode($protocolista->NOMBRE_PROTOCOLISTA).' TELEFONO  '.Telefono($protocolista->TELEFONO_PROTOCOLISTA));
+            $pdf->Text(40, 77, 'PROTOCOLISTA ' . utf8_decode($protocolista->NOMBRE_PROTOCOLISTA) . ' TELEFONO  ' . Telefono($protocolista->TELEFONO_PROTOCOLISTA));
             $pdf->SetFont('Arial', '', 10);
             $pdf->Text(90, 100, 'Firma y sello de INVERBIENES LTDA.');
             $pdf->SetFont('Arial', '', 7);
@@ -710,23 +710,23 @@
             $pdf->Text(106, 112, utf8_decode('RENTAS  Y REGISTRO'));
             ##ONCE AGAIN########################################################################################################
             $pdf->SetFont('Arial', 'B', 12);
-            $pdf->Text(70, $pdf->GetY()+85, 'CERTIFICADO DE PAZ Y SALVO');
+            $pdf->Text(70, $pdf->GetY() + 85, 'CERTIFICADO DE PAZ Y SALVO');
             $pdf->SetFont('Arial', '', 10);
-            $pdf->Text(20, 95+$pdf->GetY(), utf8_decode('Medellín, ') . strtolower(MesNombre(date('m'))) . ' ' . round(date('d')) . ' de ' . date('Y'));
-            $pdf->SetXY(20, 105+$pdf->GetY());
-            $pdf->MultiCell(171, 5, utf8_decode('Certificamos que: El (La)  señor(a)  '.strtoupper($solicitud->NOMBRE_DEUDOR).' (a) con cedula de ciudadanía No.  '.number_format($solicitud->DOCUMENTO_DEUDOR,0,'','.').' se encuentra   a  PAZ SALVO   Por todo concepto  con el señor (A) '.strtoupper($solicitud->NOMBRE_ACREEDOR).'. Y  la empresa INVERBIENES LTDA.'));
+            $pdf->Text(20, 95 + $pdf->GetY(), utf8_decode('Medellín, ') . strtolower(MesNombre(date('m'))) . ' ' . round(date('d')) . ' de ' . date('Y'));
+            $pdf->SetXY(20, 105 + $pdf->GetY());
+            $pdf->MultiCell(171, 5, utf8_decode('Certificamos que: El (La)  señor(a)  ' . strtoupper($solicitud->NOMBRE_DEUDOR) . ' (a) con cedula de ciudadanía No.  ' . number_format($solicitud->DOCUMENTO_DEUDOR, 0, '', '.') . ' se encuentra   a  PAZ SALVO   Por todo concepto  con el señor (A) ' . strtoupper($solicitud->NOMBRE_ACREEDOR) . '. Y  la empresa INVERBIENES LTDA.'));
             $pdf->SetFont('Arial', 'I', 9);
-            $pdf->Text(20, 7+$pdf->GetY(), utf8_decode('Fecha de Cancelación: ') .  MesNombre($this->input->post('FECHA_CANCELACION')).' '.date('d/Y'),strtotime($this->input->post('FECHA_CANCELACION')));
-            $pdf->Text(20, 12+$pdf->GetY(), 'Esc.  No. '.$solicitud->NUMERO_ESCRITURA.' DE '.strtoupper(MesNombre($solicitud->FECHA_CONSTITUCION)).' '.date('d/Y',strtotime($solicitud->FECHA_CONSTITUCION)));
-            $pdf->Text(20, 17+$pdf->GetY(), utf8_decode('Notaria 15 del Circulo de Medellín'));
-            $pdf->Line(85, 45+$pdf->GetY(), 155, 45+$pdf->GetY());
+            $pdf->Text(20, 7 + $pdf->GetY(), utf8_decode('Fecha de Cancelación: ') . MesNombre($this->input->post('FECHA_CANCELACION')) . ' ' . date('d/Y'), strtotime($this->input->post('FECHA_CANCELACION')));
+            $pdf->Text(20, 12 + $pdf->GetY(), 'Esc.  No. ' . $solicitud->NUMERO_ESCRITURA . ' DE ' . strtoupper(MesNombre($solicitud->FECHA_CONSTITUCION)) . ' ' . date('d/Y', strtotime($solicitud->FECHA_CONSTITUCION)));
+            $pdf->Text(20, 17 + $pdf->GetY(), utf8_decode('Notaria 15 del Circulo de Medellín'));
+            $pdf->Line(85, 45 + $pdf->GetY(), 155, 45 + $pdf->GetY());
             $pdf->SetFont('Arial', 'BI', 10);
-            $pdf->Text(40, 27+$pdf->GetY(), 'PROTOCOLISTA '.utf8_decode($protocolista->NOMBRE_PROTOCOLISTA).' TELEFONO  '.Telefono($protocolista->TELEFONO_PROTOCOLISTA));
+            $pdf->Text(40, 27 + $pdf->GetY(), 'PROTOCOLISTA ' . utf8_decode($protocolista->NOMBRE_PROTOCOLISTA) . ' TELEFONO  ' . Telefono($protocolista->TELEFONO_PROTOCOLISTA));
             $pdf->SetFont('Arial', '', 10);
-            $pdf->Text(90, 50+$pdf->GetY(), 'Firma y sello de INVERBIENES LTDA.');
+            $pdf->Text(90, 50 + $pdf->GetY(), 'Firma y sello de INVERBIENES LTDA.');
             $pdf->SetFont('Arial', '', 7);
-            $pdf->Text(90, 58+$pdf->GetY(), utf8_decode('RECUERDE REALIZAR LA CANCELACIÓN EN NOTARIA'));
-            $pdf->Text(106, 62+$pdf->GetY(), utf8_decode('RENTAS  Y REGISTRO'));
+            $pdf->Text(90, 58 + $pdf->GetY(), utf8_decode('RECUERDE REALIZAR LA CANCELACIÓN EN NOTARIA'));
+            $pdf->Text(106, 62 + $pdf->GetY(), utf8_decode('RENTAS  Y REGISTRO'));
 
             //RECORDAR PEGRA LO DE ARRIBA DE NUEVO ABAJO
             #------------------------------------------------------#
