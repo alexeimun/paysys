@@ -8,6 +8,10 @@
         {
             return substr($tel, 0, 3) . ' ' . substr($tel, 3, 2). ' ' . substr($tel, 5, 5 + strlen($tel) - 5);
         }
+        else if(strlen($tel) == 10)
+        {
+            return substr($tel, 0, 3) . ' ' . substr($tel, 3, 3) . ' ' . substr($tel, 6, 2) . ' ' . substr($tel, 8, strlen($tel));
+        }
         else
         {
             return $tel;

@@ -15,6 +15,11 @@
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+                <li class="">
+                    <a href="<?= site_url('proximosacobrar') ?>" data-toggle="tooltip" title="Próximos a pagar">
+                        <span class="badge info" style="background: rgba(28, 195, 2, 0.94)"> <span class="ion ion-clock"></span> PRÓX. A COBRAR</span>
+                    </a>
+                </li>
 
                 <li class="">
                     <a href="<?= site_url('crearobservacion') ?>" data-toggle="tooltip" title="Crear una observación">

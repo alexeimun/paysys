@@ -1018,6 +1018,7 @@
                 </div><!-- /.box-body -->';
                 ##Estadísticas
                 $Data['Estadisticas'] = '<div style="margin-top: 30px;"> <span style="font-size:12pt;color: lightslategrey">Porcentaje pagado de la deuda: <span  style="font-weight: bold;color: limegreen">' . number_format(($cliente->ABONADO / $cliente->CAPITAL_INICIAL) * 100, 2, ',', '') . '%</span></span></div>';
+                $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Capital inicial: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->CAPITAL_INICIAL, 0, '', ',') . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Capital restante: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->CAPITAL_INICIAL - $cliente->ABONADO, 0, '', ',') . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Número de abonos: <span  style="font-weight: bold;color: limegreen">' . $this->caja_model->ContarAbonos() . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Total abonado al capital: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->ABONADO, 0, '', ',') . '</span></span></div>';

@@ -4,6 +4,8 @@
     $route['404_override'] = 'home/error404';
     #Validaciones
     $route['ValidaCampos'] = 'validaciones/ValidaCampos';
+    #Extras
+    $route['proximosacobrar'] = 'extras/pcobrar';
     #Rutas Usuarios
     $route['usuarios'] = 'usuarios/Usuarios';
     #Perfil usuario

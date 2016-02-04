@@ -81,6 +81,7 @@
      *@property notificaciones_model $notificaciones_model
      *@property parametros_model $parametros_model
      *@property validaciones_model $validaciones_model
+     *@property extras_model $extras_model
      */
     class CI_Controller
     {

@@ -200,7 +200,6 @@
                 <a href="<?= site_url('observaciones') ?>" style="background: #b95801">
                     <i class="ion ion-alert"></i> <span>&nbsp;&nbsp;Observaciones</span>
                 </a>
-
             </li>
             </li>
         </ul>

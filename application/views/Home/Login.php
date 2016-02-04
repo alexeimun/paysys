@@ -28,7 +28,7 @@
 
         <form method="post" action="app/ValidarCredenciales">
             <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="Correo" name="usuario"/>
+                <input type="text" class="form-control" placeholder="Correo" name="usuario" autofocus/>
                 <span class="glyphicon glyphicon-envelope form-control-feedback" style="color:#0085ff; "></span>
             </div>
             <div class="form-group has-feedback">
