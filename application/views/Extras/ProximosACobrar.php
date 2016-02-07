@@ -23,7 +23,7 @@
                         <div class="box-body">
                             <?= Component::Table(['columns' => ['Nombre del deudor', 'Documento', 'Teléfono', 'Último mes pagado'], 'autoNumeric' => true,
                                 'tableName' => 'proximoacobrar', 'id' => 'ID_SOLICITUD', 'controller' => 'extras',
-                                'actions' => [['title' => 'Ver más…', 'icon' => 'ion ion-eye', 'data' => [['name' => 'index', 'value' => '{index}']]]],
+                                'actions' => [['title' => 'Ver más…', 'color' => '#29a84b', 'icon' => 'ion ion-eye', 'data' => [['name' => 'index', 'value' => '{index}']]]],
                                 'fields' => ['NOMBRE', 'DOCUMENTO' => 'numeric', 'TELEFONO' => 'phone', 'MES'], 'dataProvider' => $this->extras_model->ProximosACobrar()]) ?>
                         </div>
                         <!-- /.box-body -->

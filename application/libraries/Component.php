@@ -179,6 +179,7 @@
                         {
                             $title = $item['title'];
                             $icon = $item['icon'];
+                            $color = isset($item['color']) ? $item['color'] : 'black';
                             $idata = '';
                             #Searching for some data attribute
                             if(isset($item['data']))
@@ -197,7 +198,7 @@
                             {
                                 $url = "href='" . str_replace('{index}', $data[$id], $item['url']) . "'";
                             }
-                            $table .= "<a $url $idata style='font-size:20pt;color:  #29a84b' class='$icon' data-toggle='tooltip' title='$title'></a>&nbsp;&nbsp;";
+                            $table .= "<a $url $idata style='font-size:20pt;color:  $color' class='$icon' data-toggle='tooltip' title='$title'></a>&nbsp;&nbsp;";
                         }
                     }
                     $table .= '</td>';
