@@ -1099,7 +1099,6 @@
                                     if($i == 0)
                                     {
                                         $valor = $m * $capitaldeuda;
-
                                     }
                                     else
                                     {
@@ -1129,7 +1128,6 @@
                     else
                     {
                         #Si el pivot es mayor a la fecha actual
-
                         if($Interest->HasInterest($mes))
                         {
                             $p = null;
@@ -1157,7 +1155,6 @@
                                 {
                                     $valor = $capitaldeuda;
                                 }
-
                                 $Data['Intereses'] .= $Interest->Row(['value' => $valor, 'concept' => $period->CONCEPTO, 'status' => 1, 'month' => $period->MES, 'period' => $period->PERIODO, 'action' => $accion]);
                                 $p = $period;
                             }
@@ -1168,20 +1165,6 @@
                             }
                         }
                         #Sin pagar
-                        else if($actual->diff($pivot2)->days < 4)
-                        {
-                            $Data['Intereses'] .= $Interest->Row(['value' => $Valor, 'date1' => $pivot2, 'date2' => $pivot, 'status' => 2, 'month' => $mes, 'action' => $accion]);
-                        }
-                        else if($actual >= $pivot2 && $actual <= $pivot)
-                        {
-                            $pivot->add(new DateInterval('P1D'));
-                            $d1 = $pivot2->diff($actual)->days;
-                            $d2 = $actual->diff($pivot)->days;
-                            $d = $pivot2->diff($pivot)->days;
-                            $pivot->sub(new DateInterval('P1D'));
-                            $Data['Intereses'] .= $Interest->Row(['value' => $Valor * ($d1 / $d), 'date1' => $pivot2, 'date2' => $actual, 'month' => $mes, 'period' => $actual->format('Y-m-d'), 'status' => 2, 'action' => $accion]);
-                            $Data['Intereses'] .= $Interest->Row(['value' => $Valor * ($d2 / $d), 'date1' => $actual, 'period' => $actual->format('Y-m-d'), 'date2' => $pivot, 'month' => $mes, 'status' => 2, 'action' => $accion]);
-                        }
                         else
                         {
                             $Data['Intereses'] .= $Interest->Row(['value' => $Valor, 'date1' => $pivot2, 'date2' => $pivot, 'status' => 2, 'month' => $mes, 'action' => $accion]);
