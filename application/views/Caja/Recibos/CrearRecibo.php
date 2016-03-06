@@ -69,11 +69,11 @@
                     <div class="nav-tabs-custom" id="tabs">
                         <ul class="nav nav-tabs" style="background: #ecf0f5;">
                             <li class="active"><a href="#tab_1" data-toggle="tab"><span
-                                    class="ion-person-stalker"></span> Datos</a></li>
+                                        class="ion-person-stalker"></span> Datos</a></li>
                             <li><a href="#tab_2" data-toggle="tab"><span class="glyphicon glyphicon-briefcase"></span>
-                                Abonos</a></li>
+                                    Abonos</a></li>
                             <li id="interes-tab"><a href="#tab_3" data-toggle="tab"><span
-                                    class="glyphicon glyphicon-list-alt"></span> Intereses</a></li>
+                                        class="glyphicon glyphicon-list-alt"></span> Intereses</a></li>
                             <li><a href="#tab_4" data-toggle="tab"><span class="ion-stats-bars"></span> Estadísticas</a>
                             </li>
                         </ul>
@@ -129,7 +129,8 @@
 
 <script>
 
-    $('form').on(events, elements, function () {
+    $('form').on(events, elements, function ()
+    {
         jValidate($(this), event);
     });
 
@@ -138,16 +139,19 @@
         radius: 6, color: '#000', speed: 1, length: 15, top: '10%'
     })).spin(document.getElementById("spin"));
 
-    function Alerta(param) {
+    function Alerta(param)
+    {
         BootstrapDialog.show({
             title: '<span style="color: #ffffff;font-size: 20pt;"class="ion ion-checkmark-round"></span>&nbsp;&nbsp; <span style="font-size: 18pt;">Bien hecho...</span>',
             message: 'El recibo se ha creado correctamente...',
             draggable: true,
             buttons: [{
                 label: 'Cerrar',
-                action: function (dialogItself) {
+                action: function (dialogItself)
+                {
                     dialogItself.close();
-                    if (!param) {
+                    if (!param)
+                    {
                         window.open('ImprimeRecibo');
                     }
                     location.href = 'crearrecibo';
@@ -158,7 +162,8 @@
 </script>
 
 <script type="text/javascript">
-    function PieChart(pago) {
+    function PieChart(pago)
+    {
         "use strict";
         var donut = new Morris.Donut({
             element: "pagos",
@@ -177,20 +182,27 @@
 
 <script>
 
-    function Total(tipo) {
+    function Total(tipo)
+    {
         var Total = 0;
-        $('#tpagos tbody tr').not(':last').each(function (index, element) {
-            if ($(element).find('td:nth-of-type(1)').text() == tipo) {
+        $('#tpagos tbody tr').not(':last').each(function (index, element)
+        {
+            if ($(element).find('td:nth-of-type(1)').text() == tipo)
+            {
                 Total += Number($(element).find('td:nth-of-type(5)').unmask());
             }
         });
         return Total;
     }
 
-    $('body').on('click', '.pagartodo', function () {
-        if ($('#tpagos  tbody tr').length > 1) {
-            if (Total('Abono') + Abonado <= Capital) {
-                if (validateForm()) {
+    $('body').on('click', '.pagartodo', function ()
+    {
+        if ($('#tpagos  tbody tr').length > 1)
+        {
+            if (Total('Abono') + Abonado <= Capital)
+            {
+                if (validateForm())
+                {
                     var banco = $('input[name=BANCO]').length ? $('input[name=BANCO]').val() : '';
                     var cheque = $('input[name=CHEQUE]').length ? $('input[name=CHEQUE]').val() : '';
 
@@ -198,12 +210,14 @@
                         type: 'post',
                         url: 'insertaRecibo',
                         data: {ID_SOLICITUD: Solicitud.val(), BANCO: banco, CHEQUE: cheque},
-                        beforeSend: function () {
+                        beforeSend: function ()
+                        {
                             $('body').addClass('Wait');
                             $('body,html').animate({scrollTop: 0}, 200);
                             $('#spin').show();
                         },
-                        success: function (data) {
+                        success: function (data)
+                        {
                             $('body').removeClass('Wait');
                             Alerta(data);
                             $('#spin').hide();
@@ -211,14 +225,19 @@
                     });
                 }
             }
-            else Message('La suma del pago y el abono es mayor al préstamo...');
+            else
+            {
+                Message('La suma del pago y el abono es mayor al préstamo...');
+            }
         }
-        else {
+        else
+        {
             Message('Debe agregar al menos un pago...');
         }
     });
 
-    $('body').on('change', 'select[name=FORMA_PAGO]', function () {
+    $('body').on('change', 'select[name=FORMA_PAGO]', function ()
+    {
         $('#pagodropdown').html(PagoDropDown());
     });
 
@@ -226,9 +245,12 @@
     var Capital = 0;
     var Abonado = 0;
 
-    Solicitud.change(function () {
-        $.post('relaciones', {IdSol: Solicitud.val(), Tipo: 0}, function (solicitud) {
-            if (solicitud == '') {
+    Solicitud.change(function ()
+    {
+        $.post('relaciones', {IdSol: Solicitud.val(), Tipo: 0}, function (solicitud)
+        {
+            if (solicitud == '')
+            {
                 $('#info').html('');
                 $('#Intereses').html('');
                 $('#Abonos').html('');
@@ -244,7 +266,8 @@
                 $('#formapagodd').html('');
                 $('#formapago').html('');
             }
-            else {
+            else
+            {
                 var solicitud = JSON.parse(solicitud);
                 Capital = solicitud.ChartPagos.CAPITAL_INICIAL;
                 Abonado = solicitud.ChartPagos.ABONADO;
@@ -266,27 +289,36 @@
                 });
                 traeTablaPagos();
 
-                if ($('#jmsg').length)killMessage();
+                if ($('#jmsg').length)
+                {
+                    killMessage();
+                }
                 $('#pagodropdown').html(PagoDropDown(0));
                 $('#pagarbtn').html('<div class="form-group">' +
-                        '<div class="col-lg-offset-9 col-lg-10">' +
-                        '<button type="button" class="pagartodo btn btn-success btn-lg"><span class="ion-social-usd"></span>&nbsp;Pagar recibo' +
-                        '</button>' +
-                        '</div>' +
-                        '</div>');
-                if (Capital == Abonado) Message('La solicitud ya ha sido cancelada...', 'success', 0);
+                    '<div class="col-lg-offset-9 col-lg-10">' +
+                    '<button type="button" class="pagartodo btn btn-success btn-lg"><span class="ion-social-usd"></span>&nbsp;Pagar recibo' +
+                    '</button>' +
+                    '</div>' +
+                    '</div>');
+                if (Capital == Abonado)
+                {
+                    Message('La solicitud ya ha sido cancelada...', 'success', 0);
+                }
             }
         });
     });
-    $('#tipopago').change(function () {
-        if ($('#tipopago :selected').val() == 1) {
+    $('#tipopago').change(function ()
+    {
+        if ($('#tipopago :selected').val() == 1)
+        {
             $('#pagodropdown').html('');
             $('#pago').html('');
             $('#btnagregarpago').html('<div style="margin-left: 45%;"><button type="button" class="btn btn-info btn-lg agregar-interes"><span class="ion-android-add"></span>&nbsp;Agregar pago </button></div><br>');
             $('#interes-tab a').trigger("click");
             $('body').animate({scrollTop: $('#tabs').offset().top}, 200);
         }
-        else {
+        else
+        {
             $('#btnagregarpago').html('');
             $('#pagodropdown').html(PagoDropDown(+$('#tipopago :selected').val()));
             $('input.dinero').priceFormat({
@@ -298,70 +330,69 @@
     });
 
 
-    function tipoRecibo() {
+    function tipoRecibo()
+    {
         var statement = '<div class="form-group">' +
-                '<label class= "col-lg-5 control-label" >Tipo recibo:</label > ' +
-                '<div class="col-lg-4">' +
-                '<select name="TIPO_RECIBO" class="form-control">';
+            '<label class= "col-lg-5 control-label" >Tipo recibo:</label > ' +
+            '<div class="col-lg-4">' +
+            '<select name="TIPO_RECIBO" class="form-control">';
         if (Capital != Abonado)
+        {
             statement += '<option value="0">Abono a capital</option>';
+        }
         statement += '<option value="1">Pago intereses</option>' +
-                '<option value="2">Ampliación de capital</option>' +
-                '<option value="3">Ampliación de plazo</option>' +
-                '<option value="4">Comisión</option>' +
-                '</select>' +
-                '</div>' +
-                '</div>';
+            '<option value="2">Ampliación de capital</option>' +
+            '<option value="3">Ampliación de plazo</option>' +
+            '<option value="4">Comisión</option>' +
+            '</select>' +
+            '</div>' +
+            '</div>';
         return statement;
     }
 
-    function Pago() {
+    function Pago()
+    {
         return '<div class="form-group">' +
-                '<label class= "col-lg-5 control-label" >Tipo pago:</label > ' +
-                '<div class="col-lg-4">' +
-                '<select  name="FORMA_PAGO" class="form-control">' +
-                '<option value="1">Efectivo</option>' +
-                '<option value="0">Consignación</option>' +
-                '</select>' +
-                '</div>' +
-                '</div>';
+            '<label class= "col-lg-5 control-label" >Tipo pago:</label > ' +
+            '<div class="col-lg-4">' +
+            '<select  name="FORMA_PAGO" class="form-control">' +
+            '<option value="1">Efectivo</option>' +
+            '<option value="0">Consignación</option>' +
+            '</select>' +
+            '</div>' +
+            '</div>';
     }
 
-    function PagoDropDown(tipo) {
-        switch (tipo) {
+    function PagoDropDown(tipo)
+    {
+        switch (tipo)
+        {
             case 0:
                 return '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Valor:</label>' +
-                        '<div class="col-lg-6">' +
-                        '<input type="text" class="form-control numero dinero" name="VALOR" placeholder="Ingrese el valor a pagar">' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Concepto:</label>' +
-                        '<div class="col-lg-7">' +
-                        '<input type="text" value="ABONO A CAPITAL" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
-                        ' </div>' +
-                        ' </div>';
+                    ' <label class="col-lg-4 control-label">Valor:</label>' +
+                    '<div class="col-lg-6">' +
+                    '<input type="text" class="form-control numero dinero" name="VALOR" placeholder="Ingrese el valor a pagar">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Concepto:</label>' +
+                    '<div class="col-lg-7">' +
+                    '<input type="text" value="ABONO A CAPITAL" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
+                    ' </div>' +
+                    ' </div>';
                 break;
             case 2:
                 return '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Concepto:</label>' +
-                        '<div class="col-lg-5">' +
-                        '<input type="text" class="form-control obligatorio" name="CONCEPTO"' +
-                        'placeholder="Ingrese el concepto" value="Ampliación de capital">' +
-                        '</div>' +
-                        '</div>' +
-                    '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Valor ampliación:</label>' +
-                        '<div class="col-lg-5">' +
-                        '<input type="text" class="form-control numero dinero" name="VALOR"' +
-                        'placeholder="Ingrese el valor a ampliar">' +
-                        '</div>' +
-                        '</div>' +
+                    '<label class="col-lg-4 control-label">Valor ampliación:</label>' +
+                    '<div class="col-lg-5">' +
+                    '<input type="text" class="form-control numero dinero" name="VALOR"' +
+                    'placeholder="Ingrese el valor a ampliar">' +
+                    '</div>' +
+                    '</div>' +
                     '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">%:</label>' +
                     '<div class="col-lg-2">' +
@@ -372,69 +403,71 @@
                     '<div class="col-lg-3">' +
                     '<input class="form-control numero dinero"  id="acvalue" value="0">' +
                     '</div></div>' +
-                        '<div class="form-group">' +
-                        '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregarac"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
-                        ' </div>' +
-                        ' </div>';
+                    '<div class="form-group">' +
+                    '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregarac"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
+                    ' </div>' +
+                    ' </div>';
                 break;
             case 3:
                 return '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Plazo(Meses):</label>' +
-                        '<div class="col-lg-2">' +
-                        '<input class="form-control numero porcentaje"  name="MESES" value="12">' +
-                        '</div></div>' +
-                        '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">%:</label>' +
-                        '<div class="col-lg-2">' +
-                        '<input class="form-control porcentaje numero"  id="ap" value="0.5">' +
-                        '</div></div>' +
-                        '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Valor:</label>' +
-                        '<div class="col-lg-5">' +
-                        '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .005)) + '" name="VALOR" placeholder="Ingrese el valor a pagar">' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Concepto:</label>' +
-                        '<div class="col-lg-6">' +
-                        '<input type="text" value="Ampliación de plazo" class="form-control mouse-default"  name="CONCEPTO">' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
-                        ' </div>' +
-                        ' </div>';
+                    ' <label class="col-lg-4 control-label">Plazo(Meses):</label>' +
+                    '<div class="col-lg-2">' +
+                    '<input class="form-control numero porcentaje"  name="MESES" value="12">' +
+                    '</div></div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">%:</label>' +
+                    '<div class="col-lg-2">' +
+                    '<input class="form-control porcentaje numero"  id="ap" value="0.5">' +
+                    '</div></div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Valor:</label>' +
+                    '<div class="col-lg-5">' +
+                    '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .005)) + '" name="VALOR" placeholder="Ingrese el valor a pagar">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Concepto:</label>' +
+                    '<div class="col-lg-6">' +
+                    '<input type="text" value="Ampliación de plazo" class="form-control mouse-default"  name="CONCEPTO">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
+                    ' </div>' +
+                    ' </div>';
                 break;
             case 4:
                 return '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Valor:</label>' +
-                        '<div class="col-lg-5">' +
-                        '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .03)) + '" name="VALOR" id="comisionvalor" placeholder="Ingrese el valor a pagar">' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">%:</label>' +
-                        '<div class="col-lg-2">' +
-                        '<input class="form-control porcentaje numero"  id="porcentcomision" value="3">' +
-                        '</div></div>' +
-                        '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Concepto:</label>' +
-                        '<div class="col-lg-7">' +
-                        '<input type="text" value="Comisión <?=MesNombreAbr(round(date('m'))).' '.date('d/Y') ?>" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                        '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
-                        ' </div>' +
-                        ' </div>';
+                    ' <label class="col-lg-4 control-label">Valor:</label>' +
+                    '<div class="col-lg-5">' +
+                    '<input type="text" class="form-control numero dinero" value="' + (Math.round((Capital - Abonado) * .03)) + '" name="VALOR" id="comisionvalor" placeholder="Ingrese el valor a pagar">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">%:</label>' +
+                    '<div class="col-lg-2">' +
+                    '<input class="form-control porcentaje numero"  id="porcentcomision" value="3">' +
+                    '</div></div>' +
+                    '<div class="form-group">' +
+                    ' <label class="col-lg-4 control-label">Concepto:</label>' +
+                    '<div class="col-lg-7">' +
+                    '<input type="text" value="Comisión <?=MesNombreAbr(round(date('m'))) . ' ' . date('d/Y') ?>" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<div class = "col-lg-offset-5 col-lg-10"><button type="button" class="btn btn-info btn-lg agregar"><span class="ion-android-add"></span>&nbsp;Agregar pago </button>' +
+                    ' </div>' +
+                    ' </div>';
                 break;
 
         }
     }
-    $('body').on('keyup', '#porcentcomision', function () {
+    $('body').on('keyup', '#porcentcomision', function ()
+    {
         $('#comisionvalor').val(Math.round((+$(this).val() / 100) * (Capital - Abonado))).priceFormat({prefix: '$ '});
     });
-    $('body').on('keyup', '#ap', function () {
+    $('body').on('keyup', '#ap', function ()
+    {
         $('input[name=VALOR]').val(Math.round((Capital - Abonado) * (+$(this).val() / 100)));
         $('input[name=VALOR]').priceFormat({
             prefix: '$ ',
@@ -443,14 +476,16 @@
     });
 
     //Ampliación de capital
-    $('body').on('keyup', '#ac', function () {
+    $('body').on('keyup', '#ac', function ()
+    {
         $('input#acvalue').val(Math.round($('input[name=VALOR]').unmask() * (+$(this).val() / 100)));
         $('input#acvalue').priceFormat({
             prefix: '$ ',
             thousandsSeparator: ','
         });
     });
-    $('body').on('keyup', 'input[name=VALOR]', function () {
+    $('body').on('keyup', 'input[name=VALOR]', function ()
+    {
         $('input#acvalue').val(Math.round($(this).unmask() * (+$('input#ac').val() / 100)));
         $('input#acvalue').priceFormat({
             prefix: '$ ',
@@ -459,50 +494,63 @@
     });
     //Fin ampliación de capital
 
-    function FormaPago(tipo) {
-        if (tipo == 0) {
+    function FormaPago(tipo)
+    {
+        if (tipo == 0)
+        {
             return '<div class="form-group">' +
-                    ' <label class="col-lg-4 control-label">Banco:</label>' +
-                    '<div class="col-lg-6">' +
-                    '<input type="text" class="form-control obligatorio" name="BANCO" placeholder="Ingrese el nombre de la entidad bancaria">' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="form-group">' +
-                    ' <label class="col-lg-4 control-label">Cheque Nro:</label>' +
-                    '<div class="col-lg-6">' +
-                    '<input type="text" class="form-control obligatorio" name="CHEQUE" placeholder="Ingrese el número de cheque">' +
-                    '</div>' +
-                    '</div>';
+                ' <label class="col-lg-4 control-label">Banco:</label>' +
+                '<div class="col-lg-6">' +
+                '<input type="text" class="form-control obligatorio" name="BANCO" placeholder="Ingrese el nombre de la entidad bancaria">' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                ' <label class="col-lg-4 control-label">Cheque Nro:</label>' +
+                '<div class="col-lg-6">' +
+                '<input type="text" class="form-control obligatorio" name="CHEQUE" placeholder="Ingrese el número de cheque">' +
+                '</div>' +
+                '</div>';
         }
-        else return '';
+        else
+        {
+            return '';
+        }
     }
 
-    function traeTablaPagos() {
-        $.post('pagostemp', {IdSol: Solicitud.val(), action: 'traer'}, function (data) {
+    function traeTablaPagos()
+    {
+        $.post('pagostemp', {IdSol: Solicitud.val(), action: 'traer'}, function (data)
+        {
             $('#tablapagos').html(data);
         });
     }
 
-    $('body').on('click', '.agregar', function () {
+    $('body').on('click', '.agregar', function ()
+    {
         agregaPagoTemp();
     });
-    $('body').on('click', '.agregarac', function () {
+    $('body').on('click', '.agregarac', function ()
+    {
         agregaACTemp();
     });
 
-    $('body').on('change', 'select[name=FORMA_PAGO]', function () {
+    $('body').on('change', 'select[name=FORMA_PAGO]', function ()
+    {
         $('#formapago').html(FormaPago($('select[name=FORMA_PAGO] :selected').val()));
     });
 
-    $('body').on('click', '.agregar-interes', function () {
+    $('body').on('click', '.agregar-interes', function ()
+    {
         var num = [];
         var concepto = [];
         var valor = [];
         var mes = [];
         var periodo = [];
 
-        $('#tabs table tbody tr td:nth-of-type(5) input:checked').not(':disabled').each(function (index, element) {
-            if ($(this).val() != 'ok') {
+        $('#tabs table tbody tr td:nth-of-type(5) input:checked').not(':disabled').each(function (index, element)
+        {
+            if ($(this).val() != 'ok')
+            {
                 var tr = $(element).closest('tr');
                 concepto.push(tr.find('td:nth-of-type(3)').text());
                 valor.push(tr.find('td:nth-of-type(2)').unmask());
@@ -511,7 +559,8 @@
                 $(this).val('ok');
             }
         });
-        if (mes.length > 0) {
+        if (mes.length > 0)
+        {
             var Field = [];
             Field.push(mes, periodo, concepto, valor);
             $.post('pagostemp', {
@@ -519,14 +568,17 @@
                 TIPO_RECIBO: 1,
                 IdSol: Solicitud.val(),
                 action: 'agregar'
-            }, function (data) {
+            }, function (data)
+            {
                 $('#tablapagos').html(data);
             });
         }
     });
 
-    function agregaPagoTemp() {
-        if (validateForm()) {
+    function agregaPagoTemp()
+    {
+        if (validateForm())
+        {
             $.post('pagostemp', {
                 IdSol: Solicitud.val(),
                 CONCEPTO: $('input[name=CONCEPTO]').length ? $('input[name=CONCEPTO]').val().trim() : '',
@@ -534,29 +586,35 @@
                 VALOR: $('input[name=VALOR]').unmask(),
                 TIPO_RECIBO: $('select[name=TIPO_RECIBO] :selected').val(),
                 action: 'agregar'
-            }, function (data) {
+            }, function (data)
+            {
                 $('#tablapagos').html(data);
             });
         }
     }
     //Pago temporal ampliación de capital
-    function agregaACTemp() {
-        if (validateForm()) {
+    function agregaACTemp()
+    {
+        if (validateForm())
+        {
             $.post('pagostemp', {
                 IdSol: Solicitud.val(),
-                CONCEPTO: $('input[name=CONCEPTO]').length ? $('input[name=CONCEPTO]').val().trim() : '',
+                CONCEPTO: 'AMPLIACION DE CAPITAL POR ' + $('input[name=VALOR]').val(),
                 VALOR: $('input#acvalue').unmask(),
                 METADATO: $('input[name=VALOR]').unmask(),
                 TIPO_RECIBO: $('select[name=TIPO_RECIBO] :selected').val(),
                 action: 'agregar'
-            }, function (data) {
+            }, function (data)
+            {
                 $('#tablapagos').html(data);
             });
         }
     }
 
-    function eliminarpago(Id) {
-        $.post('pagostemp', {IdPago: Id, IdSol: Solicitud.val(), action: 'eliminar'}, function (data) {
+    function eliminarpago(Id)
+    {
+        $.post('pagostemp', {IdPago: Id, IdSol: Solicitud.val(), action: 'eliminar'}, function (data)
+        {
             $('#tablapagos').html(data);
         });
     }

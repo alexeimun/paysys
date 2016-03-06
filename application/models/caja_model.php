@@ -79,6 +79,7 @@
                         break;
                     case 2:
                         $TotalAC += $pagotemp->VALOR;
+                        $valorampliado=$pagotemp->METADATO;
                         break;
                     case -1:
                     case 3:
@@ -154,7 +155,7 @@
             }
             if($TotalAC > 0)
             {
-                $this->db->query('UPDATE t_solicitudes SET CAPITAL_INICIAL=CAPITAL_INICIAL+' . $TotalAC . ' WHERE ID_SOLICITUD=' . $IdSol);
+                $this->db->query('UPDATE t_solicitudes SET CAPITAL_INICIAL=CAPITAL_INICIAL+' . $valorampliado . ' WHERE ID_SOLICITUD=' . $IdSol);
                 $this->db->delete('t_pago_temp', ['ID_USUARIO' => $this->session->userdata('ID_USUARIO'), 'ID_SOLICITUD' => $IdSol]);
                 $this->db->set('FECHA', 'NOW()', false);
                 $this->db->insert('t_movimientos',
