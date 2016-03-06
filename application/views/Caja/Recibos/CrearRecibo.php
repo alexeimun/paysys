@@ -356,10 +356,10 @@
                         '</div>' +
                         '</div>' +
                     '<div class="form-group">' +
-                        ' <label class="col-lg-4 control-label">Valor:</label>' +
+                        ' <label class="col-lg-4 control-label">Valor ampliación:</label>' +
                         '<div class="col-lg-5">' +
                         '<input type="text" class="form-control numero dinero" name="VALOR"' +
-                        'placeholder="Ingrese el valor a pagar">' +
+                        'placeholder="Ingrese el valor a ampliar">' +
                         '</div>' +
                         '</div>' +
                     '<div class="form-group">' +

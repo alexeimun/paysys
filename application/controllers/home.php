@@ -1,8 +1,10 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if(!defined('BASEPATH'))
+{
+    exit('No direct script access allowed');
+}
 
     class Home extends CI_Controller
     {
-
         function __construct()
         {
             parent::__construct();
@@ -10,11 +12,14 @@
 
         public function index()
         {
-            if ($this->session->userdata('ID_USUARIO'))
+            if($this->session->userdata('ID_USUARIO'))
             {
                 redirect(site_url(), 'refresh');
             }
-            else $this->load->view('Home/Login');
+            else
+            {
+                $this->load->view('Home/Login');
+            }
         }
 
         public function logout()
