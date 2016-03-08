@@ -336,7 +336,7 @@
 
         public function TraeSolicitudesDD()
         {
-            return $this->db->query("SELECT SOLICITUD, ID_SOLICITUD, t_deudores.NOMBRE,t_deudores.DOCUMENTO
+            return $this->db->query("SELECT  DISTINCT SOLICITUD, ID_SOLICITUD, t_deudores.NOMBRE,t_deudores.DOCUMENTO
             FROM t_solicitudes INNER JOIN t_deudores USING (ID_DEUDOR)")->result();
         }
 

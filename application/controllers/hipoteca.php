@@ -254,6 +254,7 @@
                                     <th>Acreedor</th>
                                     <th>Tipo inmueble</th>
                                     <th>Capital inicial</th>
+                                    <th>Capital actual</th>
                                     <th>Fecha inicio</th>
                                     <th>Fecha vence</th>
                                     <th>Estado</th>
@@ -307,6 +308,7 @@
                  <td>' . $solicitud->NOMBRE_DEUDOR . '</td>
                  <td>' . $solicitud->NOMBRE_ACREEDOR . '</td>
                  <td>' . $solicitud->TIPO_INMUEBLE . '</td>
+                 <td>' . number_format($solicitud->SALDO_INICIAL, 0, '', ',') . '</td>
                  <td>' . number_format($solicitud->CAPITAL_INICIAL, 0, '', ',') . '</td>
                  <td>' . date_format(new DateTime($solicitud->FECHA_INICIO), 'd/m/Y') . '</td>
                  <td>' . date_format(new DateTime($solicitud->FECHA_FIN), 'd/m/Y') . '</td>

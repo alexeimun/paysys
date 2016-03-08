@@ -249,7 +249,7 @@
 //            $pdf->Text(140, 26, 'Oficina');  #Oficina label
             $pdf->Text(150, 26, 'Ciudad');  #Ciudad label
             $pdf->Text(140, 32, 'Saldo actual');  #Saldo label
-            $pdf->Text(140, 38, utf8_decode('Valor Préstamo'));  #Prestamo label
+            $pdf->Text(140, 38, utf8_decode('Capital inicial'));  #Prestamo label
             $pdf->SetFont('Arial', '', 9);
             #End Headers
             #Parameters Values
@@ -259,7 +259,7 @@
             $pdf->Text(162, 26, strtoupper(utf8_decode('Medellín')));#Ciudad value
             $pdf->Text(165, 32, number_format($info->CAPITAL_INICIAL - $info->ABONADO, 0, '', ','));#Saldo actual value
             $pdf->Text(65, 38, strtoupper(utf8_decode($info->DIR_INMUEBLE))); #Dir inmueble value
-            $pdf->Text(165, 38, number_format($info->CAPITAL_INICIAL, 0, '', ',')); #Préstamo value
+            $pdf->Text(165, 38, number_format($info->SALDO_INICIAL, 0, '', ',')); #Préstamo value
             $pdf->SetFont('Arial', 'B', 9);
             $pdf->SetXY(165, 16);
             $pdf->Cell(30, 5, $this->session->userdata('ConsecutivoRecibo'), 1, 0, 'C');
@@ -389,14 +389,17 @@
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, 'Acreedor: ' . ucwords(utf8_decode(strtolower($solicitud->NOMBRE_ACREEDOR))), 0, 0, 'L');
-            #Capital
+            #Capital inicial
             $pdf->SetXY(20, 32 + ++$r * 6);
-            $pdf->Cell(85, 6, 'Capital: ' . number_format($solicitud->CAPITAL_INICIAL, 0, '', ','), 0, 0, 'L');
+            $pdf->Cell(85, 6, 'Capital inicial: ' . number_format($solicitud->SALDO_INICIAL, 0, '', ','), 0, 0, 'L');
+            #Capital actual
+            $pdf->SetXY(20, 32 + ++$r * 6);
+            $pdf->Cell(85, 6, 'Capital actual: ' . number_format($solicitud->CAPITAL_INICIAL, 0, '', ','), 0, 0, 'L');
             $pdf->SetFont('Arial', 'B', 11);
             #PAGA
             $r++;
-            $pdf->Line(190, 117, 20, 117);
-            $pdf->Text(20, 32 + ++$r * 6, 'Pagado');
+            $pdf->Line(190, 123, 20, 123);
+            $pdf->Text(20, 33 + ++$r * 6, 'Pagado');
             $pdf->SetFont('Arial', '', 10);
             #----------------------------------------#
             $Interes = $this->caja_model->InteresesPagadosDeudor();
@@ -1012,6 +1015,7 @@
                 $Data['ChartPagos']['ABONO_INTERES'] = $cliente->ABONO_INTERES;
                 $Data['ChartPagos']['ABONADO'] = $cliente->ABONADO;
                 $Data['ChartPagos']['CAPITAL_INICIAL'] = $cliente->CAPITAL_INICIAL;
+                $Data['ChartPagos']['SALDO_INICIAL'] = $cliente->SALDO_INICIAL;
                 $Data['ChartPagos']['Pie'] = '                <!-- DONUT CHART -->
                 <div class="box-body chart-responsive">
                     <div class="chart" id="pagos" style="height: 180px; position: relative;"></div>

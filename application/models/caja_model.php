@@ -221,6 +221,7 @@
               t_solicitudes.FECHA_INICIO,
               t_solicitudes.FECHA_FIN,
               t_solicitudes.CAPITAL_INICIAL,
+              t_solicitudes.SALDO_INICIAL,
               t_solicitudes.ESTADO_HIPOTECA,
               t_solicitudes.INTERES_MENSUAL,
               IF(t_solicitudes.ABONO_INTERES IS NULL,0,t_solicitudes.ABONO_INTERES ) AS ABONO_INTERES,
@@ -288,6 +289,7 @@
              SOLICITUD,
              ID_SOLICITUD,
              CAPITAL_INICIAL,
+             SALDO_INICIAL,
              ABONADO,
              t_deudores.NOMBRE AS NOMBRE_DEUDOR,
              t_deudores.TELEFONO,
@@ -384,6 +386,7 @@
         {
             return $this->db->query("SELECT
                 t_solicitudes.CAPITAL_INICIAL,
+                t_solicitudes.SALDO_INICIAL,
                 t_solicitudes.ABONADO,
                 t_movimientos.VALOR,
                 t_movimientos.FECHA,

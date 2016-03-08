@@ -27,6 +27,7 @@
              SOLICITUD,
              ID_SOLICITUD,
              CAPITAL_INICIAL,
+             SALDO_INICIAL,
              ESTADO_HIPOTECA,
              t_deudores.NOMBRE AS NOMBRE_DEUDOR,
              t_acreedores.NOMBRE AS NOMBRE_ACREEDOR,
@@ -134,7 +135,7 @@
             $query = $this->db->query("SELECT
             SOLICITUD,
              ID_SOLICITUD,
-             CAPITAL_INICIAL,
+             SALDO_INICIAL,
              INTERES_MENSUAL,
              CUOTA_ADMINISTRACION,
              AJUSTE,
@@ -182,6 +183,7 @@
                 'TIPO_HIPOTECA' => $this->input->post('TIPO_HIPOTECA'),
                 'HIPOTECADO' => $this->input->post('HIPOTECADO'),
                 'CAPITAL_INICIAL' => $this->input->post('CAPITAL_INICIAL'),
+                'SALDO_INICIAL' => $this->input->post('CAPITAL_INICIAL'),
                 'INTERES_MENSUAL' => $this->input->post('INTERES_MENSUAL'),
                 'CUOTA_ADMINISTRACION' => $this->input->post('CUOTA_ADMINISTRACION')];
             $this->db->insert('t_solicitudes', $Data);

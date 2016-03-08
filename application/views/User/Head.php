@@ -1,5 +1,6 @@
 <head>
     <meta charset="utf-8">
+    <meta name="google-signin-client_id" content="502497714997-enuaqvuco64t5rqt48ac6bgvuhdhi0pu.apps.googleusercontent.com">
     <title>InverBienes | <?=ucfirst(explode(' ',$this->session->userdata('NOMBRE_USUARIO'))[0] )?></title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->

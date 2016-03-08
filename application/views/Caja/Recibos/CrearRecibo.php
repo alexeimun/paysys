@@ -168,11 +168,12 @@
         var donut = new Morris.Donut({
             element: "pagos",
             resize: true,
-            colors: ["#3aadbc", "#11fb5a", "#bf11ff", "#f56954"],
+            colors: ["#3aadbc", "#11fb5a", "#bf11ff", "#f56954","#00A9FF"],
             data: [
-                {label: "Préstamo", value: pago.CAPITAL_INICIAL},
-                {label: "Abonado", value: pago.ABONADO},
-                {label: "Total deuda", value: pago.CAPITAL_INICIAL - pago.ABONADO},
+                {label: "Capital actual", value: pago.CAPITAL_INICIAL},
+                {label: "Capital inicial", value: pago.SALDO_INICIAL},
+                {label: "Total Abonado", value: pago.ABONADO},
+                {label: "Saldo actual", value: pago.CAPITAL_INICIAL - pago.ABONADO},
                 {label: "Intereses", value: pago.ABONO_INTERES}
             ],
             hideHover: "auto"

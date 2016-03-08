@@ -118,8 +118,7 @@
                     <label class="col-lg-4 control-label">Capital Inicial:</label>
 
                     <div class="col-lg-4">
-                        <input type="text" class="form-control obligatorio numero dinero"
-                               name="CAPITAL_INICIAL" value="<?= $Info->CAPITAL_INICIAL ?>"
+                        <input type="text" class="form-control obligatorio numero dinero"  value="<?= $Info->SALDO_INICIAL ?>"
                                placeholder="Capital inicial">
                     </div>
                 </div>
@@ -128,8 +127,7 @@
                         <label class="col-lg-4 control-label">Interés %:</label>
 
                         <div class="col-lg-2">
-                            <input type="text" value="2" class="form-control obligatorio numero porcentaje"
-                                   name="INTERES_MENSUAL">
+                            <input type="text" value="2" class="form-control obligatorio numero porcentaje">
                         </div>
                         <div class="col-lg-5">
                             <div class="input-group">
@@ -152,8 +150,7 @@
                         <label class="col-lg-4 control-label">Cuota Administración %:</label>
 
                         <div class="col-lg-2">
-                            <input type="text" value="3" class="form-control obligatorio numero porcentaje"
-                                   name="CUOTA_ADMINISTRACION">
+                            <input type="text" value="3" class="form-control obligatorio numero porcentaje">
                         </div>
                         <div class="col-lg-5">
                             <div class="input-group">
