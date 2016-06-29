@@ -452,7 +452,7 @@
                     '<div class="form-group">' +
                     ' <label class="col-lg-4 control-label">Concepto:</label>' +
                     '<div class="col-lg-7">' +
-                    '<input type="text" value="Comisión <?=MesNombreAbr(round(date('m'))) . ' ' . date('d/Y') ?>" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
+                    '<input type="text" value="Comisión <?=MesNombreAbreviado(round(date('m'))) . ' ' . date('d/Y') ?>" class="form-control obligatorio" name="CONCEPTO" placeholder="Ingrese el concepto">' +
                     '</div>' +
                     '</div>' +
                     '<div class="form-group">' +

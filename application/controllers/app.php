@@ -62,7 +62,7 @@
                         'AVATAR' => $log[0]->AVATAR,
                         'ESTADO' => $log[0]->ESTADO,
                         'NIVEL' => $log[0]->NIVEL,
-                        'FECHA_REGISTRO' => MesNombreAbr(round(date_format(new DateTime($log[0]->FECHA_REGISTRO), 'm'))) . '. ' . date_format(new DateTime($log[0]->FECHA_REGISTRO), 'Y'),
+                        'FECHA_REGISTRO' => MesNombreAbreviado(round(date_format(new DateTime($log[0]->FECHA_REGISTRO), 'm'))) . '. ' . date_format(new DateTime($log[0]->FECHA_REGISTRO), 'Y'),
                     ]
                 );
 

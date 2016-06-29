@@ -367,7 +367,7 @@
             $pdf->SetFont('Arial', '', 10);
             #FECHA CONSTITUCIÓN
             $pdf->SetXY(20, 32 + ++$r * 6);
-            $pdf->Cell(85, 6, utf8_decode('Fecha constitución: ') . MesNombreAbr(round(date_format(new DateTime($solicitud->FECHA_CONSTITUCION), 'm'))) . date_format(new DateTime($solicitud->FECHA_CONSTITUCION), ' d/y'), 0, 0, 'L');
+            $pdf->Cell(85, 6, utf8_decode('Fecha constitución: ') . MesNombreAbreviado(round(date_format(new DateTime($solicitud->FECHA_CONSTITUCION), 'm'))) . date_format(new DateTime($solicitud->FECHA_CONSTITUCION), ' d/y'), 0, 0, 'L');
             #Tipo Hipoteca
             $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, 'Hipoteca ' . $solicitud->TIPO_HIPOTECA, 0, 0, 'L');
@@ -426,7 +426,7 @@
             if(!is_null($pagacom))
             {
                 $pdf->SetXY(20, 32 + ++$r * 6);
-                $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbr(date('m', strtotime($pagacom->FECHA))) . date(' d/y', strtotime($pagacom->FECHA)), 1, 0, 'L');
+                $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbreviado(date('m', strtotime($pagacom->FECHA))) . date(' d/y', strtotime($pagacom->FECHA)), 1, 0, 'L');
                 $pdf->Cell(85, 6, number_format($pagacom->VALOR, 0, '', ','), 1, 0, 'R');
                 $TotalPagado += $pagacom->VALOR;
             }
@@ -447,7 +447,7 @@
             if(!is_null($ap))
             {
                 $pdf->SetXY(20, 32 + ++$r * 6);
-                $pdf->Cell(85, 6, utf8_decode('Ampliación de plazo a ' . MesNombreAbr(date('m', strtotime($ap->FECHA))) . date(' d/y', strtotime($ap->FECHA))), 1, 0, 'L');
+                $pdf->Cell(85, 6, utf8_decode('Ampliación de plazo a ' . MesNombreAbreviado(date('m', strtotime($ap->FECHA))) . date(' d/y', strtotime($ap->FECHA))), 1, 0, 'L');
                 $pdf->Cell(85, 6, number_format($ap->VALOR, 0, '', ','), 1, 0, 'R');
                 $TotalPagado += $ap->VALOR;
             }
@@ -489,7 +489,7 @@
                 $Diafin = $Diainicio - 1;
             }
             $diain = $Diainicio > date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) ? date("t", mktime(0, 0, 0, $Mesfin/*mes*/, 1, $Anofin /*año*/)) : $Diainicio;
-            $debeInt = 'Int de ' . MesNombreAbr($Mes > 12 ? 12 - $Mes : $Mes) . ' ' . $diain . '/' . $Anofin . ' a ';
+            $debeInt = 'Int de ' . MesNombreAbreviado($Mes > 12 ? 12 - $Mes : $Mes) . ' ' . $diain . '/' . $Anofin . ' a ';
             for ($p = 0; strtotime('now') > strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) && strtotime($Anofin . '-' . $Mesfin . '-' . $Diafin) < strtotime($solicitud->FECHA_FIN); $p++)
             {
                 $Mesfin++;
@@ -513,7 +513,7 @@
             }
             if($p > 0)
             {
-                $debeInt .= MesNombreAbr($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
+                $debeInt .= MesNombreAbreviado($Mesfin) . ' ' . $Diafin . '/' . $Anofin;
                 $calc = $p * ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * ($solicitud->INTERES_MENSUAL / 100);
                 #DEBE INTERESES
                 $pdf->SetXY(20, 32 + ++$r * 6);
@@ -530,28 +530,29 @@
                 {
                     $fecha = date('Y-m-d', strtotime($solicitud->FECHA_INICIO));
                     $pdf->SetXY(20, 32 + ++$r * 6);
-                    $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbr(round(date_format(new DateTime($fecha), 'm'))) .
+                    $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbreviado(round(date_format(new DateTime($fecha), 'm'))) .
                         date_format(new DateTime($fecha), ' d/y'), 1, 0, 'L');
-                    $pdf->Cell(85, 6, number_format(($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .035, 0, '', ','), 1, 0, 'R');
+                    $pdf->Cell(85, 6, number_format(($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .03, 0, '', ','), 1, 0, 'R');
                     $comisiones['InicioDebe'] = 1;
+                    $TotalDebe += ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .03;
                 }
                 else
                 {
                     $fecha = date('Y-m-d', strtotime($solicitud->FECHA_INICIO) + 3600 * 24 * 365 * $c * $comisiones['InicioDebe']);
                     $pdf->SetXY(20, 32 + ++$r * 6);
-                    $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbr(round(date_format(new DateTime($fecha), 'm'))) .
+                    $pdf->Cell(85, 6, utf8_decode('Comisión ') . MesNombreAbreviado(round(date_format(new DateTime($fecha), 'm'))) .
                         date_format(new DateTime($fecha), ' d/y'), 1, 0, 'L');
                     $pdf->Cell(85, 6, number_format(($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .03, 0, '', ','), 1, 0, 'R');
                 }
             }
-            $TotalDebe += ($solicitud->CAPITAL_INICIAL - $solicitud->ABONADO) * .03;
+
             #Total Debe
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetXY(20, 32 + ++$r * 6);
             $pdf->Cell(85, 6, 'Total:', 1, 0, 'R');
             $pdf->Cell(85, 6, '$ ' . number_format($TotalDebe, 0, '', ','), 1, 0, 'R');
             $pdf->Text(90, 40 + ++$r * 6, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO')))
-                . ' en ' . MesNombreAbr(round(date('m'))) . date(' d/y')));
+                . ' en ' . MesNombreAbreviado(round(date('m'))) . date(' d/y')));
             $pdf->Output();
             $pdf->Cell($pdf->PageNo());
         }
@@ -595,7 +596,7 @@
                         $Pago = 'Abono a capital';
                         break;
                     case 3:
-                        $Pago = utf8_decode('Ampliación de plazo a ') . MesNombreAbr(date('m', strtotime($informe->INFO_AP))) . date(' d/y', strtotime($informe->INFO_AP));
+                        $Pago = utf8_decode('Ampliación de plazo a ') . MesNombreAbreviado(date('m', strtotime($informe->INFO_AP))) . date(' d/y', strtotime($informe->INFO_AP));
                         break;
                     case 1:
                         $Mesinicio = round(date_format(new DateTime($informe->FECHA_INICIO), 'm'));
@@ -627,7 +628,7 @@
                 #---------------------------------------------------#
                 #Deudor
                 $pdf->SetXY(5, 26 + 6 * $i);
-                $pdf->Cell(50, 6, ucwords(utf8_decode($informe->NOMBRE_DEUDOR)), 1, 0, 'C');
+                $pdf->Cell(50, 6, ucwords(utf8_decode(AcotarString($informe->NOMBRE_DEUDOR,23))), 1, 0, 'C');
                 #Periodo pago
                 $pdf->SetXY(55, 26 + 6 * $i);
                 $pdf->Cell(50, 6, $Pago, 1, 0, 'C');
@@ -779,7 +780,7 @@
             $pdf->Cell(177, 1, '', 1, 1, 'C');
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->Text(15, $hheader + $h * $i + 14, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO')))
-                . ' en ' . MesNombreAbr(round(date('m'))) . date(' d/y')));
+                . ' en ' . MesNombreAbreviado(round(date('m'))) . date(' d/y')));
             $pdf->Text(155, $hheader + $h * $i + 14, 'Total: ' . number_format($Total, 0, '', ','));
 
             #VALORES
@@ -886,7 +887,7 @@
             $pdf->Text(50, 32 + 6 * $i, utf8_decode('CUADRE N° ' . $this->input->post('NRO')));
             $pdf->Text(95, 32 + 6 * $i, 'TOTAL ENTREGADO');
             $pdf->Text(150, 32 + 6 * $i, number_format($TotalComision + $TotalAdmin, 0, '', ','), 1, 0, 'R');
-            $pdf->Text(70, 40 + 6 * $i, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO'))) . ' en ' . MesNombreAbr(round(date('m'))) . date(' d/y')));
+            $pdf->Text(70, 40 + 6 * $i, utf8_decode('Preparado por ' . ucwords(strtolower($this->session->userdata('NOMBRE_USUARIO'))) . ' en ' . MesNombreAbreviado(round(date('m'))) . date(' d/y')));
 
             #------------------------------------------------------#
             $pdf->Output();
@@ -1022,6 +1023,7 @@
                 </div><!-- /.box-body -->';
                 ##Estadísticas
                 $Data['Estadisticas'] = '<div style="margin-top: 30px;"> <span style="font-size:12pt;color: lightslategrey">Porcentaje pagado de la deuda: <span  style="font-weight: bold;color: limegreen">' . number_format(($cliente->ABONADO / $cliente->CAPITAL_INICIAL) * 100, 2, ',', '') . '%</span></span></div>';
+                $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Capital inicial: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->CAPITAL_INICIAL, 0, '', ',') . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Capital restante: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->CAPITAL_INICIAL - $cliente->ABONADO, 0, '', ',') . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Número de abonos: <span  style="font-weight: bold;color: limegreen">' . $this->caja_model->ContarAbonos() . '</span></span></div>';
                 $Data['Estadisticas'] .= '<div style="margin-top: 10px;"> <span style="font-size:12pt;color: lightslategrey">Total abonado al capital: <span  style="font-weight: bold;color: limegreen">$ ' . number_format($cliente->ABONADO, 0, '', ',') . '</span></span></div>';

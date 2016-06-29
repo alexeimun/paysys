@@ -1,6 +1,5 @@
 <head>
     <meta charset="utf-8">
-    <meta name="google-signin-client_id" content="502497714997-enuaqvuco64t5rqt48ac6bgvuhdhi0pu.apps.googleusercontent.com">
     <title>InverBienes | <?=ucfirst(explode(' ',$this->session->userdata('NOMBRE_USUARIO'))[0] )?></title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
@@ -8,7 +7,7 @@
     <!--    My styles-->
     <link href="<?= base_url() ?>/public/css/styler.css" rel="stylesheet" type="text/css"/>
     <!-- FontAwesome 4.3.0 -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"
+    <link href="<?= base_url() ?>/public/font-awesome/css/font-awesome.min.css" rel="stylesheet"
           type="text/css"/>
     <!-- Ionicons 2.0.0 -->
     <link rel="stylesheet" href="<?= base_url() ?>/public/css/ionicons/css/ionicons.min.css"/>

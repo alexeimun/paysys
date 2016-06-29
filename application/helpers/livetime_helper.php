@@ -156,7 +156,7 @@
     function FechaFormal($Fecha, $abr = true)
     {
         $Fecha = $Fecha == 'now' ? date('Y-m-d') : $Fecha;
-        $abr = $abr === true ? MesNombreAbr($Fecha) : MesNombre($Fecha);
+        $abr = $abr === true ? MesNombreAbreviado($Fecha) : MesNombre($Fecha);
         return round(date('d', strtotime($Fecha))) . ' de ' . $abr . '/' . date('Y', strtotime($Fecha));
     }
 
@@ -165,7 +165,7 @@
         return $Fecha == 'now' ? round(date('d')) . date('/m-Y') : date('d/m/Y', strtotime($Fecha));
     }
 
-    function MesNombreAbr($Mes)
+    function MesNombreAbreviado($Mes)
     {
         if(!is_numeric($Mes))
         {

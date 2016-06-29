@@ -63,8 +63,8 @@
              */
             if(!isset($concept))
             {
-                $concept = 'INTERESES DE ' . round($date1->format('d')) . '-' . MesNombreAbr($date1->format('m')) . '-' . $date1->format('Y') .
-                    ' A ' . round($date2->format('d')) . '-' . MesNombreAbr($date2->format('m')) . '-' . $date2->format('Y');
+                $concept = 'INTERESES DE ' . round($date1->format('d')) . '-' . MesNombreAbreviado($date1->format('m')) . '-' . $date1->format('Y') .
+                    ' A ' . round($date2->format('d')) . '-' . MesNombreAbreviado($date2->format('m')) . '-' . $date2->format('Y');
             }
 
             if(isset($action) && $action == true)

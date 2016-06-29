@@ -2,7 +2,7 @@
     <div class="pull-right hidden-xs">
         <b>Versión</b> 1.0.0
     </div>
-    <strong>Copyright &copy; 2015 InverBienes</a>.</strong> Desarrollado por - <a href="mailto:fact1128@hotmail.com">
+    <strong>Copyright &copy; 2016 InverBienes</a>.</strong> Desarrollado por - <a href="mailto:fact1128@hotmail.com">
         <span style="font-weight: bold;color: lightseagreen">Alexis Muñoz - Web developer</span></a>
 </footer>
 <!--    Big Screen-->
