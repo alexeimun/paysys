@@ -10,7 +10,6 @@
         function __construct()
         {
             parent::__construct();
-            $this->load->model('extras_model');
         }
 
         public function pcobrar()

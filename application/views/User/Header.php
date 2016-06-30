@@ -17,11 +17,16 @@
             <ul class="nav navbar-nav">
                 <li class="">
                     <a href="<?= site_url('proximosacobrar') ?>" data-toggle="tooltip" title="Próximos a pagar">
-                        <span class="badge info" style="background: rgba(28, 195, 2, 0.94)"> <span class="ion ion-clock"></span> PRÓX. A COBRAR</span>
+                        <span class="badge">
+
+                            <?php $prox = count($this->extras_model->ProximosACobrar());
+                                echo $prox > 0 ? '<span class="label label-danger" style="padding-left: 8px;padding-right: 8px;font-size: 10pt;border-radius: 50%">' . $prox . '</span>' : ''; ?>
+                            PRÓX. A COBRAR
+                        </span>
                     </a>
                 </li>
 
-                <li class="">
+                <li>
                     <a href="<?= site_url('crearobservacion') ?>" data-toggle="tooltip" title="Crear una observación">
                         <span class="badge info" style="background: #ff7701"> <span class="ion ion-plus"></span> OBSERVACION !!</span>
                     </a>

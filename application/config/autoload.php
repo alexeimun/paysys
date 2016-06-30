@@ -92,7 +92,7 @@
     |	$autoload['model'] = array('model1', 'model2');
     |
     */
-    $autoload['model'] = ['notificaciones_model'];
+    $autoload['model'] = ['notificaciones_model','extras_model'];
 
 
     /* End of file autoload.php */
