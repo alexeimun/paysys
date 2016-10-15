@@ -1,11 +1,11 @@
 AddDefaultCharset UTF-8
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteBase /inverbienes
+RewriteBase /paysys
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L]
 </IfModule>
 <IfModule !mod_rewrite.c>
-ErrorDocument 404 /inverbienes/index.php
+ErrorDocument 404 /paysys/index.php
 </IfModule>
